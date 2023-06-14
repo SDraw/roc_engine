@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.33026.149
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "animConverter", "animConverter\animConverter.vcxproj", "{0426804A-534B-45F6-B86C-9E69DF9D1A16}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modelConverter", "modelConverter\modelConverter.vcxproj", "{392E64B3-202B-40FB-8EDB-7EED5FC831B6}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "collisionConverter", "collisionConverter\collisionConverter.vcxproj", "{13820A71-B5FE-4D79-A386-F777E05BB96F}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roc_app", "roc_app\roc_app.vcxproj", "{15AAC079-9287-4A08-B4EE-686B7CAFA03D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{0426804A-534B-45F6-B86C-9E69DF9D1A16}.Debug|x64.ActiveCfg = Debug|x64
+		{0426804A-534B-45F6-B86C-9E69DF9D1A16}.Debug|x64.Build.0 = Debug|x64
+		{0426804A-534B-45F6-B86C-9E69DF9D1A16}.Release|x64.ActiveCfg = Release|x64
+		{0426804A-534B-45F6-B86C-9E69DF9D1A16}.Release|x64.Build.0 = Release|x64
+		{392E64B3-202B-40FB-8EDB-7EED5FC831B6}.Debug|x64.ActiveCfg = Debug|x64
+		{392E64B3-202B-40FB-8EDB-7EED5FC831B6}.Debug|x64.Build.0 = Debug|x64
+		{392E64B3-202B-40FB-8EDB-7EED5FC831B6}.Release|x64.ActiveCfg = Release|x64
+		{392E64B3-202B-40FB-8EDB-7EED5FC831B6}.Release|x64.Build.0 = Release|x64
+		{13820A71-B5FE-4D79-A386-F777E05BB96F}.Debug|x64.ActiveCfg = Debug|x64
+		{13820A71-B5FE-4D79-A386-F777E05BB96F}.Debug|x64.Build.0 = Debug|x64
+		{13820A71-B5FE-4D79-A386-F777E05BB96F}.Release|x64.ActiveCfg = Release|x64
+		{13820A71-B5FE-4D79-A386-F777E05BB96F}.Release|x64.Build.0 = Release|x64
+		{15AAC079-9287-4A08-B4EE-686B7CAFA03D}.Debug|x64.ActiveCfg = Debug|x64
+		{15AAC079-9287-4A08-B4EE-686B7CAFA03D}.Debug|x64.Build.0 = Debug|x64
+		{15AAC079-9287-4A08-B4EE-686B7CAFA03D}.Release|x64.ActiveCfg = Release|x64
+		{15AAC079-9287-4A08-B4EE-686B7CAFA03D}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {DDA44FAB-2386-4E86-85DE-0FCDCCEC3598}
+	EndGlobalSection
+EndGlobal
