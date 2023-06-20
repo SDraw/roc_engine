@@ -27,10 +27,6 @@ class Camera final : public Element, public Transformable, public ICamera
 
     Camera(const Camera &that) = delete;
     Camera& operator=(const Camera &that) = delete;
-
-    // ROC::Transformable
-    void SetPosition(const glm::vec3 &p_pos) override;
-    void SetRotation(const glm::quat &p_dir) override;
 public:
     explicit Camera(unsigned char p_type);
     ~Camera() = default;
@@ -56,6 +52,7 @@ public:
     void SetUpDirection(const glm::vec3 &p_dir);
     const glm::vec3& GetUpDirection() const;
 
+
     const glm::mat4& GetViewMatrix() const;
     const glm::mat4& GetProjectionMatrix() const;
     const glm::mat4& GetViewProjectionMatrix() const;
@@ -64,6 +61,10 @@ public:
     bool IsInFrustum(const glm::mat4 &p_mat, float p_radius) const;
 
     void Update();
+
+    // ROC::Transformable
+    void SetPosition(const glm::vec3 &p_pos) override;
+    void SetRotation(const glm::quat &p_dir) override;
 };
 
 }

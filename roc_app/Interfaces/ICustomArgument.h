@@ -7,6 +7,8 @@ class IElement;
 
 class ICustomArgument
 {
+protected:
+    ~ICustomArgument() = default;
 public:
     enum CustomArgumentType : unsigned char
     {
@@ -16,7 +18,6 @@ public:
         CAT_UInteger,
         CAT_Float,
         CAT_Double,
-        CAT_Pointer,
         CAT_String,
         CAT_Element
     };
@@ -30,7 +31,7 @@ public:
     virtual double GetDouble() const = 0;
     virtual void* GetPointer() const = 0;
     virtual IElement* GetElement() const = 0;
-    virtual const std::string& GetString() const = 0;
+    virtual const char* GetString() const = 0;
 };
 
 }

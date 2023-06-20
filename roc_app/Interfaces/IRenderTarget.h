@@ -5,6 +5,8 @@ namespace ROC
 
 class IRenderTarget
 {
+protected:
+    ~IRenderTarget() = default;
 public:
     enum RenderTargetType : unsigned char
     {

@@ -12,7 +12,10 @@ class ISoundManager;
 
 class ICore
 {
+protected:
+    ~ICore() = default;
 public:
+    virtual float GetEngineDelta() const = 0;
     virtual IElementManager* GetIElementManager() const = 0;
     virtual ILogManager* GetILogManager() const = 0;
     virtual IPhysicsManager* GetIPhysicsManager() const = 0;

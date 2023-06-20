@@ -13,20 +13,25 @@
 namespace ROC
 {
 
+extern const std::string g_shadowVertexShader;
+extern const std::string g_shadowFragmentShader;
+extern const std::string g_screenVertexShader;
+extern const std::string g_screenFragmentShader;
+
 const std::vector<std::string> g_defaultUniforms
 {
-    "gProjectionMatrix", "gViewMatrix", "gViewProjectionMatrix", "gModelMatrix", "gAnimated", "gBoneMatrix", "gBoneMatrix[0]",
-    "gCameraPosition", "gCameraDirection",
-    "gLightData", "gLightData[0]", "gLightsCount",
-    "gMaterialType", "gMaterialParam",
-    "gTexture0", "gColor",
-    "gTime"
+    "gProjectionMatrix", "gViewMatrix", "gViewProjectionMatrix", "gModelMatrix", "gAnimated", "gBoneMatrix",
+    "gCameraPosition", "gCameraDirection", "gShadowViewProjectionMatrix",
+    "gLightData", "gLightsCount", 
+    "gMaterialParam", "gMaterialType",
+    "gTexture0", "gTextureShadow",
+    "gColor","gTime"
 };
 
 const size_t g_shaderMaxBonesCount = 227U;
 const size_t g_shaderMaxLightsCount = 4U;
 const size_t g_shaderSlotCount = 16U;
-const size_t g_shaderSlotStart = 1U; // Reserved slots: 0 - diffuse texture
+const size_t g_shaderSlotStart = 2U; // Reserved slots: 0 - diffuse texture, 1- shadow texture
 
 const std::string g_defaultShaderDefines = (std::string() +
     "#version 330 core\n" +
@@ -39,6 +44,8 @@ const std::string g_defaultShaderDefines = (std::string() +
 
 }
 
+ROC::Shader* ROC::Shader::ms_shadowShader = nullptr;
+ROC::Shader* ROC::Shader::ms_screenShader = nullptr;
 size_t ROC::Shader::ms_drawableMaxCount = 0U;
 
 ROC::Shader::Shader()
@@ -67,6 +74,22 @@ ROC::Shader::~Shader()
     m_uniformMap.clear();
     delete m_bindPool;
     m_drawableBind.clear();
+}
+
+void ROC::Shader::Load(const std::string &p_vert, const std::string &p_frag)
+{
+    std::string l_vertex(g_defaultShaderDefines);
+    std::string l_fragment(g_defaultShaderDefines);
+    l_vertex.append(p_vert);
+    l_fragment.append(p_frag);
+    m_shader = new GLShader();
+    if(!m_shader->Create(l_vertex.data(), l_vertex.length(), l_fragment.data(), l_fragment.length(), nullptr, 0U))
+    {
+        m_shader->Destroy();
+        delete m_shader;
+        m_shader = nullptr;
+    }
+    else SetupUniformsAndLocations();
 }
 
 bool ROC::Shader::Load(const std::string &p_vpath, const std::string &p_fpath, const std::string &p_gpath)
@@ -145,6 +168,7 @@ void ROC::Shader::SetupUniformsAndLocations()
     // Camera
     FindDefaultUniform(SDU_CameraPosition, SUT_Float3, "gCameraPosition", sizeof(glm::vec3));
     FindDefaultUniform(SDU_CameraDirection, SUT_Float3, "gCameraDirection", sizeof(glm::vec3));
+    FindDefaultUniform(SDU_ShadowViewProjection, SUT_FloatMat4, "gShadowViewProjectionMatrix", sizeof(glm::mat4));
     // Light
     FindDefaultUniform(SDU_LightData, SUT_FloatMat4, "gLightData", sizeof(glm::mat4) * g_shaderMaxLightsCount, g_shaderMaxLightsCount); // Array
     FindDefaultUniform(SDU_LightsCount, SUT_Int, "gLightsCount", sizeof(int));
@@ -155,6 +179,7 @@ void ROC::Shader::SetupUniformsAndLocations()
     FindDefaultUniform(SDU_Animated, SUT_UInt, "gAnimated", sizeof(unsigned int));
     // Samplers
     FindDefaultUniform(SDU_DiffuseTexture, SUT_Int, "gTexture0", sizeof(int));
+    FindDefaultUniform(SDU_ShadowTexture, SUT_Int, "gTextureShadow", sizeof(int));
     // Time
     FindDefaultUniform(SDU_Time, SUT_Float, "gTime", sizeof(float));
     // Color (RenderTarget, Texture, Font)
@@ -182,6 +207,11 @@ void ROC::Shader::SetupUniformsAndLocations()
     {
         const int l_index = 0;
         m_defaultUniforms[SDU_DiffuseTexture]->SetData(&l_index, sizeof(int));
+    }
+    if(m_defaultUniforms[SDU_ShadowTexture])
+    {
+        const int l_index = 1;
+        m_defaultUniforms[SDU_ShadowTexture]->SetData(&l_index, sizeof(int));
     }
 }
 
@@ -318,6 +348,19 @@ void ROC::Shader::SetViewProjectionMatrix(const glm::mat4 &p_value)
         {
             m_shader->SetUniform(m_defaultUniforms[SDU_ViewProjection]->GetUniformName(), 4U, glm::value_ptr(p_value), 1U);
             m_defaultUniforms[SDU_ViewProjection]->ResetUpdate();
+        }
+    }
+}
+
+void ROC::Shader::SetShadowViewProjectionMatrix(const glm::mat4 &p_value)
+{
+    if(m_defaultUniforms[SDU_ShadowViewProjection])
+    {
+        m_defaultUniforms[SDU_ShadowViewProjection]->SetData(&p_value, sizeof(glm::mat4));
+        if(m_active && m_defaultUniforms[SDU_ShadowViewProjection]->IsUpdated())
+        {
+            m_shader->SetUniform(m_defaultUniforms[SDU_ShadowViewProjection]->GetUniformName(), 4U, glm::value_ptr(p_value), 1U);
+            m_defaultUniforms[SDU_ShadowViewProjection]->ResetUpdate();
         }
     }
 }
@@ -617,6 +660,28 @@ void ROC::Shader::InitStaticResources()
     GLSetting::GetInteger(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &l_unitsCount);
     ms_drawableMaxCount = std::min(static_cast<size_t>(l_unitsCount), g_shaderSlotCount);
     ms_drawableMaxCount -= g_shaderSlotStart;
+
+    ms_shadowShader = new Shader();
+    ms_shadowShader->Load(g_shadowVertexShader, g_shadowFragmentShader);
+    ms_screenShader = new Shader();
+    ms_screenShader->Load(g_screenVertexShader, g_screenFragmentShader);
+}
+void ROC::Shader::ReleaseStaticResources()
+{
+    delete ms_shadowShader;
+    ms_shadowShader = nullptr;
+    delete ms_screenShader;
+    ms_screenShader = nullptr;
+}
+
+ROC::Shader* ROC::Shader::GetShadowShader()
+{
+    return ms_shadowShader;
+}
+
+ROC::Shader* ROC::Shader::GetScreenShader()
+{
+    return ms_screenShader;
 }
 
 size_t ROC::Shader::GetSizeFromGLType(GLenum p_type)

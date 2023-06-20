@@ -6,7 +6,7 @@ namespace ROC
 class IElement;
 class IAnimation;
 class ICamera;
-class ICollision;
+class ICollider;
 class IFont;
 class ILight;
 class IMesh;
@@ -19,6 +19,8 @@ class ITexture;
 
 class IElementManager
 {
+protected:
+    ~IElementManager() = default;
 public:
     virtual IScene* CreateIScene() = 0;
     virtual ICamera* CreateICamera(unsigned char p_type) = 0;
@@ -31,7 +33,7 @@ public:
     virtual IRenderTarget* CreateIRenderTarget(unsigned char p_type, const glm::ivec2 &p_size, unsigned char p_filter) = 0;
     virtual ITexture* CreateITexture(const char *p_path, unsigned char p_type, unsigned char p_filter, bool p_compress) = 0;
     virtual IFont* CreateIFont(const char *p_path, int p_size, const glm::ivec2 &p_atlas, unsigned char p_filter) = 0;
-    virtual ICollision* CreateICollision(unsigned char p_type, const glm::vec3 &p_size, float p_mass) = 0;
+    virtual ICollider* CreateICollider(unsigned char p_type, const glm::vec3 &p_size, float p_mass) = 0;
     virtual bool IsValidIElement(IElement *p_ptr) const = 0;
     virtual bool DestroyIElement(IElement *p_element) = 0;
 };

@@ -30,6 +30,7 @@ class Core final : public ICore
     SoundManager *m_soundManager;
 
     bool m_state;
+    float m_engineDelta;
     CustomArguments *m_arguments;
 
     Core();
@@ -48,6 +49,8 @@ public:
     static bool Init();
     static Core* GetInstance();
     static void Terminate();
+
+    float GetEngineDelta() const;
 
     ConfigManager* GetConfigManager() const;
     ElementManager* GetElementManager() const;

@@ -14,6 +14,9 @@ class ShaderUniform;
 
 class Shader final : public Element, public IShader
 {
+    static Shader *ms_shadowShader;
+    static Shader *ms_screenShader;
+
     GLShader *m_shader;
     bool m_active;
 
@@ -23,17 +26,19 @@ class Shader final : public Element, public IShader
         SDU_View,
         SDU_ViewProjection,
         SDU_Model,
+        SDU_Animated,
         SDU_BoneMatrices,
         SDU_CameraPosition,
         SDU_CameraDirection,
+        SDU_ShadowViewProjection,
         SDU_LightData,
         SDU_LightsCount,
         SDU_MaterialParam,
         SDU_MaterialType,
-        SDU_Animated,
         SDU_DiffuseTexture,
-        SDU_Time,
+        SDU_ShadowTexture,
         SDU_Color,
+        SDU_Time,
 
         SDU_UniformCount
     };
@@ -59,6 +64,8 @@ class Shader final : public Element, public IShader
     Shader(const Shader &that) = delete;
     Shader& operator=(const Shader &that) = delete;
 
+    void Load(const std::string &p_vert, const std::string &p_frag);
+
     void SetupUniformsAndLocations();
     void FindDefaultUniform(ShaderDefaultUniform p_sud, unsigned char p_type, const char *p_name, size_t p_dataSize, size_t p_count = 1U);
 
@@ -76,6 +83,12 @@ class Shader final : public Element, public IShader
     void OnParentRemoved(Element *p_parent) override;
     void OnChildRemoved(Element *p_child) override;
 public:
+    enum ShaderTextureSlots : size_t
+    {
+        STS_Diffuse = 0U,
+        STS_Shadow
+    };
+
     Shader();
     ~Shader();
 
@@ -91,6 +104,7 @@ public:
     void SetProjectionMatrix(const glm::mat4 &p_value);
     void SetViewMatrix(const glm::mat4 &p_value);
     void SetViewProjectionMatrix(const glm::mat4 &p_value);
+    void SetShadowViewProjectionMatrix(const glm::mat4 &p_value);
     void SetModelMatrix(const glm::mat4 &p_value);
     void SetBoneMatrices(const std::vector<glm::mat4> &p_value);
     void SetCameraPosition(const glm::vec3 &p_value);
@@ -107,6 +121,9 @@ public:
     bool IsActive() const;
 
     static void InitStaticResources();
+    static void ReleaseStaticResources();
+    static Shader* GetShadowShader();
+    static Shader* GetScreenShader();
 };
 
 }

@@ -5,6 +5,8 @@ namespace ROC
 
 class ILight
 {
+protected:
+    ~ILight() = default;
 public:
     enum LightType : unsigned char
     {

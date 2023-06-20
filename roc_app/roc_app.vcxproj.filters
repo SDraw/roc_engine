@@ -36,9 +36,6 @@
     <ClCompile Include="Elements\Camera.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
-    <ClCompile Include="Elements\Collision.cpp">
-      <Filter>Elements</Filter>
-    </ClCompile>
     <ClCompile Include="Elements\Font.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
@@ -180,6 +177,9 @@
     <ClCompile Include="Elements\Transformable.cpp">
       <Filter>Elements</Filter>
     </ClCompile>
+    <ClCompile Include="Elements\Collider.cpp">
+      <Filter>Elements</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="stdafx.h" />
@@ -214,9 +214,6 @@
       <Filter>Utils</Filter>
     </ClInclude>
     <ClInclude Include="Elements\Camera.h">
-      <Filter>Elements</Filter>
-    </ClInclude>
-    <ClInclude Include="Elements\Collision.h">
       <Filter>Elements</Filter>
     </ClInclude>
     <ClInclude Include="Elements\Font.h">
@@ -291,9 +288,6 @@
     <ClInclude Include="Interfaces\ISoundManager.h">
       <Filter>Interfaces</Filter>
     </ClInclude>
-    <ClInclude Include="Interfaces\IVRManager.h">
-      <Filter>Interfaces</Filter>
-    </ClInclude>
     <ClInclude Include="Interfaces\IElementManager.h">
       <Filter>Interfaces</Filter>
     </ClInclude>
@@ -325,9 +319,6 @@
       <Filter>Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Interfaces\ISound.h">
-      <Filter>Interfaces</Filter>
-    </ClInclude>
-    <ClInclude Include="Interfaces\ICollision.h">
       <Filter>Interfaces</Filter>
     </ClInclude>
     <ClInclude Include="Interfaces\IFont.h">
@@ -434,6 +425,12 @@
     </ClInclude>
     <ClInclude Include="Elements\Transformable.h">
       <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Elements\Collider.h">
+      <Filter>Elements</Filter>
+    </ClInclude>
+    <ClInclude Include="Interfaces\ICollider.h">
+      <Filter>Interfaces</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

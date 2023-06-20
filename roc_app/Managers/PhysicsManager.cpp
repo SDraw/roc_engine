@@ -3,7 +3,7 @@
 #include "Managers/PhysicsManager.h"
 #include "Core/Core.h"
 #include "Elements/Element.h"
-#include "Elements/Collision.h"
+#include "Elements/Collider.h"
 #include "Elements/Model/Model.h"
 
 #include "Managers/ConfigManager.h"
@@ -20,7 +20,7 @@ const int g_physicsDefaultSubstepsCount = 10;
 
 ROC::PhysicsManager::PhysicsManager(Core *p_core) : Manager(p_core)
 {
-    m_enabled = false;
+    m_enabled = true;
     m_floorBody = nullptr;
 }
 
@@ -38,6 +38,8 @@ void ROC::PhysicsManager::Start()
 
         unsigned int l_fpsLimit = GetCore()->GetConfigManager()->GetFPSLimit();
         m_timeStep = (l_fpsLimit == 0U) ? g_physicsDefaultTimestep : (1.5f / static_cast<float>(l_fpsLimit));
+
+        SetFloorEnabled(true);
     }
 
     Manager::Start();
@@ -136,7 +138,7 @@ void ROC::PhysicsManager::GetGravity(glm::vec3 &p_grav) const
     std::memcpy(&p_grav, m_dynamicWorld->getGravity().m_floats, sizeof(glm::vec3));
 }
 
-void ROC::PhysicsManager::SetCollisionScale(Collision *p_col, const glm::vec3 &p_scale)
+void ROC::PhysicsManager::SetColliderScale(Collider *p_col, const glm::vec3 &p_scale)
 {
     if(!IsActive()) return;
 
@@ -206,7 +208,7 @@ void ROC::PhysicsManager::RemoveModel(Model *p_model)
     }
 }
 
-void ROC::PhysicsManager::AddCollision(Collision *p_col)
+void ROC::PhysicsManager::AddCollision(Collider *p_col)
 {
     if(!IsActive()) return;
 
@@ -214,7 +216,7 @@ void ROC::PhysicsManager::AddCollision(Collision *p_col)
     m_collisions.push_back(p_col);
 }
 
-void ROC::PhysicsManager::RemoveCollision(Collision *p_col)
+void ROC::PhysicsManager::RemoveCollision(Collider *p_col)
 {
     if(!IsActive()) return;
 
@@ -266,19 +268,22 @@ void ROC::PhysicsManager::DrawDebugWorld()
 void ROC::PhysicsManager::DoPulse()
 {
     if(!IsActive()) return;
-    
-    for(auto l_col : m_collisions) l_col->Update(ROC::Collision::CUS_Body);
+
+    for(auto l_col : m_collisions) l_col->Update(ROC::Collider::CUS_Body);
     if(m_enabled) m_dynamicWorld->stepSimulation(m_timeStep, g_physicsDefaultSubstepsCount, g_physicsDefaultTimestep);
-    for(auto l_col : m_collisions) l_col->Update(ROC::Collision::CUS_Matrix);
+    for(auto l_col : m_collisions) l_col->Update(ROC::Collider::CUS_Matrix);
 }
 
 // ROC::IPhysicsManager
-void ROC::PhysicsManager::SetCollisionScale(ICollision *p_col, const glm::vec3 &p_scale)
+void ROC::PhysicsManager::SetIColliderScale(ICollider *p_col, const glm::vec3 &p_scale)
 {
-    SetCollisionScale(dynamic_cast<Collision*>(p_col), p_scale);
+    SetColliderScale(dynamic_cast<Collider*>(p_col), p_scale);
 }
 
 bool ROC::PhysicsManager::RayCast(const glm::vec3 &p_start, glm::vec3 &p_end, glm::vec3 &p_normal, IElement *&p_element)
 {
-    return RayCast(p_start, p_end, p_normal, reinterpret_cast<Element*&>(p_element));
+    ROC::Element *l_what = nullptr;
+    bool l_result = RayCast(p_start, p_end, p_normal, l_what);
+    p_element = (l_what ? dynamic_cast<ROC::IElement*>(l_what) : nullptr);
+    return l_result;
 }

@@ -5,6 +5,8 @@ namespace ROC
 
 class IDrawable
 {
+protected:
+    ~IDrawable() = default;
 public:
     enum DrawableFilteringType : unsigned char
     {

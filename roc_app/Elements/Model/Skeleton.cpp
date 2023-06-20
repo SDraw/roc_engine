@@ -17,7 +17,7 @@ extern const glm::mat4 g_identityMatrix;
 
 }
 
-bool ROC::Skeleton::ms_physicsEnabled = false;
+bool ROC::Skeleton::ms_physicsEnabled = true;
 
 ROC::Skeleton::Skeleton(const std::vector<BoneData*> &p_data)
 {

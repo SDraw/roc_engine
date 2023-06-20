@@ -19,11 +19,15 @@ class Scene final : public Element, public IScene
     std::vector<Light*> m_lights;
     std::vector<Model*> m_models;
 
-    bool m_active;
+    int m_shadowsQuality;
+    RenderTarget *m_shadowTarget;
+    Camera *m_shadowCamera;
 
     Scene(const Scene &that) = delete;
     Scene& operator=(const Scene &that) = delete;
 
+    void DrawModels(Shader *p_shader, bool p_textured);
+    void SortModels(Camera *p_camera);
     static bool SceneModelSorting(const Model *p_modelA, const Model *p_modelB);
 
     // ROC::Element
@@ -45,7 +49,7 @@ class Scene final : public Element, public IScene
     bool HasIModel(IModel *p_model) const;
 public:
     Scene();
-    ~Scene() = default;
+    ~Scene();
 
     bool SetCamera(Camera *p_cam);
     bool RemoveCamera();
@@ -68,14 +72,16 @@ public:
     bool RemoveModel(Model *p_model);
     bool HasModel(Model *p_model) const;
 
-    bool IsActive() const;
-    bool IsRenderValid() const;
+    bool HasShadows() const;
+    void SetShadows(bool p_state);
+    void GetShadowsArea(glm::vec2 &p_area) const;
+    void SetShadowsArea(const glm::vec2 &p_area);
+    void GetShadowsDepth(glm::vec2 &p_depth) const;
+    void SetShadowsDepth(const glm::vec2 &p_depth);
+    int GetShadowsQuality() const;
+    void SetShadowsQuality(int p_quality);
 
-    const std::vector<Light*>& GetLights() const;
-    const std::vector<Model*>& GetModels() const;
-
-    void Enable();
-    void Disable();
+    bool Draw(float p_time, const glm::ivec4 &p_viewport);
 };
 
 }

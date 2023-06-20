@@ -42,9 +42,9 @@ const std::array<std::string, 5U> g_mouseKeyNames =
 };
 const std::array<std::string, 8U> g_joypadAxisNames =
 {
-    "X", "Y", "Z",
-    "R", "U", "V",
-    "PovX", "PovY"
+    "x", "y", "z",
+    "r", "u", "v",
+    "povx", "povy"
 };
 
 }
@@ -57,6 +57,7 @@ ROC::SfmlManager::SfmlManager(Core *p_core) : Manager(p_core)
     m_inputEnabled = false;
     m_arguments = new CustomArguments();
     std::memset(&m_event, 0, sizeof(sf::Event));
+    m_title.assign("RunOnCoal Engine Application");
 }
 
 ROC::SfmlManager::~SfmlManager()
@@ -86,7 +87,7 @@ void ROC::SfmlManager::Start()
 
         m_windowStyle = (l_configManager->IsFullscreenEnabled() ? sf::Style::Fullscreen : sf::Style::Default);
 
-        m_window = new sf::Window(m_windowVideoMode, "RunOnCoal Engine Application", m_windowStyle, m_contextSettings);
+        m_window = new sf::Window(m_windowVideoMode, m_title, m_windowStyle, m_contextSettings);
         m_window->setActive(true);
         m_active = true;
 
@@ -229,8 +230,8 @@ unsigned int ROC::SfmlManager::GetFramelimit() const
 void ROC::SfmlManager::SetTitle(const std::string &p_title)
 {
     if(!IsActive()) return;
-
-    sf::String l_title = sf::String::fromUtf8(p_title.begin(), p_title.end());
+    m_title.assign(p_title);
+    sf::String l_title = sf::String::fromUtf8(m_title.begin(), m_title.end());
     m_window->setTitle(l_title);
 }
 
@@ -262,6 +263,11 @@ bool ROC::SfmlManager::GetFocusState() const
     return m_window->hasFocus();
 }
 
+bool ROC::SfmlManager::GetInputEnabled() const
+{
+    return m_inputEnabled;
+}
+
 void ROC::SfmlManager::SetInputEnabled(bool p_state)
 {
     if(!IsActive()) return;
@@ -290,12 +296,11 @@ void ROC::SfmlManager::SetCursorPosition(const glm::ivec2 &p_pos)
     sf::Mouse::setPosition(reinterpret_cast<const sf::Vector2i&>(p_pos), *m_window);
 }
 
-void ROC::SfmlManager::GetClipboardString(std::string &p_str) const
+void ROC::SfmlManager::GetClipboardString(std::string &p_str)
 {
     if(!IsActive()) return;
 
-    sf::String l_string = sf::Clipboard::getString();
-    p_str.assign(l_string);
+    p_str.assign(sf::Clipboard::getString());
 }
 
 void ROC::SfmlManager::SetClipboardString(const std::string &p_str)
@@ -382,7 +387,7 @@ bool ROC::SfmlManager::DoPulse()
             } break;
             case sf::Event::GainedFocus: case sf::Event::LostFocus:
             {
-                m_arguments->Push((m_event.type == sf::Event::GainedFocus) ? 1 : 0);
+                m_arguments->Push(m_event.type == sf::Event::GainedFocus);
                 GetCore()->GetModuleManager()->SignalGlobalEvent(IModule::ME_OnWindowFocus, m_arguments);
                 m_arguments->Clear();
             } break;
@@ -391,7 +396,7 @@ bool ROC::SfmlManager::DoPulse()
                 if(m_event.key.code != -1)
                 {
                     m_arguments->Push(g_keyNames[m_event.key.code]);
-                    m_arguments->Push((m_event.type == sf::Event::KeyPressed) ? 1 : 0);
+                    m_arguments->Push(m_event.type == sf::Event::KeyPressed);
                     GetCore()->GetModuleManager()->SignalGlobalEvent(IModule::ME_OnKeyPress, m_arguments);
                     m_arguments->Clear();
                 }
@@ -422,14 +427,14 @@ bool ROC::SfmlManager::DoPulse()
             } break;
             case sf::Event::MouseEntered: case sf::Event::MouseLeft:
             {
-                m_arguments->Push((m_event.type == sf::Event::MouseEntered) ? 1 : 0);
+                m_arguments->Push(m_event.type == sf::Event::MouseEntered);
                 GetCore()->GetModuleManager()->SignalGlobalEvent(IModule::ME_OnCursorEnter, m_arguments);
                 m_arguments->Clear();
             } break;
             case sf::Event::MouseButtonPressed: case sf::Event::MouseButtonReleased:
             {
                 m_arguments->Push(g_mouseKeyNames[m_event.mouseButton.button]);
-                m_arguments->Push((m_event.type == sf::Event::MouseButtonPressed) ? 1 : 0);
+                m_arguments->Push(m_event.type == sf::Event::MouseButtonPressed);
                 GetCore()->GetModuleManager()->SignalGlobalEvent(IModule::ME_OnMouseKeyPress, m_arguments);
                 m_arguments->Clear();
             } break;
@@ -443,7 +448,7 @@ bool ROC::SfmlManager::DoPulse()
             case sf::Event::JoystickConnected: case sf::Event::JoystickDisconnected:
             {
                 m_arguments->Push(static_cast<int>(m_event.joystickConnect.joystickId));
-                m_arguments->Push((m_event.type == sf::Event::JoystickConnected) ? 1 : 0);
+                m_arguments->Push(m_event.type == sf::Event::JoystickConnected);
                 GetCore()->GetModuleManager()->SignalGlobalEvent(IModule::ME_OnJoypadStateChange, m_arguments);
                 m_arguments->Clear();
             } break;
@@ -451,7 +456,7 @@ bool ROC::SfmlManager::DoPulse()
             {
                 m_arguments->Push(static_cast<int>(m_event.joystickButton.joystickId));
                 m_arguments->Push(static_cast<int>(m_event.joystickButton.button));
-                m_arguments->Push((m_event.type == sf::Event::JoystickButtonPressed) ? 1 : 0);
+                m_arguments->Push(m_event.type == sf::Event::JoystickButtonPressed);
                 GetCore()->GetModuleManager()->SignalGlobalEvent(IModule::ME_OnJoypadButton, m_arguments);
                 m_arguments->Clear();
             } break;
@@ -466,4 +471,30 @@ bool ROC::SfmlManager::DoPulse()
         }
     }
     return m_active;
+}
+
+// ROC::ISfmlManager
+const char* ROC::SfmlManager::GetTitle() const
+{
+    return m_title.c_str();
+}
+void ROC::SfmlManager::SetTitle(const char* p_title)
+{
+    std::string l_title(p_title);
+    SetTitle(l_title);
+}
+bool ROC::SfmlManager::SetIcon(const char* p_path)
+{
+    std::string l_path(p_path);
+    return SetIcon(l_path);
+}
+const char* ROC::SfmlManager::GetClipboardString()
+{
+    GetClipboardString(m_lastClipboard);
+    return m_lastClipboard.c_str();
+}
+void ROC::SfmlManager::SetClipboardString(const char* p_str)
+{
+    std::string l_str(p_str);
+    SetClipboardString(l_str);
 }

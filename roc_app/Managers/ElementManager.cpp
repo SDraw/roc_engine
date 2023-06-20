@@ -4,7 +4,7 @@
 #include "Core/Core.h"
 #include "Elements/Animation/Animation.h"
 #include "Elements/Camera.h"
-#include "Elements/Collision.h"
+#include "Elements/Collider.h"
 #include "Elements/Font.h"
 #include "Elements/Mesh/Mesh.h"
 #include "Elements/Light.h"
@@ -223,11 +223,11 @@ ROC::Font* ROC::ElementManager::CreateFont(const std::string &p_path, int p_size
     return l_font;
 }
 
-ROC::Collision* ROC::ElementManager::CreateCollision(unsigned char p_type, const glm::vec3 &p_size, float p_mass)
+ROC::Collider* ROC::ElementManager::CreateCollider(unsigned char p_type, const glm::vec3 &p_size, float p_mass)
 {
     if(!IsActive()) return nullptr;
 
-    Collision *l_col = new Collision();
+    Collider *l_col = new Collider();
     if(l_col->Create(p_type, p_size, p_mass))
     {
         AddElementToSet(l_col);
@@ -258,14 +258,15 @@ bool ROC::ElementManager::DestroyElement(Element *p_element)
     {
         switch(p_element->GetElementType())
         {
-            case Element::ET_Scene:
-                GetCore()->GetRenderManager()->RemoveAsActiveScene(reinterpret_cast<Scene*>(p_element));
-                break;
             case Element::ET_Model:
             {
-                GetCore()->GetPreRenderManager()->RemoveModel(reinterpret_cast<Model*>(p_element));
-                GetCore()->GetPhysicsManager()->RemoveModel(reinterpret_cast<Model*>(p_element));
+                Model *l_model = dynamic_cast<Model*>(p_element);
+                GetCore()->GetPreRenderManager()->RemoveModel(l_model);
+                GetCore()->GetPhysicsManager()->RemoveModel(l_model);
             } break;
+            case Element::ET_Collider:
+                GetCore()->GetPhysicsManager()->RemoveCollision(dynamic_cast<Collider*>(p_element));
+                break;
         }
 
         RemoveElementFromSet(p_element);
@@ -349,7 +350,7 @@ ROC::IFont* ROC::ElementManager::CreateIFont(const char *p_path, int p_size, con
     return CreateFont(p_path, p_size, p_atlas, p_filter);
 }
 
-ROC::ICollision* ROC::ElementManager::CreateICollision(unsigned char p_type, const glm::vec3 &p_size, float p_mass)
+ROC::ICollider* ROC::ElementManager::CreateICollider(unsigned char p_type, const glm::vec3 &p_size, float p_mass)
 {
-    return CreateCollision(p_type, p_size, p_mass);
+    return CreateCollider(p_type, p_size, p_mass);
 }

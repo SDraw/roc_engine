@@ -5,6 +5,8 @@ namespace ROC
 
 class ICamera
 {
+protected:
+    ~ICamera() = default;
 public:
     enum CameraProjectionType : unsigned char
     {

@@ -46,10 +46,10 @@ public:
     bool Get3DPositionEnabled() const;
 
     bool Set3DPosition(const glm::vec3 &p_pos);
-    const glm::vec3& Get3DPosition(glm::vec3 &p_pos) const;
+    const glm::vec3& Get3DPosition() const;
 
     bool Set3DDistance(const glm::vec2 &p_dist);
-    const glm::vec2& Get3DDistance(glm::vec2 &p_dist) const;
+    const glm::vec2& Get3DDistance() const;
 
     int GetState() const;
 };

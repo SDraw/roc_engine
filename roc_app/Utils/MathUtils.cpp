@@ -15,4 +15,12 @@ float EaseInOut(float p_value)
     return -0.5f*(cos(glm::pi<float>()*p_value) - 1.f);
 }
 
+int Power(int p_value, int p_exp)
+{
+    int l_result = 1;
+    for(int i = 1; i <= p_exp; i++)
+        l_result *= p_value;
+    return l_result;
+}
+
 }

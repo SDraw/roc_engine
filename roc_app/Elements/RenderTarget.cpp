@@ -16,9 +16,6 @@ const glm::bvec2 g_defaultClearBuffer(true, true);
 
 }
 
-ROC::RenderTarget *ROC::RenderTarget::ms_fallbackRT = nullptr;
-glm::ivec2 ROC::RenderTarget::ms_fallbackSize = glm::ivec2(0);
-
 ROC::RenderTarget::RenderTarget()
 {
     m_elementType = ET_RenderTarget;
@@ -150,7 +147,7 @@ void ROC::RenderTarget::Bind(size_t p_slot)
     if(m_texture) m_texture->Bind(static_cast<GLenum>(p_slot));
 }
 
-void ROC::RenderTarget::Enable(bool p_clear)
+void ROC::RenderTarget::BindBuffer(bool p_clear)
 {
     if(m_framebuffer)
     {
@@ -165,7 +162,7 @@ void ROC::RenderTarget::Enable(bool p_clear)
     }
 }
 
-void ROC::RenderTarget::Disable()
+void ROC::RenderTarget::ResetBuffer()
 {
     GLFramebuffer::Reset();
 }
@@ -191,25 +188,5 @@ void ROC::RenderTarget::Clear()
         m_framebuffer->Destroy();
         delete m_framebuffer;
         m_framebuffer = nullptr;
-    }
-}
-
-void ROC::RenderTarget::SetFallbackRenderTarget(ROC::RenderTarget *p_rt)
-{
-    ms_fallbackRT = p_rt;
-}
-
-void ROC::RenderTarget::SetFallbackSize(const glm::ivec2 &p_size)
-{
-    std::memcpy(&ms_fallbackSize, &p_size, sizeof(glm::ivec2));
-}
-
-void ROC::RenderTarget::Fallback()
-{
-    if(ms_fallbackRT) ms_fallbackRT->Enable(false);
-    else
-    {
-        GLFramebuffer::Reset();
-        GLViewport::SetViewport(0, 0, ms_fallbackSize.x, ms_fallbackSize.y);
     }
 }

@@ -11,6 +11,11 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "collisionConverter", "colli
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roc_app", "roc_app\roc_app.vcxproj", "{15AAC079-9287-4A08-B4EE-686B7CAFA03D}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "roc_module_lua", "roc_module_lua\roc_module_lua.vcxproj", "{E5C153D8-A24F-4CEE-904A-ED1822108409}"
+	ProjectSection(ProjectDependencies) = postProject
+		{15AAC079-9287-4A08-B4EE-686B7CAFA03D} = {15AAC079-9287-4A08-B4EE-686B7CAFA03D}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -33,6 +38,10 @@ Global
 		{15AAC079-9287-4A08-B4EE-686B7CAFA03D}.Debug|x64.Build.0 = Debug|x64
 		{15AAC079-9287-4A08-B4EE-686B7CAFA03D}.Release|x64.ActiveCfg = Release|x64
 		{15AAC079-9287-4A08-B4EE-686B7CAFA03D}.Release|x64.Build.0 = Release|x64
+		{E5C153D8-A24F-4CEE-904A-ED1822108409}.Debug|x64.ActiveCfg = Debug|x64
+		{E5C153D8-A24F-4CEE-904A-ED1822108409}.Debug|x64.Build.0 = Debug|x64
+		{E5C153D8-A24F-4CEE-904A-ED1822108409}.Release|x64.ActiveCfg = Release|x64
+		{E5C153D8-A24F-4CEE-904A-ED1822108409}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

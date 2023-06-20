@@ -6,7 +6,7 @@ namespace ROC
 {
 
 class Element;
-class Collision;
+class Collider;
 class Model;
 
 class PhysicsManager final : public IPhysicsManager, public Manager
@@ -20,13 +20,13 @@ class PhysicsManager final : public IPhysicsManager, public Manager
     float m_timeStep;
 
     btRigidBody *m_floorBody;
-    std::vector<Collision*> m_collisions;
+    std::vector<Collider*> m_collisions;
 
     PhysicsManager(const PhysicsManager &that) = delete;
     PhysicsManager& operator=(const PhysicsManager &that) = delete;
 
     // ROC::IPhysicsManager
-    void SetCollisionScale(ICollision *p_col, const glm::vec3 &p_scale);
+    void SetIColliderScale(ICollider *p_col, const glm::vec3 &p_scale);
     bool RayCast(const glm::vec3 &p_start, glm::vec3 &p_end, glm::vec3 &p_normal, IElement *&p_element);
 public:
     explicit PhysicsManager(Core *p_core);
@@ -45,15 +45,15 @@ public:
     void SetGravity(const glm::vec3 &p_grav);
     void GetGravity(glm::vec3 &p_grav) const;
 
-    void SetCollisionScale(Collision *p_col, const glm::vec3 &p_scale);
+    void SetColliderScale(Collider *p_col, const glm::vec3 &p_scale);
     bool RayCast(const glm::vec3 &p_start, glm::vec3 &p_end, glm::vec3 &p_normal, Element *&p_element);
 
     void UpdateWorldSteps(unsigned int p_fps);
 
     void AddModel(Model *p_model);
     void RemoveModel(Model *p_model);
-    void AddCollision(Collision *p_col);
-    void RemoveCollision(Collision *p_col);
+    void AddCollision(Collider *p_col);
+    void RemoveCollision(Collider *p_col);
 
     void SetDebugDrawer(btIDebugDraw *p_drawer);
     void DrawDebugWorld();

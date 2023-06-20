@@ -19,7 +19,7 @@ const std::array<std::string, 12U> g_elementTypeName =
     "Sound",
     "Texture",
     "Font",
-    "Collision"
+    "Collider"
 };
 const std::string g_elementInvalidName = "Invalid";
 

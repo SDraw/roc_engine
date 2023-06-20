@@ -5,6 +5,8 @@ namespace ROC
 
 class IElement
 {
+protected:
+    ~IElement() = default;
 public:
     enum ElementType : unsigned char
     {
@@ -19,7 +21,7 @@ public:
         ET_Sound,
         ET_Texture,
         ET_Font,
-        ET_Collision,
+        ET_Collider,
 
         ET_Invalid = 0xFFU
     };

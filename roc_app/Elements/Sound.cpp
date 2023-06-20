@@ -170,7 +170,7 @@ bool ROC::Sound::Set3DPosition(const glm::vec3 &p_pos)
     return m_relative;
 }
 
-const glm::vec3& ROC::Sound::Get3DPosition(glm::vec3 &p_pos) const
+const glm::vec3& ROC::Sound::Get3DPosition() const
 {
     return m_v3DPosition;
 }
@@ -186,7 +186,7 @@ bool ROC::Sound::Set3DDistance(const glm::vec2 &p_dist)
     return m_relative;
 }
 
-const glm::vec2& ROC::Sound::Get3DDistance(glm::vec2 &p_dist) const
+const glm::vec2& ROC::Sound::Get3DDistance() const
 {
     return m_v3DDistance;
 }

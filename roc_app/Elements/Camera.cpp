@@ -179,7 +179,7 @@ const glm::mat4& ROC::Camera::GetViewProjectionMatrix() const
 
 void ROC::Camera::Update()
 {
-    UpdateMatrix();
+    Transformable::UpdateMatrix();
 
     if(m_rebuildView)
     {

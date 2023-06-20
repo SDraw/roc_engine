@@ -12,7 +12,7 @@ namespace ROC
 class Element;
 class Animation;
 class Camera;
-class Collision;
+class Collider;
 class Font;
 class Light;
 class Mesh;
@@ -30,6 +30,7 @@ class ElementManager final : public IElementManager, public Manager
     std::unordered_set<Element*>::iterator m_elementsEnd;
     std::unordered_set<IElement*>::iterator m_interfacesEnd;
 
+    void AddElementToSet(Element *p_ptr);
     void RemoveElementFromSet(Element *p_ptr);
 
     ElementManager(const ElementManager &that) = delete;
@@ -47,7 +48,8 @@ class ElementManager final : public IElementManager, public Manager
     IRenderTarget* CreateIRenderTarget(unsigned char p_type, const glm::ivec2 &p_size, unsigned char p_filter);
     ITexture* CreateITexture(const char *p_path, unsigned char p_type, unsigned char p_filter, bool p_compress);
     IFont* CreateIFont(const char *p_path, int p_size, const glm::ivec2 &p_atlas, unsigned char p_filter);
-    ICollision* CreateICollision(unsigned char p_type, const glm::vec3 &p_size, float p_mass);
+    ICollider* CreateICollider(unsigned char p_type, const glm::vec3 &p_size, float p_mass);
+
     bool IsValidIElement(IElement *p_ptr) const;
     bool DestroyIElement(IElement *p_element);
 public:
@@ -69,13 +71,10 @@ public:
     Texture* CreateTexture(const std::string &p_path, unsigned char p_type, unsigned char p_filter, bool p_compress);
     Texture* ROC::ElementManager::CreateTexture(const std::vector<std::string> &p_path, unsigned char p_filter, bool p_compress);
     Font* CreateFont(const std::string &p_path, int p_size, const glm::ivec2 &p_atlas, unsigned char p_filter);
-    Collision* CreateCollision(unsigned char p_type, const glm::vec3 &p_size, float p_mass);
+    Collider* CreateCollider(unsigned char p_type, const glm::vec3 &p_size, float p_mass);
 
     bool IsValidElement(Element *p_ptr) const;
     bool DestroyElement(Element *p_element);
-
-    // AsyncManager only call
-    void AddElementToSet(Element *p_ptr);
 };
 
 }

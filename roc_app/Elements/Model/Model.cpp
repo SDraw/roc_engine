@@ -2,7 +2,6 @@
 
 #include "Elements/Model/Model.h"
 #include "Elements/Animation/Animation.h"
-#include "Elements/Collision.h"
 #include "Elements/Mesh/Mesh.h"
 #include "Elements/Model/Animator.h"
 #include "Elements/Model/Bone.h"

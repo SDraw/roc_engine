@@ -16,6 +16,8 @@ class SfmlManager final : public ISfmlManager, public Manager
     sf::Window *m_window;
     sf::Event m_event;
     bool m_active;
+    std::string m_title;
+    std::string m_lastClipboard;
 
     sf::Clock m_clock;
     float m_time;
@@ -26,6 +28,13 @@ class SfmlManager final : public ISfmlManager, public Manager
 
     SfmlManager(const SfmlManager &that) = delete;
     SfmlManager& operator=(const SfmlManager &that) = delete;
+
+    // ROC::ISfmlManager
+    const char* GetTitle() const;
+    void SetTitle(const char* p_title);
+    bool SetIcon(const char* p_path);
+    const char* GetClipboardString();
+    void SetClipboardString(const char* p_str);
 public:
     explicit SfmlManager(Core *p_core);
     ~SfmlManager();
@@ -45,13 +54,14 @@ public:
     bool SetIcon(const std::string &p_path);
     void RequestFocus();
     bool GetFocusState() const;
+    bool GetInputEnabled() const;
     void SetInputEnabled(bool p_state);
 
     void SetCursorMode(bool p_visible, bool p_lock);
     void GetCursorPosition(glm::ivec2 &p_pos) const;
     void SetCursorPosition(const glm::ivec2 &p_pos);
 
-    void GetClipboardString(std::string &p_str) const;
+    void GetClipboardString(std::string &p_str);
     void SetClipboardString(const std::string &p_str);
 
     bool IsKeyPressed(int p_key);

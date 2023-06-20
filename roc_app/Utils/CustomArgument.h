@@ -40,7 +40,7 @@ public:
     double GetDouble() const;
     void* GetPointer() const;
     ROC::IElement* GetElement() const;
-    const std::string& GetString() const;
+    const char* GetString() const;
 
     CustomArgument& operator=(const CustomArgument &p_data);
 };

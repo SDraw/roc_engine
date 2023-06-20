@@ -1,5 +1,5 @@
 #pragma once
-#include "Interfaces/ICollision.h"
+#include "Interfaces/ICollider.h"
 #include "Elements/Collidable.h"
 #include "Elements/Element.h"
 #include "Elements/Transformable.h"
@@ -7,13 +7,13 @@
 namespace ROC
 {
 
-class Collision final : public Element, public Collidable, public Transformable, public ICollision
+class Collider final : public Element, public Collidable, public Transformable, public ICollider
 {
     btRigidBody *m_rigidBody;
     unsigned char m_motionType;
 
-    Collision(const Collision &that) = delete;
-    Collision& operator=(const Collision &that) = delete;
+    Collider(const Collider &that) = delete;
+    Collider& operator=(const Collider &that) = delete;
 
     // ROC::Collidable
     void GetRigidBodies(std::vector<btRigidBody*> &p_vec);
@@ -24,8 +24,8 @@ public:
         CUS_Matrix
     };
 
-    Collision();
-    ~Collision();
+    Collider();
+    ~Collider();
 
     bool Create(unsigned char p_type, const glm::vec3 &p_size, float p_mass);
 

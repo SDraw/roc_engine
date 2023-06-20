@@ -1,13 +1,14 @@
 #pragma once
-#include "IElement.h"
 
 namespace ROC
 {
 
-class ICollision
+class ICollider
 {
+protected:
+    ~ICollider() = default;
 public:
-    enum CollisionType : unsigned char
+    enum ColliderType : unsigned char
     {
         CT_Sphere = 0U,
         CT_Box,
@@ -15,7 +16,7 @@ public:
         CT_Capsule,
         CT_Cone
     };
-    enum CollisionMotionType : unsigned char
+    enum ColliderMotionType : unsigned char
     {
         CMT_Default = 0U,
         CMT_Static,

@@ -5,6 +5,8 @@ namespace ROC
 
 class ISound
 {
+protected:
+    ~ISound() = default;
 public:
     virtual void Play() = 0;
     virtual void Pause() = 0;
@@ -21,9 +23,9 @@ public:
     virtual bool Set3DPositionEnabled(bool p_state) = 0;
     virtual bool Get3DPositionEnabled() const = 0;
     virtual bool Set3DPosition(const glm::vec3 &p_pos) = 0;
-    virtual const glm::vec3& Get3DPosition(glm::vec3 &p_pos) const = 0;
+    virtual const glm::vec3& Get3DPosition() const = 0;
     virtual bool Set3DDistance(const glm::vec2 &p_dist) = 0;
-    virtual const glm::vec2& Get3DDistance(glm::vec2 &p_dist) const = 0;
+    virtual const glm::vec2& Get3DDistance() const = 0;
     virtual int GetState() const = 0;
 };
 

@@ -30,6 +30,7 @@ ROC::Core::Core()
     m_moduleManager = new ModuleManager(this);
 
     m_state = false;
+    m_engineDelta = 0.f;
     m_arguments = new CustomArguments();
 }
 
@@ -102,6 +103,11 @@ ROC::Core* ROC::Core::GetInstance()
     return ms_instance;
 }
 
+float ROC::Core::GetEngineDelta() const
+{
+    return m_engineDelta;
+}
+
 ROC::ConfigManager* ROC::Core::GetConfigManager() const
 {
     return m_configManager;
@@ -152,12 +158,13 @@ bool ROC::Core::DoPulse()
     if(!m_state) return false;
 
     SystemTick::UpdateTick();
+    m_engineDelta = static_cast<float>(SystemTick::GetDelta()) * 0.001f;
     m_moduleManager->DoPulse();
     m_state = (m_state && m_sfmlManager->DoPulse());
     m_preRenderManager->DoPulse_S1();
     m_physicsManager->DoPulse();
     m_preRenderManager->DoPulse_S2();
-    m_renderManager->DoPulse(); // Render
+    m_renderManager->DoPulse();
     return m_state;
 }
 

@@ -1,6 +1,6 @@
 #include "stdafx.h"
 
-#include "Elements/Collision.h"
+#include "Elements/Collider.h"
 #include "Elements/Model/Model.h"
 
 namespace ROC
@@ -10,15 +10,15 @@ extern const glm::vec3 g_defaultScale;
 
 }
 
-ROC::Collision::Collision()
+ROC::Collider::Collider()
 {
-    m_elementType = ET_Collision;
+    m_elementType = ET_Collider;
 
     m_rigidBody = nullptr;
     m_motionType = CMT_Default;
 }
 
-ROC::Collision::~Collision()
+ROC::Collider::~Collider()
 {
     if(m_rigidBody)
     {
@@ -27,7 +27,7 @@ ROC::Collision::~Collision()
     }
 }
 
-bool ROC::Collision::Create(unsigned char p_type, const glm::vec3 &p_size, float p_mass)
+bool ROC::Collider::Create(unsigned char p_type, const glm::vec3 &p_size, float p_mass)
 {
     if(!m_rigidBody)
     {
@@ -67,12 +67,12 @@ bool ROC::Collision::Create(unsigned char p_type, const glm::vec3 &p_size, float
     return (m_rigidBody != nullptr);
 }
 
-btRigidBody* ROC::Collision::GetRigidBody() const
+btRigidBody* ROC::Collider::GetRigidBody() const
 {
     return m_rigidBody;
 }
 
-void ROC::Collision::SetScale(const glm::vec3 &p_val)
+void ROC::Collider::SetScale(const glm::vec3 &p_val)
 {
     if(m_rigidBody)
     {
@@ -81,7 +81,7 @@ void ROC::Collision::SetScale(const glm::vec3 &p_val)
     }
 }
 
-void ROC::Collision::SetVelocity(const glm::vec3 &p_val)
+void ROC::Collider::SetVelocity(const glm::vec3 &p_val)
 {
     if(m_rigidBody)
     {
@@ -90,12 +90,12 @@ void ROC::Collision::SetVelocity(const glm::vec3 &p_val)
     }
 }
 
-void ROC::Collision::GetVelocity(glm::vec3 &p_val) const
+void ROC::Collider::GetVelocity(glm::vec3 &p_val) const
 {
     if(m_rigidBody) std::memcpy(&p_val, m_rigidBody->getLinearVelocity().m_floats, sizeof(glm::vec3));
 }
 
-void ROC::Collision::SetAngularVelocity(const glm::vec3 &p_val)
+void ROC::Collider::SetAngularVelocity(const glm::vec3 &p_val)
 {
     if(m_rigidBody)
     {
@@ -104,39 +104,39 @@ void ROC::Collision::SetAngularVelocity(const glm::vec3 &p_val)
     }
 }
 
-void ROC::Collision::GetAngularVelocity(glm::vec3 &p_val) const
+void ROC::Collider::GetAngularVelocity(glm::vec3 &p_val) const
 {
     if(m_rigidBody) std::memcpy(&p_val, m_rigidBody->getAngularVelocity().m_floats, sizeof(glm::vec3));
 }
 
-void ROC::Collision::SetLinearFactor(const glm::vec3 &p_val)
+void ROC::Collider::SetLinearFactor(const glm::vec3 &p_val)
 {
     if(m_rigidBody) m_rigidBody->setLinearFactor(btVector3(p_val.x, p_val.y, p_val.z));
 }
 
-void ROC::Collision::GetLinearFactor(glm::vec3 &p_val) const
+void ROC::Collider::GetLinearFactor(glm::vec3 &p_val) const
 {
     if(m_rigidBody) std::memcpy(&p_val, m_rigidBody->getLinearFactor().m_floats, sizeof(glm::vec3));
 }
 
-void ROC::Collision::SetAngularFactor(const glm::vec3 &p_val)
+void ROC::Collider::SetAngularFactor(const glm::vec3 &p_val)
 {
     if(m_rigidBody) m_rigidBody->setAngularFactor(btVector3(p_val.x, p_val.y, p_val.z));
 }
 
-void ROC::Collision::GetAngularFactor(glm::vec3 &p_val) const
+void ROC::Collider::GetAngularFactor(glm::vec3 &p_val) const
 {
     if(m_rigidBody) std::memcpy(&p_val, m_rigidBody->getAngularFactor().m_floats, sizeof(glm::vec3));
 }
 
-float ROC::Collision::GetMass() const
+float ROC::Collider::GetMass() const
 {
     float l_invMass = m_rigidBody ? m_rigidBody->getInvMass() : -1.f;
     float l_mass = ((l_invMass == 0.f) ? 0.f : (1.f / l_invMass));
     return l_mass;
 }
 
-void ROC::Collision::SetFriction(float p_val)
+void ROC::Collider::SetFriction(float p_val)
 {
     if(m_rigidBody)
     {
@@ -145,24 +145,24 @@ void ROC::Collision::SetFriction(float p_val)
     }
 }
 
-float ROC::Collision::GetFriction() const
+float ROC::Collider::GetFriction() const
 {
     float l_result = -1.f;
     if(m_rigidBody) l_result = m_rigidBody->getFriction();
     return l_result;
 }
 
-void ROC::Collision::SetRestitution(float p_val)
+void ROC::Collider::SetRestitution(float p_val)
 {
     if(m_rigidBody) m_rigidBody->setRestitution(p_val);
 }
 
-float ROC::Collision::GetRestitution() const
+float ROC::Collider::GetRestitution() const
 {
     return (m_rigidBody ? m_rigidBody->getRestitution() : -1.f);
 }
 
-void ROC::Collision::ApplyForce(const glm::vec3 &p_force, const glm::vec3 &p_rp)
+void ROC::Collider::ApplyForce(const glm::vec3 &p_force, const glm::vec3 &p_rp)
 {
     if(m_rigidBody)
     {
@@ -172,12 +172,12 @@ void ROC::Collision::ApplyForce(const glm::vec3 &p_force, const glm::vec3 &p_rp)
     }
 }
 
-void ROC::Collision::ApplyCentralForce(const glm::vec3 &p_force)
+void ROC::Collider::ApplyCentralForce(const glm::vec3 &p_force)
 {
     if(m_rigidBody) m_rigidBody->applyCentralForce(btVector3(p_force.x, p_force.y, p_force.z));
 }
 
-void ROC::Collision::ApplyImpulse(const glm::vec3 &p_impulse, const glm::vec3 &p_rp)
+void ROC::Collider::ApplyImpulse(const glm::vec3 &p_impulse, const glm::vec3 &p_rp)
 {
     if(m_rigidBody)
     {
@@ -187,12 +187,12 @@ void ROC::Collision::ApplyImpulse(const glm::vec3 &p_impulse, const glm::vec3 &p
     }
 }
 
-void ROC::Collision::ApplyCentralImpulse(const glm::vec3 &p_impulse)
+void ROC::Collider::ApplyCentralImpulse(const glm::vec3 &p_impulse)
 {
     if(m_rigidBody) m_rigidBody->applyCentralImpulse(btVector3(p_impulse.x, p_impulse.y, p_impulse.z));
 }
 
-void ROC::Collision::ApplyTorque(const glm::vec3 &p_torque, bool p_impulse)
+void ROC::Collider::ApplyTorque(const glm::vec3 &p_torque, bool p_impulse)
 {
     if(m_rigidBody)
     {
@@ -201,7 +201,7 @@ void ROC::Collision::ApplyTorque(const glm::vec3 &p_torque, bool p_impulse)
     }
 }
 
-void ROC::Collision::SetMotionType(unsigned char p_type)
+void ROC::Collider::SetMotionType(unsigned char p_type)
 {
     if(m_rigidBody)
     {
@@ -227,17 +227,17 @@ void ROC::Collision::SetMotionType(unsigned char p_type)
     }
 }
 
-unsigned char ROC::Collision::GetMotionType() const
+unsigned char ROC::Collider::GetMotionType() const
 {
     return m_motionType;
 }
 
-bool ROC::Collision::IsActive() const
+bool ROC::Collider::IsActive() const
 {
     return (m_rigidBody ? m_rigidBody->isActive() : false);
 }
 
-void ROC::Collision::Update(CollisionUpdateStage p_stage)
+void ROC::Collider::Update(CollisionUpdateStage p_stage)
 {
     if(m_rigidBody)
     {
@@ -288,7 +288,7 @@ void ROC::Collision::Update(CollisionUpdateStage p_stage)
 }
 
 // ROC::Collidable
-void ROC::Collision::GetRigidBodies(std::vector<btRigidBody*> &p_vec)
+void ROC::Collider::GetRigidBodies(std::vector<btRigidBody*> &p_vec)
 {
     if(m_rigidBody) p_vec.push_back(m_rigidBody);
 }

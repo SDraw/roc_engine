@@ -89,7 +89,7 @@ bool GLShader::Create(const char *p_vertex, size_t p_vertexSize, const char *p_f
                     glGetShaderiv(m_geometry, GL_INFO_LOG_LENGTH, &l_logSize);
                     l_log.resize(static_cast<size_t>(l_logSize));
                     glGetShaderInfoLog(m_geometry, l_logSize, &l_logSize, &l_log[0]);
-                    l_log.insert(0U, "Fragment shader error: ");
+                    l_log.insert(0U, "Geometry shader error: ");
                     m_log.append(l_log);
 
                     glDeleteShader(m_geometry);

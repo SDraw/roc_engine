@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClInclude Include="stdafx.h" />
+    <ClInclude Include="Core.h" />
+    <ClInclude Include="LuaHandler.h" />
+    <ClInclude Include="Lua\LuaVM.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaArgReader.h">
+      <Filter>Lua</Filter>
+    </ClInclude>
+    <ClInclude Include="Logger.h" />
+    <ClInclude Include="Utils.h" />
+    <ClInclude Include="Lua\LuaDefs\ElementDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\TransformableDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\Vector3Defs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\Vector4Defs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\Vector2Defs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\QuaternionDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\MatrixDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\CollidableDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\MeshDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\ModelDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\SceneDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\LightDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\CameraDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\ShaderDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\AnimationDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\RenderTargetDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\DrawableDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\TextureDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\WindowDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\PhysicsDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\ColliderDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\RenderDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\InputDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\TimeDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\SoundDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\FontDefs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="stdafx.cpp" />
+    <ClCompile Include="Core.cpp" />
+    <ClCompile Include="Lua\LuaVM.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaArgReader.cpp">
+      <Filter>Lua</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\repos\roc_engine\vendor\pugixml\src\pugixml.cpp">
+      <Filter>vendor\pugixml</Filter>
+    </ClCompile>
+    <ClCompile Include="Logger.cpp" />
+    <ClCompile Include="Utils.cpp" />
+    <ClCompile Include="LuaHandler.cpp" />
+    <ClCompile Include="Lua\LuaDefs\ElementDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\TransformableDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\Vector3Defs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\Vector4Defs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\Vector2Defs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\QuaternionDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\MatrixDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\CollidableDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\MeshDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\ModelDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\SceneDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\LightDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\CameraDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\ShaderDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\AnimationDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\RenderTargetDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\DrawableDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\TextureDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\WindowDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\PhysicsDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\ColliderDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\RenderDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\InputDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\TimeDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\SoundDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\FontDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Lua">
+      <UniqueIdentifier>{c629b6dc-fab2-4d28-bd90-18ca0bd62436}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor">
+      <UniqueIdentifier>{1a43cef3-fc30-47a8-aae3-168132ed65ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="vendor\pugixml">
+      <UniqueIdentifier>{d6ebd698-ce15-4f99-be73-31b65001e1c8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Lua\LuaDefs">
+      <UniqueIdentifier>{52a531e2-9cc7-4dd6-b1f4-873f558b8f58}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

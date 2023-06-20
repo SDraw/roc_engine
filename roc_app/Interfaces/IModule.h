@@ -7,13 +7,14 @@ class ICustomArguments;
 
 class IModule
 {
+protected:
+    ~IModule() = default;
 public:
     enum ModuleEvent : unsigned char
     {
         ME_OnEngineStart = 0U,
         ME_OnEngineStop,
         ME_OnRender,
-        ME_OnVRRender,
         ME_OnPreRender,
         ME_OnWindowClose,
         ME_OnWindowResize,
@@ -29,7 +30,7 @@ public:
         ME_OnTextInput
     };
 
-    virtual void RecieveGlobalEvent(unsigned char p_event, const ICustomArguments *p_args) = 0;
+    virtual void RecieveEvent(ModuleEvent p_event, const ICustomArguments *p_args) = 0;
     virtual void DoPulse() = 0;
 };
 

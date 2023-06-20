@@ -1,15 +1,16 @@
 #pragma once
-#include "ICollidable.h"
 
 namespace ROC
 {
 
 class IAnimation;
-class ICollision;
+class ICollider;
 class IMesh;
 
 class IModel
 {
+protected:
+    ~IModel() = default;
 public:
     enum ModelAnimationProperty : unsigned char
     {

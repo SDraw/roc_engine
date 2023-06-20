@@ -10,7 +10,7 @@ namespace ROC
 class Animation;
 class Animator;
 class Bone;
-class Collision;
+class Collider;
 class Mesh;
 class Skeleton;
 class Transformation;

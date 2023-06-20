@@ -5,6 +5,8 @@ namespace ROC
 
 class IFont
 {
+protected:
+    ~IFont() = default;
 public:
     enum FontFilteringType : unsigned char
     {

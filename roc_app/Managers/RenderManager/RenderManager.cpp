@@ -16,11 +16,7 @@
 #include "Managers/PhysicsManager.h"
 #include "Managers/SfmlManager.h"
 #include "Managers/ModuleManager.h"
-#include "Elements/Mesh/Mesh.h"
 #include "Elements/Mesh/Material.h"
-#include "Elements/Light.h"
-#include "Elements/Model/Model.h"
-#include "Elements/Model/Skeleton.h"
 #include "Elements/RenderTarget.h"
 #include "Elements/Shader/Shader.h"
 #include "Interfaces/IModule.h"
@@ -42,8 +38,6 @@ const btVector3 g_textureZAxis(0.f, 0.f, 1.f);
 ROC::RenderManager::RenderManager(Core *p_core) : Manager(p_core)
 {
     m_renderStage = RS_None;
-    m_clearFrame = false;
-    m_activeScene = nullptr;
     m_quad2D = nullptr;
     m_quad3D = nullptr;
     m_physicsDrawer = nullptr;
@@ -101,47 +95,10 @@ void ROC::RenderManager::Stop()
         delete m_screenCamera;
         Font::ReleaseStaticResources();
         Material::ReleaseStaticResources();
+        Shader::ReleaseStaticResources();
     }
 
     Manager::Stop();
-}
-
-bool ROC::RenderManager::SetActiveScene(Scene *p_scene)
-{
-    if(!IsActive()) return false;
-
-    if(m_renderStage != RS_None)
-    {
-        if(m_activeScene) m_activeScene->Disable();
-        m_activeScene = p_scene;
-
-        if(m_activeScene)
-        {
-            m_activeScene->Enable();
-            if(!m_activeScene->GetRenderTarget())
-            {
-                const glm::ivec4 l_params = m_screenCamera->GetOrthoParams();
-                GLViewport::SetViewport(l_params.x, l_params.z, l_params.y, l_params.w);
-                if(m_clearFrame)
-                {
-                    ClearViewport();
-                    m_clearFrame = false;
-                }
-            }
-        }
-    }
-    return (m_renderStage != RS_None);
-}
-
-void ROC::RenderManager::RemoveAsActiveScene(Scene *p_scene)
-{
-    if(!IsActive()) return;
-
-    if(m_activeScene == p_scene)
-    {
-        m_activeScene->Disable();
-        m_activeScene = nullptr;
-    }
 }
 
 void ROC::RenderManager::UpdateScreenSize(const glm::ivec2 &p_size)
@@ -151,7 +108,6 @@ void ROC::RenderManager::UpdateScreenSize(const glm::ivec2 &p_size)
     const glm::vec4 l_params(0.f, p_size.x, 0.f, p_size.y);
     m_screenCamera->SetOrthoParams(l_params);
     m_screenCamera->Update();
-    RenderTarget::SetFallbackSize(p_size);
 }
 
 bool ROC::RenderManager::Draw(Scene *p_scene)
@@ -159,47 +115,11 @@ bool ROC::RenderManager::Draw(Scene *p_scene)
     if(!IsActive()) return false;
 
     bool l_result = false;
-    if((m_renderStage != RS_None) && (m_activeScene == p_scene) && m_activeScene->IsRenderValid())
+    if(m_renderStage != RS_None)
     {
-        bool l_onShadowRT = (m_activeScene->GetRenderTarget() ? m_activeScene->GetRenderTarget()->IsShadowType() : false);
-        Shader *l_shader = m_activeScene->GetShader();
-        const Camera *l_camera = m_activeScene->GetCamera();
-
-        l_shader->Enable();
-        l_shader->SetTime(m_time);
-        l_shader->SetProjectionMatrix(l_camera->GetProjectionMatrix());
-        l_shader->SetViewMatrix(l_camera->GetViewMatrix());
-        l_shader->SetViewProjectionMatrix(l_camera->GetViewProjectionMatrix());
-        l_shader->SetCameraPosition(l_camera->GetPosition());
-        l_shader->SetCameraDirection(l_camera->GetDirection());
-        l_shader->SetLightsData(m_activeScene->GetLights());
-
-        for(const auto l_model : m_activeScene->GetModels())
-        {
-            if(l_model->IsVisible() && l_model->GetMesh())
-            {
-                l_shader->SetModelMatrix(l_model->GetMatrix());
-
-                if(l_model->GetSkeleton())
-                {
-                    l_shader->SetBoneMatrices(l_model->GetSkeleton()->GetPoseMatrices());
-                    l_shader->SetAnimated(true);
-                }
-                else l_shader->SetAnimated(false);
-
-                for(const auto l_material : l_model->GetMesh()->GetMaterials())
-                {
-                    if(!l_material->HasDepth() && l_onShadowRT) continue;
-
-                    l_shader->SetMaterialType(static_cast<int>(l_material->GetType()));
-                    l_shader->SetMaterialParam(l_material->GetParams());
-                    l_material->Draw(!l_onShadowRT);
-                }
-            }
-        }
-
-        l_shader->Disable();
-        l_result = true;
+        const glm::ivec4 l_params = m_screenCamera->GetOrthoParams();
+        l_result = p_scene->Draw(m_time, l_params);
+        GLViewport::SetViewport(l_params.x, l_params.z, l_params.y, l_params.w);
     }
     return l_result;
 }
@@ -209,25 +129,19 @@ bool ROC::RenderManager::Draw(Font *p_font, const glm::vec2 &p_pos, const std::s
     if(!IsActive()) return false;
 
     bool l_result = false;
-    if((m_renderStage != RS_None) && m_activeScene)
+    if(m_renderStage != RS_None)
     {
-        Shader *l_shader = m_activeScene->GetShader();
-        if(l_shader)
-        {
-            l_shader->Enable();
-            l_shader->SetTime(m_time);
+        Shader::GetScreenShader()->Enable();
+        Shader::GetScreenShader()->SetProjectionMatrix(m_screenCamera->GetProjectionMatrix());
+        Shader::GetScreenShader()->SetModelMatrix(g_identityMatrix);
+        Shader::GetScreenShader()->SetColor(p_color);
 
-            l_shader->SetProjectionMatrix(m_screenCamera->GetProjectionMatrix());
-            l_shader->SetModelMatrix(g_identityMatrix);
-            l_shader->SetColor(p_color);
+        sf::String l_textUtf8 = sf::String::fromUtf8(p_text.begin(), p_text.end());
+        p_font->Draw(l_textUtf8, p_pos);
 
-            sf::String l_textUtf8 = sf::String::fromUtf8(p_text.begin(), p_text.end());
-            p_font->Draw(l_textUtf8, p_pos);
+        Shader::GetScreenShader()->Disable();
 
-            l_shader->Disable();
-
-            l_result = true;
-        }
+        l_result = true;
     }
     return l_result;
 }
@@ -237,111 +151,32 @@ bool ROC::RenderManager::Draw(Drawable *p_drawable, const glm::vec2 &p_pos, cons
     if(!IsActive()) return false;
 
     bool l_result = false;
-    if((m_renderStage != RS_None) && m_activeScene)
+    if(m_renderStage != RS_None)
     {
-        Shader *l_shader = m_activeScene->GetShader();
-        if(l_shader)
+        Shader::GetScreenShader()->Enable();
+        Shader::GetScreenShader()->SetProjectionMatrix(m_screenCamera->GetProjectionMatrix());
+
+        btTransform l_textureTransform;
+        btVector3 l_textureTranslate(p_pos.x, p_pos.y, 0.f);
+        l_textureTransform.setIdentity();
+        l_textureTransform.setOrigin(l_textureTranslate);
+        if(p_rot != 0.f)
         {
-            l_shader->Enable();
-            l_shader->SetTime(m_time);
-            l_shader->SetProjectionMatrix(m_screenCamera->GetProjectionMatrix());
-
-            btTransform l_textureTransform;
-            btVector3 l_textureTranslate(p_pos.x, p_pos.y, 0.f);
-            l_textureTransform.setIdentity();
-            l_textureTransform.setOrigin(l_textureTranslate);
-            if(p_rot != 0.f)
-            {
-                btQuaternion l_textureRotation;
-                l_textureRotation.setRotation(g_textureZAxis, p_rot);
-                l_textureTransform.setRotation(l_textureRotation);
-            }
-            glm::mat4 l_textureMatrix;
-            l_textureTransform.getOpenGLMatrix(glm::value_ptr(l_textureMatrix));
-            l_shader->SetModelMatrix(l_textureMatrix);
-            l_shader->SetColor(p_color);
-
-            GLSetting::Set(GL_BLEND, p_drawable->IsTransparent());
-            p_drawable->Bind();
-            m_quad2D->SetTransformation(p_size);
-            m_quad2D->Draw();
-
-            l_shader->Disable();
-
-            l_result = true;
+            btQuaternion l_textureRotation;
+            l_textureRotation.setRotation(g_textureZAxis, p_rot);
+            l_textureTransform.setRotation(l_textureRotation);
         }
-    }
-    return l_result;
-}
+        glm::mat4 l_textureMatrix;
+        l_textureTransform.getOpenGLMatrix(glm::value_ptr(l_textureMatrix));
+        Shader::GetScreenShader()->SetModelMatrix(l_textureMatrix);
+        Shader::GetScreenShader()->SetColor(p_color);
 
-bool ROC::RenderManager::Draw(Drawable *p_drawable, const glm::vec3 &p_pos, const glm::quat &p_rot, const glm::vec2 &p_size, const glm::bvec4 &p_params)
-{
-    if(!IsActive()) return false;
+        GLSetting::Set(GL_BLEND, p_drawable->IsTransparent());
+        p_drawable->Bind();
+        m_quad2D->SetTransformation(p_size);
+        m_quad2D->Draw();
 
-    bool l_result = false;
-    if((m_renderStage != RS_None) && m_activeScene && m_activeScene->IsRenderValid())
-    {
-        Shader *l_shader = m_activeScene->GetShader();
-
-        glm::vec2 l_halfSize = p_size * 0.5f;
-        float l_radius = glm::length(l_halfSize);
-        if(m_activeScene->GetCamera()->IsInFrustum(p_pos, l_radius))
-        {
-            l_shader->Enable();
-            l_shader->SetTime(m_time);
-
-            l_shader->SetAnimated(false);
-            l_shader->SetModelMatrix(m_quad3D->GetMatrix());
-            l_shader->SetMaterialParam(g_emptyVec4);
-
-            int l_materialType = 0;
-            if(p_params.x) l_materialType |= Material::MPB_Shading;
-            if(p_params.y) l_materialType |= Material::MPB_Depth;
-            if(p_params.z) l_materialType |= Material::MPB_Transparency;
-            if(p_params.w) l_materialType |= Material::MPB_Doubleside;
-            l_shader->SetMaterialType(l_materialType);
-
-            GLSetting::Set(GL_CULL_FACE, !p_params.w);
-            GLSetting::SetDepthMask(p_params.y);
-            GLSetting::Set(GL_BLEND, (p_drawable->IsTransparent() && p_params.z));
-            p_drawable->Bind();
-            m_quad3D->SetTransformation(p_pos, p_rot, p_size);
-            m_quad3D->Draw();
-
-            l_shader->Disable();
-
-            l_result = true;
-        }
-    }
-    return l_result;
-}
-
-bool ROC::RenderManager::DrawPhysics(float p_width)
-{
-    if(!IsActive()) return false;
-
-    bool l_result = false;
-    if((m_renderStage != RS_None) && m_activeScene && m_activeScene->IsRenderValid())
-    {
-        Shader *l_shader = m_activeScene->GetShader();
-        const Camera *l_camera = m_activeScene->GetCamera();
-
-        l_shader->Enable();
-        l_shader->SetProjectionMatrix(l_camera->GetProjectionMatrix());
-        l_shader->SetViewMatrix(l_camera->GetViewMatrix());
-        l_shader->SetViewProjectionMatrix(l_camera->GetViewProjectionMatrix());
-        l_shader->SetCameraPosition(l_camera->GetPosition());
-        l_shader->SetCameraDirection(l_camera->GetDirection());
-        l_shader->SetModelMatrix(g_identityMatrix);
-
-        l_shader->SetAnimated(false);
-        l_shader->SetMaterialType(Material::MPB_Depth | Material::MPB_Doubleside);
-        l_shader->SetMaterialParam(g_emptyVec4);
-
-        GetCore()->GetPhysicsManager()->DrawDebugWorld();
-        m_physicsDrawer->Draw(p_width);
-
-        l_shader->Disable();
+        Shader::GetScreenShader()->Disable();
 
         l_result = true;
     }
@@ -389,38 +224,32 @@ void ROC::RenderManager::DoPulse()
     if(!IsActive()) return;
 
     m_time = GetCore()->GetSfmlManager()->GetTime();
-
     m_renderStage = RS_Main;
-    m_clearFrame = true;
-    GetCore()->GetModuleManager()->SignalGlobalEvent(IModule::ME_OnRender, m_arguments);
-    m_clearFrame = false;
 
+    // Clear viewport
+    const glm::ivec4 l_params = m_screenCamera->GetOrthoParams();
+    GLViewport::SetViewport(l_params.x, l_params.z, l_params.y, l_params.w);
+    ClearViewport();
+
+    GetCore()->GetModuleManager()->SignalGlobalEvent(IModule::ME_OnRender, m_arguments);
     GetCore()->GetSfmlManager()->UpdateWindow();
+
     m_renderStage = RS_None;
 }
 
 // ROC::IRenderManager
-bool ROC::RenderManager::SetActiveIScene(IScene *p_scene)
-{
-    return SetActiveScene(dynamic_cast<Scene*>(p_scene));
-}
-
 bool ROC::RenderManager::Draw(IScene *p_scene)
 {
     return Draw(dynamic_cast<Scene*>(p_scene));
 }
 
-bool ROC::RenderManager::Draw(IFont *p_font, const glm::vec2 &p_pos, const std::string &p_text, const glm::vec4 &p_color)
+bool ROC::RenderManager::Draw(IFont *p_font, const glm::vec2 &p_pos, const char* p_text, const glm::vec4 &p_color)
 {
-    return Draw(dynamic_cast<Font*>(p_font), p_pos, p_text, p_color);
+    std::string l_text(p_text);
+    return Draw(dynamic_cast<Font*>(p_font), p_pos, l_text, p_color);
 }
 
 bool ROC::RenderManager::Draw(IDrawable *p_drawable, const glm::vec2 &p_pos, const glm::vec2 &p_size, float p_rot, const glm::vec4 &p_color)
 {
     return Draw(dynamic_cast<Drawable*>(p_drawable), p_pos, p_size, p_rot, p_color);
-}
-
-bool ROC::RenderManager::Draw(IDrawable *p_drawable, const glm::vec3 &p_pos, const glm::quat &p_rot, const glm::vec2 &p_size, const glm::bvec4 &p_params)
-{
-    return Draw(dynamic_cast<Drawable*>(p_drawable), p_pos, p_rot, p_size, p_params);
 }

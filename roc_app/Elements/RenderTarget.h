@@ -22,9 +22,6 @@ class RenderTarget final : public Element, public Drawable, public IRenderTarget
     glm::vec4 m_clearColor;
     glm::bvec2 m_clearBuffer; // Depth, color
 
-    static RenderTarget *ms_fallbackRT;
-    static glm::ivec2 ms_fallbackSize;
-
     RenderTarget(const RenderTarget &that) = delete;
     RenderTarget& operator=(const RenderTarget &that) = delete;
 
@@ -46,12 +43,8 @@ public:
     GLTexture2D* GetGLTexture() const;
 
     void Bind(size_t p_slot);
-    void Enable(bool p_clear = true);
-    static void Disable();
-
-    static void SetFallbackRenderTarget(RenderTarget *p_rt);
-    static void SetFallbackSize(const glm::ivec2 &p_size);
-    static void Fallback();
+    void BindBuffer(bool p_clear = true);
+    static void ResetBuffer();
 };
 
 }

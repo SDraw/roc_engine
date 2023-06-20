@@ -5,6 +5,8 @@ namespace ROC
 
 class ISoundManager
 {
+protected:
+    ~ISoundManager() = default;
 public:
     virtual void SetListenerPosition(const glm::vec3 &p_pos) = 0;
     virtual const glm::vec3& GetListenerPosition() const = 0;

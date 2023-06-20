@@ -37,12 +37,6 @@ ROC::CustomArgument::CustomArgument(double p_val)
     m_double = p_val;
 }
 
-ROC::CustomArgument::CustomArgument(void *p_val)
-{
-    m_type = CAT_Pointer;
-    m_ptr = p_val;
-}
-
 ROC::CustomArgument::CustomArgument(const std::string &p_val)
 {
     m_string.assign(p_val);
@@ -76,7 +70,7 @@ ROC::CustomArgument::CustomArgument(const CustomArgument& p_data)
         case CAT_Double:
             m_double = p_data.m_double;
             break;
-        case CAT_Pointer: case CAT_Element:
+        case CAT_Element:
             m_ptr = p_data.m_ptr;
             break;
         case CAT_String:
@@ -122,9 +116,9 @@ ROC::IElement* ROC::CustomArgument::GetElement() const
     return reinterpret_cast<ROC::IElement*>(m_ptr);
 };
 
-const std::string& ROC::CustomArgument::GetString() const
+const char* ROC::CustomArgument::GetString() const
 {
-    return m_string;
+    return m_string.c_str();
 }
 
 ROC::CustomArgument& ROC::CustomArgument::operator=(const ROC::CustomArgument &p_data)
@@ -148,7 +142,7 @@ ROC::CustomArgument& ROC::CustomArgument::operator=(const ROC::CustomArgument &p
         case CAT_Double:
             m_double = p_data.m_double;
             break;
-        case CAT_Pointer: case CAT_Element:
+        case CAT_Element:
             m_ptr = p_data.m_ptr;
             break;
         case CAT_String:

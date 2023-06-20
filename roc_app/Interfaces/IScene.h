@@ -11,8 +11,9 @@ class IShader;
 
 class IScene
 {
+protected:
+    ~IScene() = default;
 public:
-    virtual bool IsActive() const = 0;
     virtual bool SetICamera(ICamera *p_cam) = 0;
     virtual bool RemoveCamera() = 0;
     virtual ICamera* GetICamera() const = 0;
@@ -28,6 +29,14 @@ public:
     virtual bool AddIModel(IModel *p_model) = 0;
     virtual bool RemoveIModel(IModel *p_model) = 0;
     virtual bool HasIModel(IModel *p_model) const = 0;
+    virtual bool HasShadows() const = 0;
+    virtual void SetShadows(bool p_state) = 0;
+    virtual void GetShadowsArea(glm::vec2 &p_area) const = 0;
+    virtual void SetShadowsArea(const glm::vec2 &p_area) = 0;
+    virtual void GetShadowsDepth(glm::vec2 &p_depth) const = 0;
+    virtual void SetShadowsDepth(const glm::vec2 &p_depth) = 0;
+    virtual int GetShadowsQuality() const = 0;
+    virtual void SetShadowsQuality(int p_quality) = 0;
 };
 
 }

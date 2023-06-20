@@ -83,7 +83,7 @@ void ROC::ModuleManager::Stop()
 void ROC::ModuleManager::SignalGlobalEvent(unsigned char p_event, const CustomArguments *p_args) const
 {
     if(!IsActive()) return;
-    for(auto l_module : m_modules) l_module->RecieveGlobalEvent(p_event, p_args);
+    for(auto l_module : m_modules) l_module->RecieveEvent(static_cast<ROC::IModule::ModuleEvent>(p_event), p_args);
 }
 
 void ROC::ModuleManager::DoPulse() const

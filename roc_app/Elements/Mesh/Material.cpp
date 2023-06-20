@@ -5,6 +5,7 @@
 #include "GL/GLArrayBuffer.h"
 #include "GL/GLVertexArray.h"
 
+#include "Elements/Shader/Shader.h"
 #include "GL/GLSetting.h"
 
 ROC::Texture *ROC::Material::ms_dummyTexture = nullptr;
@@ -47,7 +48,7 @@ void ROC::Material::LoadVertices(const std::vector<glm::vec3> &p_vector)
         m_verticesCount = static_cast<int>(p_vector.size());
 
         m_arrayBuffers[MBI_Vertex] = new GLArrayBuffer();
-        m_arrayBuffers[MBI_Vertex]->Create(p_vector.size()*sizeof(glm::vec3), p_vector.data(), GL_STATIC_DRAW);
+        m_arrayBuffers[MBI_Vertex]->Create(p_vector.size() * sizeof(glm::vec3), p_vector.data(), GL_STATIC_DRAW);
     }
 }
 
@@ -56,7 +57,7 @@ void ROC::Material::LoadNormals(const std::vector<glm::vec3> &p_vector)
     if(!m_arrayBuffers[MBI_Normal])
     {
         m_arrayBuffers[MBI_Normal] = new GLArrayBuffer();
-        m_arrayBuffers[MBI_Normal]->Create(p_vector.size()*sizeof(glm::vec3), p_vector.data(), GL_STATIC_DRAW);
+        m_arrayBuffers[MBI_Normal]->Create(p_vector.size() * sizeof(glm::vec3), p_vector.data(), GL_STATIC_DRAW);
     }
 }
 
@@ -65,7 +66,7 @@ void ROC::Material::LoadUVs(const std::vector<glm::vec2> &p_vector)
     if(!m_arrayBuffers[MBI_UV])
     {
         m_arrayBuffers[MBI_UV] = new GLArrayBuffer();
-        m_arrayBuffers[MBI_UV]->Create(p_vector.size()*sizeof(glm::vec2), p_vector.data(), GL_STATIC_DRAW);
+        m_arrayBuffers[MBI_UV]->Create(p_vector.size() * sizeof(glm::vec2), p_vector.data(), GL_STATIC_DRAW);
     }
 }
 
@@ -74,7 +75,7 @@ void ROC::Material::LoadWeights(const std::vector<glm::vec4> &p_vector)
     if(!m_arrayBuffers[MBI_Weight])
     {
         m_arrayBuffers[MBI_Weight] = new GLArrayBuffer();
-        m_arrayBuffers[MBI_Weight]->Create(p_vector.size()*sizeof(glm::vec4), p_vector.data(), GL_STATIC_DRAW);
+        m_arrayBuffers[MBI_Weight]->Create(p_vector.size() * sizeof(glm::vec4), p_vector.data(), GL_STATIC_DRAW);
     }
 }
 
@@ -83,7 +84,7 @@ void ROC::Material::LoadIndices(const std::vector<glm::ivec4> &p_vector)
     if(!m_arrayBuffers[MBI_WeightIndex])
     {
         m_arrayBuffers[MBI_WeightIndex] = new GLArrayBuffer();
-        m_arrayBuffers[MBI_WeightIndex]->Create(p_vector.size()*sizeof(glm::ivec4), p_vector.data(), GL_STATIC_DRAW);
+        m_arrayBuffers[MBI_WeightIndex]->Create(p_vector.size() * sizeof(glm::ivec4), p_vector.data(), GL_STATIC_DRAW);
     }
 }
 
@@ -199,7 +200,7 @@ void ROC::Material::Draw(bool p_textured)
         GLSetting::Set(GL_CULL_FACE, !IsDoubleSided());
         GLSetting::SetDepthMask(HasDepth());
 
-        if(p_textured && m_texture) m_texture->Bind();
+        if(p_textured && m_texture) m_texture->Bind(ROC::Shader::STS_Diffuse);
         else ms_dummyTexture->Bind();
 
         m_vertexArray->Bind();
@@ -210,11 +211,8 @@ void ROC::Material::Draw(bool p_textured)
 // Static
 void ROC::Material::InitStaticResources()
 {
-    if(!ms_dummyTexture)
-    {
-        ms_dummyTexture = new Texture();
-        ms_dummyTexture->LoadDummy();
-    }
+    ms_dummyTexture = new Texture();
+    ms_dummyTexture->LoadDummy();
 }
 
 void ROC::Material::ReleaseStaticResources()

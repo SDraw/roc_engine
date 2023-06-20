@@ -112,7 +112,7 @@
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <AdditionalLibraryDirectories>../vendor/SFML/lib/win64;../vendor/bullet/lib/win64;../vendor/freetype2/lib/win64;../vendor/glew/lib/win64;../vendor/zlib/lib/win64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
@@ -134,7 +134,7 @@
     <ClInclude Include="Elements\Animation\BoneFrameData.h" />
     <ClInclude Include="Elements\Camera.h" />
     <ClInclude Include="Elements\Collidable.h" />
-    <ClInclude Include="Elements\Collision.h" />
+    <ClInclude Include="Elements\Collider.h" />
     <ClInclude Include="Elements\Drawable.h" />
     <ClInclude Include="Elements\Element.h" />
     <ClInclude Include="Elements\Font.h" />
@@ -169,7 +169,7 @@
     <ClInclude Include="Interfaces\IAnimation.h" />
     <ClInclude Include="Interfaces\ICamera.h" />
     <ClInclude Include="Interfaces\ICollidable.h" />
-    <ClInclude Include="Interfaces\ICollision.h" />
+    <ClInclude Include="Interfaces\ICollider.h" />
     <ClInclude Include="Interfaces\ICore.h" />
     <ClInclude Include="Interfaces\ICustomArgument.h" />
     <ClInclude Include="Interfaces\ICustomArguments.h" />
@@ -191,7 +191,6 @@
     <ClInclude Include="Interfaces\ISoundManager.h" />
     <ClInclude Include="Interfaces\ITexture.h" />
     <ClInclude Include="Interfaces\ITransformable.h" />
-    <ClInclude Include="Interfaces\IVRManager.h" />
     <ClInclude Include="Managers\ConfigManager.h" />
     <ClInclude Include="Managers\ElementManager.h" />
     <ClInclude Include="Managers\LogManager.h" />
@@ -238,7 +237,7 @@
     <ClCompile Include="Elements\Animation\BoneFrameData.cpp" />
     <ClCompile Include="Elements\Camera.cpp" />
     <ClCompile Include="Elements\Collidable.cpp" />
-    <ClCompile Include="Elements\Collision.cpp" />
+    <ClCompile Include="Elements\Collider.cpp" />
     <ClCompile Include="Elements\Drawable.cpp" />
     <ClCompile Include="Elements\Element.cpp" />
     <ClCompile Include="Elements\Font.cpp" />

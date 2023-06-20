@@ -5,6 +5,8 @@ namespace ROC
 
 class ITexture
 {
+protected:
+    ~ITexture() = default;
 public:
     enum TextureType : unsigned char
     {

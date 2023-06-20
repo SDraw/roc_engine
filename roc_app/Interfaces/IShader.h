@@ -1,5 +1,4 @@
 #pragma once
-#include "IElement.h"
 
 namespace ROC
 {
@@ -8,6 +7,8 @@ class IDrawable;
 
 class IShader
 {
+protected:
+    ~IShader() = default;
 public:
     enum ShaderUniformType : unsigned char
     {

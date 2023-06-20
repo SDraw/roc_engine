@@ -5,6 +5,8 @@ namespace ROC
 
 class ITransformable
 {
+protected:
+    ~ITransformable() = default;
 public:
     virtual void SetPosition(const glm::vec3 &p_pos) = 0;
     virtual const glm::vec3& GetPosition() const = 0;
