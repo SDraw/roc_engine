@@ -10,14 +10,12 @@ class LuaVM final
         void* m_object;
         bool m_external;
         std::string m_type;
-        int m_references;
 
         LuaObject(void *p_obj, const std::string &p_type, bool p_external)
         {
             m_object = p_obj;
             m_external = p_external;
             m_type.assign(p_type);
-            m_references = 1;
         }
     };
 

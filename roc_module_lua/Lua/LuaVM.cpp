@@ -187,9 +187,7 @@ void LuaVM::PushObject(void* p_obj, const std::string &p_type, bool p_external)
 {
     auto l_hash = reinterpret_cast<std::int64_t>(p_obj);
     const auto &l_iter = m_objectsPool.find(l_hash);
-    if(l_iter != m_objectsPool.end())
-        l_iter->second->m_references++;
-    else
+    if(l_iter == m_objectsPool.end())
         m_objectsPool.insert(std::make_pair(l_hash, new LuaObject(p_obj, p_type, p_external)));
 
     lua_getfield(m_state, LUA_REGISTRYINDEX, g_objectsPool);
@@ -522,15 +520,10 @@ int LuaVM::ObjectsGC(lua_State *p_state)
             if(l_iter != ms_instance->m_objectsPool.end())
             {
                 LuaObject *l_obj = l_iter->second;
-                l_obj->m_references--;
-                if(l_obj->m_references == 0)
-                {
-                    if(!l_obj->m_external)
-                        Utils::DeleteByType(l_obj->m_object, l_obj->m_type);
-
-                    delete l_obj;
-                    ms_instance->m_objectsPool.erase(l_iter);
-                }
+                if(!l_obj->m_external)
+                    Utils::DeleteByType(l_obj->m_object, l_obj->m_type);
+                delete l_obj;
+                ms_instance->m_objectsPool.erase(l_iter);
             }
         }
     }
