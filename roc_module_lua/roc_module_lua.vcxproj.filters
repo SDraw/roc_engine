@@ -33,9 +33,6 @@
     <ClInclude Include="Lua\LuaDefs\QuaternionDefs.h">
       <Filter>Lua\LuaDefs</Filter>
     </ClInclude>
-    <ClInclude Include="Lua\LuaDefs\MatrixDefs.h">
-      <Filter>Lua\LuaDefs</Filter>
-    </ClInclude>
     <ClInclude Include="Lua\LuaDefs\CollidableDefs.h">
       <Filter>Lua\LuaDefs</Filter>
     </ClInclude>
@@ -93,6 +90,15 @@
     <ClInclude Include="Lua\LuaDefs\FontDefs.h">
       <Filter>Lua\LuaDefs</Filter>
     </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\Matrix4Defs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\Matrix3Defs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
+    <ClInclude Include="Lua\LuaDefs\Matrix2Defs.h">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp" />
@@ -126,9 +132,6 @@
       <Filter>Lua\LuaDefs</Filter>
     </ClCompile>
     <ClCompile Include="Lua\LuaDefs\QuaternionDefs.cpp">
-      <Filter>Lua\LuaDefs</Filter>
-    </ClCompile>
-    <ClCompile Include="Lua\LuaDefs\MatrixDefs.cpp">
       <Filter>Lua\LuaDefs</Filter>
     </ClCompile>
     <ClCompile Include="Lua\LuaDefs\CollidableDefs.cpp">
@@ -186,6 +189,15 @@
       <Filter>Lua\LuaDefs</Filter>
     </ClCompile>
     <ClCompile Include="Lua\LuaDefs\FontDefs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\Matrix4Defs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\Matrix3Defs.cpp">
+      <Filter>Lua\LuaDefs</Filter>
+    </ClCompile>
+    <ClCompile Include="Lua\LuaDefs\Matrix2Defs.cpp">
       <Filter>Lua\LuaDefs</Filter>
     </ClCompile>
   </ItemGroup>

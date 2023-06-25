@@ -17,6 +17,16 @@ void Vector2Defs::Init()
 {
     ms_staticProps.emplace_back("one", GetOne, nullptr);
     ms_staticProps.emplace_back("zero", GetZero, nullptr);
+    ms_staticProps.emplace_back("left", GetLeft, nullptr);
+    ms_staticProps.emplace_back("right", GetRight, nullptr);
+    ms_staticProps.emplace_back("up", GetUp, nullptr);
+    ms_staticProps.emplace_back("down", GetDown, nullptr);
+
+    ms_staticMethods.emplace_back("angle",Angle);
+    ms_staticMethods.emplace_back("distance",Distance);
+    ms_staticMethods.emplace_back("dot",Dot);
+    ms_staticMethods.emplace_back("lerp",Lerp);
+    ms_staticMethods.emplace_back("reflect",Reflect);
 
     ms_metaMethods.emplace_back("__add", Add);
     ms_metaMethods.emplace_back("__sub", Subtract);
@@ -57,6 +67,112 @@ int Vector2Defs::GetZero(lua_State *p_state)
     LuaArgReader l_argReader(p_state);
     l_argReader.PushObject(new glm::vec2(0.f), g_vec2Name, false);
     return 1;
+}
+int Vector2Defs::GetLeft(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec2(-1.f, 0.f), g_vec2Name, false);
+    return 1;
+}
+int Vector2Defs::GetRight(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec2(1.f, 0.f), g_vec2Name, false);
+    return 1;
+}
+int Vector2Defs::GetUp(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec2(0.f, 1.f), g_vec2Name, false);
+    return 1;
+}
+int Vector2Defs::GetDown(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec2(0.f, -1.f), g_vec2Name, false);
+    return 1;
+}
+
+int Vector2Defs::Angle(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec2 *l_vecA;
+    glm::vec2 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec2Name);
+    l_argReader.ReadObject(l_vecB, g_vec2Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushNumber(glm::angle(*l_vecA,*l_vecB));
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector2Defs::Distance(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec2 *l_vecA;
+    glm::vec2 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec2Name);
+    l_argReader.ReadObject(l_vecB, g_vec2Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushNumber(glm::distance(*l_vecA, *l_vecB));
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector2Defs::Dot(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec2 *l_vecA;
+    glm::vec2 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec2Name);
+    l_argReader.ReadObject(l_vecB, g_vec2Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushNumber(glm::dot(*l_vecA, *l_vecB));
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector2Defs::Lerp(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec2 *l_vecA;
+    glm::vec2 *l_vecB;
+    float l_alpha;
+    l_argReader.ReadObject(l_vecA, g_vec2Name);
+    l_argReader.ReadObject(l_vecB, g_vec2Name);
+    l_argReader.ReadNumber(l_alpha);
+    if(!l_argReader.HasError())
+        l_argReader.PushObject(new glm::vec2(glm::lerp(*l_vecA, *l_vecB, l_alpha)), g_vec2Name, false);
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector2Defs::Reflect(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec2 *l_vecA;
+    glm::vec2 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec2Name);
+    l_argReader.ReadObject(l_vecB, g_vec2Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushObject(new glm::vec2(glm::reflect(*l_vecA, *l_vecB)), g_vec2Name, false);
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
 }
 
 int Vector2Defs::Add(lua_State *p_state)

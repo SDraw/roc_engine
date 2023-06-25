@@ -5,6 +5,7 @@
 #include "Lua/LuaArgReader.h"
 #include "Utils.h"
 
+extern const std::string g_vec3Name;
 extern const std::string g_quatName("Quaternion");
 
 std::vector<LuaPropDef> QuaternionDefs::ms_staticProps;
@@ -17,12 +18,16 @@ void QuaternionDefs::Init()
 {
     ms_staticProps.emplace_back("identity", GetIdentity, nullptr);
 
+    ms_staticMethods.emplace_back("euler", Euler);
+
     ms_metaMethods.emplace_back("__mul", Multiply);
 
     ms_instanceProps.emplace_back("x", GetX, SetX);
     ms_instanceProps.emplace_back("y", GetY, SetY);
     ms_instanceProps.emplace_back("z", GetZ, SetZ);
     ms_instanceProps.emplace_back("w", GetW, SetW);
+
+    ms_instanceMethods.emplace_back("rotate", Rotate);
 }
 
 void QuaternionDefs::RegisterInVM(LuaVM *p_vm)
@@ -52,6 +57,20 @@ int QuaternionDefs::GetIdentity(lua_State *p_state)
     LuaArgReader l_argReader(p_state);
     l_argReader.PushObject(new glm::quat(1.f, 0.f, 0.f, 0.f), g_quatName, false);
     return 1;
+}
+
+int QuaternionDefs::Euler(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec3 *l_vec;
+    l_argReader.ReadObject(l_vec, g_vec3Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushObject(new glm::quat(*l_vec), g_quatName, false);
+    else
+            l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
 }
 
 int QuaternionDefs::Multiply(lua_State *p_state)
@@ -176,6 +195,22 @@ int QuaternionDefs::SetW(lua_State *p_state)
 
     l_argReader.LogError();
     return 0;
+}
+
+int QuaternionDefs::Rotate(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::quat *l_quat;
+    glm::vec3 *l_vec;
+    l_argReader.ReadObject(l_quat, g_quatName);
+    l_argReader.ReadObject(l_vec, g_vec3Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushObject(new glm::vec3(*l_quat * *l_vec), g_vec3Name, false);
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
 }
 
 int QuaternionDefs::IsQuaternion(lua_State *p_state)

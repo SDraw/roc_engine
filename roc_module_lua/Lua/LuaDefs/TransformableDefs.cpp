@@ -7,7 +7,7 @@
 
 extern const std::string g_vec3Name;
 extern const std::string g_quatName;
-extern const std::string g_matrixName;
+extern const std::string g_matrix4Name;
 
 const std::string g_transformableInvalid("Invalid object/Transformable");
 
@@ -165,7 +165,7 @@ int TransformableDefs::GetMatrix(lua_State *p_state)
     {
         ROC::ITransformable *l_transform;
         if(Utils::IsValid(l_obj) && (l_transform = Utils::Cast<ROC::ITransformable*>(l_obj)))
-            l_argReader.PushObject(new glm::mat4x4(l_transform->GetMatrix()), g_matrixName, false);
+            l_argReader.PushObject(new glm::mat4x4(l_transform->GetMatrix()), g_matrix4Name, false);
         else
         {
             l_argReader.SetError(g_transformableInvalid);

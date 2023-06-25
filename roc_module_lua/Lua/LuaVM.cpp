@@ -545,8 +545,11 @@ void LuaVM::PushArgument(const ROC::ICustomArgument *p_arg)
             break;
 
         case ROC::ICustomArgument::CAT_Float:
+            PushNumber(p_arg->GetFloat());
+            break;
+
         case ROC::ICustomArgument::CAT_Double:
-            PushInteger(p_arg->GetInteger());
+            PushNumber(p_arg->GetDouble());
             break;
 
         case ROC::ICustomArgument::CAT_String:

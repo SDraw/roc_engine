@@ -1,5 +1,4 @@
 #pragma once
-#pragma warning (disable : 4250)
 
 #define WIN32_LEAN_AND_MEAN
 #include <Windows.h>
@@ -39,7 +38,3 @@
 #include "MaxRectsBinPack.h"
 #include "pugixml.hpp"
 #include "zlib.h"
-
-#ifdef _DEBUG
-#define DEBUG_PRINT(T) std::cout << T << std::endl
-#endif

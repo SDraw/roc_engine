@@ -11,7 +11,7 @@
 extern const std::string g_vec2Name;
 extern const std::string g_vec3Name;
 extern const std::string g_vec4Name;
-extern const std::string g_matrixName;
+extern const std::string g_matrix4Name;
 extern const std::string g_cameraName("Camera");
 const std::string g_cameraInvalid("Invalid object/Camera");
 
@@ -370,7 +370,7 @@ int CameraDefs::GetViewMatrix(lua_State *p_state)
     {
         ROC::ICamera *l_camera;
         if(Utils::IsValid(l_obj) && (l_camera = Utils::Cast<ROC::ICamera*>(l_obj)))
-            l_argReader.PushObject(new glm::mat4(l_camera->GetViewMatrix()), g_matrixName, false);
+            l_argReader.PushObject(new glm::mat4(l_camera->GetViewMatrix()), g_matrix4Name, false);
         else
         {
             l_argReader.SetError(g_cameraInvalid);
@@ -393,7 +393,7 @@ int CameraDefs::GetProjectionMatrix(lua_State *p_state)
     {
         ROC::ICamera *l_camera;
         if(Utils::IsValid(l_obj) && (l_camera = Utils::Cast<ROC::ICamera*>(l_obj)))
-            l_argReader.PushObject(new glm::mat4(l_camera->GetProjectionMatrix()), g_matrixName, false);
+            l_argReader.PushObject(new glm::mat4(l_camera->GetProjectionMatrix()), g_matrix4Name, false);
         else
         {
             l_argReader.SetError(g_cameraInvalid);
@@ -416,7 +416,7 @@ int CameraDefs::GetViewProjectionMatrix(lua_State *p_state)
     {
         ROC::ICamera *l_camera;
         if(Utils::IsValid(l_obj) && (l_camera = Utils::Cast<ROC::ICamera*>(l_obj)))
-            l_argReader.PushObject(new glm::mat4(l_camera->GetViewProjectionMatrix()), g_matrixName, false);
+            l_argReader.PushObject(new glm::mat4(l_camera->GetViewProjectionMatrix()), g_matrix4Name, false);
         else
         {
             l_argReader.SetError(g_cameraInvalid);

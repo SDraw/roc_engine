@@ -17,6 +17,20 @@ void Vector3Defs::Init()
 {
     ms_staticProps.emplace_back("one", GetOne, nullptr);
     ms_staticProps.emplace_back("zero", GetZero, nullptr);
+    ms_staticProps.emplace_back("left", GetLeft, nullptr);
+    ms_staticProps.emplace_back("right", GetRight, nullptr);
+    ms_staticProps.emplace_back("up", GetUp, nullptr);
+    ms_staticProps.emplace_back("down", GetDown, nullptr);
+    ms_staticProps.emplace_back("forward", GetForward, nullptr);
+    ms_staticProps.emplace_back("back", GetBack, nullptr);
+
+    ms_staticMethods.emplace_back("angle", Angle);
+    ms_staticMethods.emplace_back("cross", Cross);
+    ms_staticMethods.emplace_back("distance", Distance);
+    ms_staticMethods.emplace_back("dot", Dot);
+    ms_staticMethods.emplace_back("lerp", Lerp);
+    ms_staticMethods.emplace_back("reflect", Reflect);
+    ms_staticMethods.emplace_back("slerp", Slerp);
 
     ms_metaMethods.emplace_back("__add", Add);
     ms_metaMethods.emplace_back("__sub", Subtract);
@@ -60,6 +74,158 @@ int Vector3Defs::GetZero(lua_State *p_state)
     LuaArgReader l_argReader(p_state);
     l_argReader.PushObject(new glm::vec3(0.f), g_vec3Name, false);
     return 1;
+}
+int Vector3Defs::GetLeft(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec3(-1.f, 0.f, 0.f), g_vec3Name, false);
+    return 1;
+}
+int Vector3Defs::GetRight(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec3(1.f, 0.f, 0.f), g_vec3Name, false);
+    return 1;
+}
+int Vector3Defs::GetUp(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec3(0.f, 1.f, 0.f), g_vec3Name, false);
+    return 1;
+}
+int Vector3Defs::GetDown(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec3(0.f, -1.f, 0.f), g_vec3Name, false);
+    return 1;
+}
+int Vector3Defs::GetForward(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec3(0.f, 0.f, -1.f), g_vec3Name, false);
+    return 1;
+}
+int Vector3Defs::GetBack(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    l_argReader.PushObject(new glm::vec3(0.f, 0.f, 1.f), g_vec3Name, false);
+    return 1;
+}
+
+int Vector3Defs::Angle(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec3 *l_vecA;
+    glm::vec3 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec3Name);
+    l_argReader.ReadObject(l_vecB, g_vec3Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushNumber(glm::angle(*l_vecA, *l_vecB));
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector3Defs::Cross(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec3 *l_vecA;
+    glm::vec3 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec3Name);
+    l_argReader.ReadObject(l_vecB, g_vec3Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushObject(new glm::vec3(glm::cross(*l_vecA, *l_vecB)), g_vec3Name, false);
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector3Defs::Distance(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec3 *l_vecA;
+    glm::vec3 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec3Name);
+    l_argReader.ReadObject(l_vecB, g_vec3Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushNumber(glm::distance(*l_vecA, *l_vecB));
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector3Defs::Dot(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec3 *l_vecA;
+    glm::vec3 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec3Name);
+    l_argReader.ReadObject(l_vecB, g_vec3Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushNumber(glm::dot(*l_vecA, *l_vecB));
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector3Defs::Lerp(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec3 *l_vecA;
+    glm::vec3 *l_vecB;
+    float l_alpha;
+    l_argReader.ReadObject(l_vecA, g_vec3Name);
+    l_argReader.ReadObject(l_vecB, g_vec3Name);
+    l_argReader.ReadNumber(l_alpha);
+    if(!l_argReader.HasError())
+        l_argReader.PushObject(new glm::vec3(glm::lerp(*l_vecA, *l_vecB, l_alpha)), g_vec3Name, false);
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector3Defs::Reflect(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec3 *l_vecA;
+    glm::vec3 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec3Name);
+    l_argReader.ReadObject(l_vecB, g_vec3Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushObject(new glm::vec3(glm::reflect(*l_vecA, *l_vecB)), g_vec3Name, false);
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector3Defs::Slerp(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec3 *l_vecA;
+    glm::vec3 *l_vecB;
+    float l_alpha;
+    l_argReader.ReadObject(l_vecA, g_vec3Name);
+    l_argReader.ReadObject(l_vecB, g_vec3Name);
+    l_argReader.ReadNumber(l_alpha);
+    if(!l_argReader.HasError())
+        l_argReader.PushObject(new glm::vec3(glm::slerp(*l_vecA, *l_vecB, l_alpha)), g_vec3Name, false);
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
 }
 
 int Vector3Defs::Add(lua_State *p_state)

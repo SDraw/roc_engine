@@ -18,6 +18,9 @@
 #include "glm/gtc/matrix_transform.hpp"
 #include "glm/gtc/quaternion.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "glm/gtx/common.hpp"
+#include "glm/gtx/compatibility.hpp"
+#include "glm/gtx/vector_angle.hpp"
 
 #include "pugixml.hpp"
 

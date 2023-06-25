@@ -27,7 +27,9 @@
 #include "Lua/LuaDefs/Vector3Defs.h"
 #include "Lua/LuaDefs/Vector4Defs.h"
 #include "Lua/LuaDefs/QuaternionDefs.h"
-#include "Lua/LuaDefs/MatrixDefs.h"
+#include "Lua/LuaDefs/Matrix2Defs.h"
+#include "Lua/LuaDefs/Matrix3Defs.h"
+#include "Lua/LuaDefs/Matrix4Defs.h"
 
 const std::array<std::string, 16U> g_eventNames
 {
@@ -66,7 +68,9 @@ void LuaHandler::InitDefs()
     Vector3Defs::Init();
     Vector4Defs::Init();
     QuaternionDefs::Init();
-    MatrixDefs::Init();
+    Matrix2Defs::Init();
+    Matrix3Defs::Init();
+    Matrix4Defs::Init();
 }
 
 LuaHandler::LuaHandler()
@@ -99,7 +103,9 @@ LuaHandler::LuaHandler()
     Vector3Defs::RegisterInVM(m_vm);
     Vector4Defs::RegisterInVM(m_vm);
     QuaternionDefs::RegisterInVM(m_vm);
-    MatrixDefs::RegisterInVM(m_vm);
+    Matrix2Defs::RegisterInVM(m_vm);
+    Matrix3Defs::RegisterInVM(m_vm);
+    Matrix4Defs::RegisterInVM(m_vm);
 }
 LuaHandler::~LuaHandler()
 {

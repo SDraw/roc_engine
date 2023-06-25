@@ -18,6 +18,10 @@ void Vector4Defs::Init()
     ms_staticProps.emplace_back("one", GetOne, nullptr);
     ms_staticProps.emplace_back("zero", GetZero, nullptr);
 
+    ms_staticMethods.emplace_back("distance", Distance);
+    ms_staticMethods.emplace_back("dot", Dot);
+    ms_staticMethods.emplace_back("lerp", Lerp);
+
     ms_metaMethods.emplace_back("__add", Add);
     ms_metaMethods.emplace_back("__sub", Subtract);
     ms_metaMethods.emplace_back("__div", Divide);
@@ -63,6 +67,56 @@ int Vector4Defs::GetZero(lua_State *p_state)
     LuaArgReader l_argReader(p_state);
     l_argReader.PushObject(new glm::vec4(0.f), g_vec4Name, false);
     return 1;
+}
+
+int Vector4Defs::Distance(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec4 *l_vecA;
+    glm::vec4 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec4Name);
+    l_argReader.ReadObject(l_vecB, g_vec4Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushNumber(glm::distance(*l_vecA, *l_vecB));
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector4Defs::Dot(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec4 *l_vecA;
+    glm::vec4 *l_vecB;
+    l_argReader.ReadObject(l_vecA, g_vec4Name);
+    l_argReader.ReadObject(l_vecB, g_vec4Name);
+    if(!l_argReader.HasError())
+        l_argReader.PushNumber(glm::dot(*l_vecA, *l_vecB));
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
+}
+
+int Vector4Defs::Lerp(lua_State *p_state)
+{
+    LuaArgReader l_argReader(p_state);
+    glm::vec4 *l_vecA;
+    glm::vec4 *l_vecB;
+    float l_alpha;
+    l_argReader.ReadObject(l_vecA, g_vec4Name);
+    l_argReader.ReadObject(l_vecB, g_vec4Name);
+    l_argReader.ReadNumber(l_alpha);
+    if(!l_argReader.HasError())
+        l_argReader.PushObject(new glm::vec4(glm::lerp(*l_vecA, *l_vecB,l_alpha)), g_vec4Name, false);
+    else
+        l_argReader.PushBoolean(false);
+
+    l_argReader.LogError();
+    return l_argReader.GetReturnValue();
 }
 
 int Vector4Defs::Add(lua_State *p_state)

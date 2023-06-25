@@ -18,6 +18,15 @@ class Vector2Defs final
     static int Create(lua_State *p_state);
     static int GetZero(lua_State *p_state);
     static int GetOne(lua_State *p_state);
+    static int GetLeft(lua_State *p_state);
+    static int GetRight(lua_State *p_state);
+    static int GetUp(lua_State *p_state);
+    static int GetDown(lua_State *p_state);
+    static int Angle(lua_State *p_state);
+    static int Distance(lua_State *p_state);
+    static int Dot(lua_State *p_state);
+    static int Lerp(lua_State *p_state);
+    static int Reflect(lua_State *p_state);
     static int Add(lua_State *p_state);
     static int Subtract(lua_State *p_state);
     static int Divide(lua_State *p_state);

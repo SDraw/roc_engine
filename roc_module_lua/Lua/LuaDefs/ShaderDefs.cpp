@@ -11,7 +11,9 @@ extern const std::string g_drawableName;
 extern const std::string g_vec2Name;
 extern const std::string g_vec3Name;
 extern const std::string g_vec4Name;
-extern const std::string g_matrixName;
+extern const std::string g_matrix2Name;
+extern const std::string g_matrix3Name;
+extern const std::string g_matrix4Name;
 extern const std::string g_shaderName("Shader");
 const std::string g_shaderInvalid("Invalid object/Shader");
 const std::string g_drawableInvalid("Invalid object/Drawable");
@@ -263,10 +265,30 @@ int ShaderDefs::SetUniform(lua_State *p_state)
                         l_argReader.PushBoolean(false);
                 } break;
 
+                case ROC::IShader::SUT_FloatMat2:
+                {
+                    glm::mat2 *l_mat;
+                    l_argReader.ReadObject(l_mat, g_matrix2Name);
+                    if(!l_argReader.HasError())
+                        l_argReader.PushBoolean(l_shader->SetUniformValue(l_uniform.c_str(), l_uniformType, l_mat, sizeof(glm::mat2)));
+                    else
+                        l_argReader.PushBoolean(false);
+                } break;
+
+                case ROC::IShader::SUT_FloatMat3:
+                {
+                    glm::mat3 *l_mat;
+                    l_argReader.ReadObject(l_mat, g_matrix3Name);
+                    if(!l_argReader.HasError())
+                        l_argReader.PushBoolean(l_shader->SetUniformValue(l_uniform.c_str(), l_uniformType, l_mat, sizeof(glm::mat3)));
+                    else
+                        l_argReader.PushBoolean(false);
+                } break;
+
                 case ROC::IShader::SUT_FloatMat4:
                 {
                     glm::mat4 *l_mat;
-                    l_argReader.ReadObject(l_mat, g_matrixName);
+                    l_argReader.ReadObject(l_mat, g_matrix4Name);
                     if(!l_argReader.HasError())
                         l_argReader.PushBoolean(l_shader->SetUniformValue(l_uniform.c_str(), l_uniformType, l_mat, sizeof(glm::mat4)));
                     else
