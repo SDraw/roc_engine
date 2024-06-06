@@ -8,6 +8,8 @@ const char* const g_objectsPool = "___ObjectsPool";
 const char* const g_methods = "__methods";
 const char* const g_propGet = "__propGet";
 const char* const g_propSet = "__propSet";
+const char* const g_staticValues = "__staticValues";
+const char* const g_instanceValues = "__instanceValues";
 
 LuaVM* LuaVM::ms_instance = nullptr;
 
@@ -33,6 +35,16 @@ LuaVM::LuaVM()
     lua_setfield(m_state, -2, "__metatable");
     lua_setmetatable(m_state, -2); // Combines two previous tables
     lua_setfield(m_state, LUA_REGISTRYINDEX, g_objectsPool);
+
+    // Table with weak keys for instance values (fake 'self')
+    lua_newtable(m_state);
+    lua_newtable(m_state);
+    lua_pushstring(m_state, "k");
+    lua_setfield(m_state, -2, "__mode");
+    lua_pushcfunction(m_state, NilResultFunction);
+    lua_setfield(m_state, -2, "__metatable");
+    lua_setmetatable(m_state, -2); // Combines two previous tables
+    lua_setfield(m_state, LUA_REGISTRYINDEX, g_instanceValues);
 }
 LuaVM::~LuaVM()
 {
@@ -318,6 +330,10 @@ void LuaVM::RegisterLuaClass(
     }
     lua_setfield(m_state, -2, g_methods);
 
+    // User's static values
+    lua_newtable(m_state);
+    lua_setfield(m_state, -2, g_staticValues);
+
     lua_setmetatable(m_state, -2); // Combines two previous tables
     lua_setglobal(m_state, p_type.c_str()); // Sets as global
 
@@ -389,116 +405,158 @@ void LuaVM::RegisterLuaClass(
 
 int LuaVM::ClassStaticGet(lua_State *p_state)
 {
-    // Current stack - 1-table, 2-key
-    if(!lua_isstring(p_state, 2)) // Not a string as key
+    // Stack: t0 k
+    luaL_getmetafield(p_state, 1, g_methods); // t0 k t1
+    lua_pushvalue(p_state, 2); // t0 k t1 k
+    if(lua_gettable(p_state, -2) == LUA_TFUNCTION) // t0 k t1 f
     {
-        lua_pushnil(p_state);
-        return 1;
-    }
-    const char *l_key = lua_tostring(p_state, 2);
-
-    luaL_getmetafield(p_state, 1, g_methods); // table on top
-    if(lua_getfield(p_state, -1, l_key) == LUA_TFUNCTION)
-    {
-        // function is on top
-        lua_remove(p_state, -2); // remove table and shift stack down
+        lua_remove(p_state, -2); // t0 k f
         return 1;
     }
 
-    // Not a method, maybe a prop?
-    lua_pop(p_state, 2); // remove undesired value and table from stack
-    luaL_getmetafield(p_state, 1, g_propGet); // table is on top
-    if(lua_getfield(p_state, -1, l_key) == LUA_TFUNCTION)
+    // Stack: t0 k t1 v
+    lua_pop(p_state, 2); // t0 k
+    luaL_getmetafield(p_state, 1, g_propGet); // t0 k t1
+    lua_pushvalue(p_state, 2); // t0 k t1 k
+    if(lua_gettable(p_state, -2) == LUA_TFUNCTION) // t0 k t1 f
     {
-        lua_call(p_state, 0, 1); // result is on top
-        lua_remove(p_state, -2); // remove table and shift stack down
+        lua_call(p_state, 0, 1); // t0 k t1 v
+        lua_remove(p_state, -2); // t0 k v
         return 1;
     }
 
-    // Nothing found, push nil
-    lua_pop(p_state, 2); // remove undesired value and table from stack
-    lua_pushnil(p_state);
+    // Stack: t0 k t1 v
+    lua_pop(p_state, 2); // t0 k
+    luaL_getmetafield(p_state, 1, g_staticValues); // t0 k t1
+    lua_pushvalue(p_state, 2); // t0 k t1 k
+    lua_gettable(p_state, -2); // t0 k t1 v
+    lua_remove(p_state, -2); // t0 k v
     return 1;
 }
 
 int LuaVM::ClassStaticSet(lua_State *p_state)
 {
-    // Current stack - 1-table, 2-key, 3-value
-    if(!lua_isstring(p_state, 2)) // Not a string as key
-        return 0;
-    const char *l_key = lua_tostring(p_state, 2);
-
-    luaL_getmetafield(p_state, 1, g_propSet); // table on top
-    if(lua_getfield(p_state, -1, l_key) == LUA_TFUNCTION)
+    // Stack: t0 k v0
+    luaL_getmetafield(p_state, 1, g_methods); // t0 k v0 t1
+    lua_pushvalue(p_state, 2); // t0 k v0 t1 k
+    if(lua_gettable(p_state, -2) == LUA_TFUNCTION) // t0 k v0 t1 f
     {
-        // now function is on top
-        lua_pushvalue(p_state, 3); // copy value
-        lua_call(p_state, 1, 0); // call, no result should return
-        lua_pop(p_state, 1); // remove table from stack
+        // Reject change
+        lua_pop(p_state, 2); // t0 k v0
         return 0;
     }
 
-    // Nothing found
-    lua_pop(p_state, 2); // remove table and value from stack
+    // Stack: t0 k v0 t1 v1
+    lua_pop(p_state, 2); // t0 k v0
+    luaL_getmetafield(p_state, 1, g_propSet); // t0 k v0 t1
+    lua_pushvalue(p_state, 2); // t0 k v0 t1 k
+    if(lua_gettable(p_state, -2) == LUA_TFUNCTION) // t0 k v0 t1 f
+    {
+        lua_pushvalue(p_state, 3); // t0 k v0 t1 f v0
+        lua_call(p_state, 1, 0); // t0 k v0 t1
+        lua_pop(p_state, 1); // t0 k v0
+        return 0;
+    }
+
+    // Stack: t0 k v0 t1 v1
+    lua_pop(p_state, 2); // t0 k v0
+    luaL_getmetafield(p_state, 1, g_staticValues); // t0 k v0 t1
+    lua_pushvalue(p_state, 2); // t0 k v0 t1 k
+    lua_pushvalue(p_state, 3); // t0 k v0 t1 k v0
+    lua_settable(p_state, -3); // t0 k v0 t1
+    lua_pop(p_state, 1); // t0 k v0
     return 0;
 }
 
 int LuaVM::ClassInstanceGet(lua_State *p_state)
 {
-    // Current stack - 1-userdata, 2-key
-    if(!lua_isstring(p_state, 2)) // Not a string as key
+    // Stack: u k
+    luaL_getmetafield(p_state, 1, g_methods); // u k t
+    lua_pushvalue(p_state, 2); // u k t k
+    if(lua_gettable(p_state, -2) == LUA_TFUNCTION) // u k t f
     {
-        lua_pushnil(p_state);
-        return 1;
-    }
-    const char *l_key = lua_tostring(p_state, 2);
-
-    luaL_getmetafield(p_state, 1, g_methods); // table is on top
-    if(lua_getfield(p_state, -1, l_key) == LUA_TFUNCTION)
-    {
-        // result function on top
-        lua_remove(p_state, -2); // remove table and shift stack down
+        lua_remove(p_state, -2); // u k f
         return 1;
     }
 
-    // Not a method, maybe a prop?
-    lua_pop(p_state, 2); // remove undesired value and table from stack
-    luaL_getmetafield(p_state, 1, g_propGet); // table is on top
-    if(lua_getfield(p_state, -1, l_key) == LUA_TFUNCTION)
+    // Stack: u k t v
+    lua_pop(p_state, 2); // u k
+    luaL_getmetafield(p_state, 1, g_propGet); // u k t
+    lua_pushvalue(p_state, 2); // u k t k
+    if(lua_gettable(p_state, -2) == LUA_TFUNCTION) // u k t f
     {
-        // function is on top
-        lua_pushvalue(p_state, 1); // copy userdata on top
-        lua_call(p_state, 1, 1); // result on top
-        lua_remove(p_state, -2); // remove table and shift stack down
+        lua_pushvalue(p_state, 1); // u k t f u
+        lua_call(p_state, 1, 1); // u k t v
+        lua_remove(p_state, -2); // u k v
         return 1;
     }
 
-    // Nothing found, push nil
-    lua_pop(p_state, 2); // remove undesired value and table from stack
-    lua_pushnil(p_state);
+    // Stack: u k t v
+    lua_pop(p_state, 2); // u k
+    lua_getfield(p_state, LUA_REGISTRYINDEX, g_instanceValues); // u k t0
+    lua_pushvalue(p_state, 1); // u k t0 u
+    if(lua_gettable(p_state, -2) != LUA_TTABLE) // u k t0 v
+    {
+        lua_pop(p_state, 1); // u k t0
+        lua_pushvalue(p_state, 1); // u k t0 u
+        lua_newtable(p_state); // u k t0 u t1
+        lua_settable(p_state, -3); // u k t0
+        lua_pop(p_state, 1); // u k
+        lua_pushnil(p_state); // u k nil
+        return 1;
+    }
+    
+    // Stack: u k t0 t1
+    lua_pushvalue(p_state, 2); // u k t0 t1 k
+    lua_gettable(p_state, -2); // u k t0 t1 v
+    lua_remove(p_state, -2); // u k t0 v
+    lua_remove(p_state, -2); // u k v
     return 1;
 }
 
 int LuaVM::ClassInstanceSet(lua_State *p_state)
 {
-    // Current stack - 1-userdata, 2-key, 3-value
-    if(!lua_isstring(p_state, 2)) // Not a string as key
-        return 0;
-    const char* l_key = lua_tostring(p_state, 2);
-
-    luaL_getmetafield(p_state, 1, g_propSet); // table on top
-    if(lua_getfield(p_state, -1, l_key) == LUA_TFUNCTION)
+    // Stack: u k v
+    luaL_getmetafield(p_state, 1, g_methods); // u k v t
+    lua_pushvalue(p_state, 2); // u k v t k
+    if(lua_gettable(p_state, -2) == LUA_TFUNCTION) // u k v t f
     {
-        // function is on top
-        lua_pushvalue(p_state, 1); // copy userdata on top
-        lua_pushvalue(p_state, 3); // copy value on top
-        lua_call(p_state, 2, 0); // call, no result should return
-        lua_pop(p_state, 1); // remove table from stack
+        // Ignore set
+        lua_pop(p_state, 2); // u k v
         return 0;
     }
 
-    // Nothing found
-    lua_pop(p_state, 2); // remove table and value from stack
+    // Stack: u k v0 t v1
+    lua_pop(p_state, 2); // u k v
+    luaL_getmetafield(p_state, 1, g_propSet); // u k v t
+    lua_pushvalue(p_state, 2); // u k v t k
+    if(lua_gettable(p_state, -2) == LUA_TFUNCTION) // u k v t f
+    {
+        lua_pushvalue(p_state, 1); // u k v t f u
+        lua_pushvalue(p_state, 3); // u k v t f u v
+        lua_call(p_state, 2, 0); // u k v t
+        lua_pop(p_state, 1); // u k v
+        return 0;
+    }
+
+    // Stack: u k v0 t v1
+    lua_pop(p_state, 2); // u k v
+    lua_getfield(p_state, LUA_REGISTRYINDEX, g_instanceValues); // u k v t
+    lua_pushvalue(p_state, 1); // u k v t u
+    if(lua_gettable(p_state, -2) != LUA_TTABLE) // u k v0 t v1
+    {
+        lua_pop(p_state, 1); // u k v t
+        lua_newtable(p_state); // u k v t0 t1
+        lua_pushvalue(p_state, 1); // u k v t0 t1 u
+        lua_pushvalue(p_state, -2); // u k v t0 t1 u t1
+        lua_settable(p_state, -4); // u k v t0 t1
+    }
+
+    // Stack: u k v t0 t1
+    lua_pushvalue(p_state, 2); // u k v t0 t1 k
+    lua_pushvalue(p_state, 3); // u k v t0 t1 k v
+    lua_settable(p_state, -3); // u k v t0 t1
+    lua_pop(p_state, 2); // u k v
     return 0;
 }
 
