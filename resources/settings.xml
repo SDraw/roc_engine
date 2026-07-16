@@ -1,10 +1,11 @@
 <settings>
-  <setting name="vr" value="false"/>
-  <setting name="antialiasing" value="0"/>
-  <setting name="dimension" value="960x480"/>
+  <setting name="antialiasing" value="2"/>
+  <setting name="window" valueW="1920" valueH="1080"/>
   <setting name="fullscreen" value="false"/>
   <setting name="fpslimit" value="60"/>
   <setting name="vsync" value="false"/>
   <setting name="logging" value="true"/>
-  <!--<setting name="module" value=""/>-->
+  <setting name="shadows" value="1024"/>
+  <setting name="module" value="roc_module_lua.dll"/>
+  <setting name="console" value="false"/>
 </settings>
