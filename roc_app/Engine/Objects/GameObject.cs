@@ -120,28 +120,17 @@ namespace ROC.Engine.Objects
 
         public vec3 Position
         {
-            get
-            {
-                vec3 l_result = m_localPosition;
-                GameObject l_loopGO = this;
-                while(l_loopGO.Parent != null)
-                {
-                    l_result = l_loopGO.Parent.LocalScale * l_result;
-                    l_result = l_loopGO.Parent.LocalPosition + l_loopGO.Parent.LocalRotation * l_result;
-                    l_loopGO = l_loopGO.Parent;
-                }
-                return l_result;
-            }
+            get => (m_parent != null) ? Matrix.Column3.xyz : m_localPosition;
             set
             {
                 if(m_parent != null)
                 {
                     m_localPosition = (m_parent.Rotation.Inverse * (value - m_parent.Position));
 
-                    if(m_parent.LocalScale.z != 0f)
-                        m_localPosition.z /= m_parent.LocalScale.z;
+                    if(m_parent.LocalScale.x != 0f)
+                        m_localPosition.x /= m_parent.LocalScale.x;
                     else
-                        m_localPosition.z = 0f;
+                        m_localPosition.x = 0f;
 
                     if(m_parent.LocalScale.y != 0f)
                         m_localPosition.y /= m_parent.LocalScale.y;
@@ -205,10 +194,10 @@ namespace ROC.Engine.Objects
                 {
                     vec3 l_parentScl = m_parent.Scale;
 
-                    if(l_parentScl.z != 0f)
-                        m_localScale.z = value.z / l_parentScl.z;
+                    if(l_parentScl.x != 0f)
+                        m_localScale.x = value.z / l_parentScl.x;
                     else
-                        m_localScale.z = 0f;
+                        m_localScale.x = 0f;
 
                     if(l_parentScl.y != 0f)
                         m_localScale.y = value.y / l_parentScl.y;
