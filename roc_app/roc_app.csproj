@@ -1,0 +1,58 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net48</TargetFramework>
+    <Platforms>x64</Platforms>
+    <PackageId>ROC Engine App</PackageId>
+    <Version>1.0.0</Version>
+    <Authors>SDraw</Authors>
+    <Company></Company>
+    <Product>ROC Engine App</Product>
+    <AssemblyName>roc_app</AssemblyName>
+    <ApplicationIcon>roc_icon.ico</ApplicationIcon>
+    <OutputType>WinExe</OutputType>
+    <StartupObject>ROC.App.App</StartupObject>
+    <RootNamespace>ROC.App</RootNamespace>
+    <NuGetAudit>False</NuGetAudit>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <DebugType>pdbonly</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>..\bin\win64\</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <None Remove="resources\shadow_frag.glsl" />
+    <None Remove="resources\shadow_vert.glsl" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Content Include="roc_icon.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="resources\shadow_frag.glsl">
+      <CustomToolNamespace>ROC.Engine.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+    <EmbeddedResource Include="resources\shadow_vert.glsl">
+      <CustomToolNamespace>ROC.Engine.Resources</CustomToolNamespace>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="BulletSharp" Version="0.11.1" />
+    <PackageReference Include="CSFML" Version="2.6.1" />
+    <PackageReference Include="GlmSharp" Version="0.9.8" />
+    <PackageReference Include="OpenGL.Net" Version="0.8.4" />
+    <PackageReference Include="SFML.Audio" Version="2.6.1" />
+    <PackageReference Include="SFML.Graphics" Version="2.6.1" />
+    <PackageReference Include="SFML.System" Version="2.6.1" />
+    <PackageReference Include="SFML.Window" Version="2.6.1" />
+  </ItemGroup>
+
+</Project>
