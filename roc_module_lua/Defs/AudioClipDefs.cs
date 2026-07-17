@@ -7,7 +7,7 @@ namespace ROC.Module.Defs
 {
     internal static class AudioClipDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
         static readonly Type ms_audioClipType = typeof(AudioClip);
 
         static AudioClipDefs()
@@ -18,73 +18,68 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
+                ("isValid", ObjectDefs.IsValid, null),
 
-                ("isLoaded", ResourceDefs.IsLoaded, null),
                 ("log", ResourceDefs.Log, null),
 
                 ("sampleRate", GetSampleRate, null),
                 ("channels", GetChannels, null),
                 ("duration", GetDuration, null),
             };
-
-            Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
-            {
-                ("Unload", ResourceDefs.Unload)
-            };
         }
 
         static int Create(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.Skip();
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.Skip();
 
-            if(!l_reader.ReadString(out string l_val))
+            if(!l_argReader.ReadString(out string l_val))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             AudioClip l_clip = AudioClip.Import(l_val);
-            l_reader.PushObject(l_clip, ms_audioClipType);
+            l_argReader.PushObject(l_clip, ms_audioClipType);
             return 1;
         }
 
         static int GetSampleRate(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out AudioClip l_clip))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out AudioClip l_clip))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushInteger(l_clip.SampleRate);
+            l_argReader.PushInteger(l_clip.SampleRate);
             return 1;
         }
 
         static int GetChannels(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out AudioClip l_clip))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out AudioClip l_clip))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushInteger(l_clip.Channels);
+            l_argReader.PushInteger(l_clip.Channels);
             return 1;
         }
 
         static int GetDuration(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out AudioClip l_clip))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out AudioClip l_clip))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_clip.Duration);
+            l_argReader.PushNumber(l_clip.Duration);
             return 1;
         }
     }

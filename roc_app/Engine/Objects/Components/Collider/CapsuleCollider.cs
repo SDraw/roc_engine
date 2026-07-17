@@ -29,15 +29,12 @@ namespace ROC.Engine.Objects.Components
             PhysicsManager.AddRigidBody(m_rigidBody);
         }
 
-        internal override void Destroy()
+        protected override void DestroyInternal()
         {
-            if(m_shape != null)
-            {
-                m_shape.Dispose();
-                m_shape = null;
-            }
+            m_shape?.Dispose();
+            m_shape = null;
 
-            base.Destroy();
+            base.DestroyInternal();
         }
 
         public float Radius

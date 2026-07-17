@@ -1,4 +1,5 @@
-﻿using OpenGL;
+﻿using GlmSharp;
+using OpenGL;
 using ROC.Engine.OGL;
 using System;
 
@@ -6,6 +7,12 @@ namespace ROC.Engine.Objects.Resources
 {
     public sealed class Texture : Resource
     {
+        public enum TextureFiltering : int
+        {
+            Nearest = 0,
+            Linear
+        }
+
         static readonly byte[] ms_dummyTextureData = new byte[]
         {
             0x7F, 0x7F, 0x7F,
@@ -15,12 +22,15 @@ namespace ROC.Engine.Objects.Resources
         };
 
         GLTexture2D m_glTexture = null;
+        uvec2 m_size = uvec2.Zero;
+
+        public uvec2 Size => m_size;
 
         internal Texture()
         {
         }
 
-        internal void Load(string p_path, bool p_transparent, bool p_compressed, int p_filter)
+        internal void Load(string p_path, bool p_transparent, bool p_compressed, TextureFiltering p_filter)
         {
             if(m_loaded)
                 return;
@@ -36,7 +46,7 @@ namespace ROC.Engine.Objects.Resources
                     p_transparent ? (p_compressed ? InternalFormat.CompressedRgba : InternalFormat.Rgba8) : (p_compressed ? InternalFormat.CompressedRgb : InternalFormat.Rgb8),
                     PixelFormat.Rgba,
                     l_image.Pixels,
-                    p_filter
+                    Gl.NEAREST + (int)p_filter
                 );
                 m_loaded = true;
             }
@@ -46,15 +56,18 @@ namespace ROC.Engine.Objects.Resources
             }
         }
 
-        public override void Unload()
+        protected override void DestroyInternal()
         {
-            if(!m_loaded)
-                return;
+            if(m_loaded)
+            {
+                m_glTexture.Destroy();
+                m_glTexture = null;
+                m_size = uvec2.Zero;
 
-            m_glTexture.Destroy();
-            m_glTexture = null;
+                m_loaded = false;
+            }
 
-            m_loaded = false;
+            base.DestroyInternal();
         }
 
         internal void Activate(TextureUnit p_slot)
@@ -66,7 +79,7 @@ namespace ROC.Engine.Objects.Resources
         }
 
         // API
-        public static Texture Import(string p_path, bool p_alpha = true, bool p_compress = false, int p_filter = 0)
+        public static Texture Import(string p_path, bool p_alpha = true, bool p_compress = false, TextureFiltering p_filter = TextureFiltering.Nearest)
         {
             Texture l_texture = new Texture();
             l_texture.Load(p_path, p_alpha, p_compress, p_filter);

@@ -8,7 +8,7 @@ namespace ROC.Module.Defs
 {
     internal static class Matrix2Defs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
         static readonly Type ms_Matrix2Type = typeof(Matrix2);
         static readonly Type ms_Vector2Type = typeof(Vector2);
 
@@ -50,20 +50,20 @@ namespace ROC.Module.Defs
 
         static int Create(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.Skip();
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.Skip();
 
             float[] l_values = new float[4];
             for(int i = 0; i < 4; i++)
             {
-                if(!l_reader.ReadNumber(out l_values[i]))
+                if(!l_argReader.ReadNumber(out l_values[i]))
                 {
-                    l_reader.PushBoolean(false);
+                    l_argReader.PushBoolean(false);
                     return 1;
                 }
             }
 
-            l_reader.PushObject(new Matrix2(new mat2(
+            l_argReader.PushObject(new Matrix2(new mat2(
                 l_values[0], l_values[1],
                 l_values[2], l_values[3]
             )), ms_Matrix2Type);
@@ -72,261 +72,261 @@ namespace ROC.Module.Defs
 
         static int CreateZero(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Matrix2(mat2.Zero), ms_Matrix2Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Matrix2(mat2.Zero), ms_Matrix2Type);
             return 1;
         }
 
         static int CreateIdentity(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Matrix2(mat2.Identity), ms_Matrix2Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Matrix2(mat2.Identity), ms_Matrix2Type);
             return 1;
         }
 
         static int Add(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadValue(out object p_objA) || !l_reader.ReadValue(out object l_objB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadValue(out object p_objA) || !l_argReader.ReadValue(out object l_objB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             // Matrix2 + value
             if(p_objA is Matrix2 l_mat0 && l_objB is double l_val0)
             {
-                l_reader.PushObject(new Matrix2(l_mat0.m_matrix + (float)l_val0), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat0.m_matrix + (float)l_val0), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is Matrix2 l_mat1 && l_objB is long l_val1)
             {
-                l_reader.PushObject(new Matrix2(l_mat1.m_matrix + l_val1), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat1.m_matrix + l_val1), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is Matrix2 l_mat2 && l_objB is Matrix2 l_val2)
             {
-                l_reader.PushObject(new Matrix2(l_mat2.m_matrix + l_val2.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat2.m_matrix + l_val2.m_matrix), ms_Matrix2Type);
                 return 1;
             }
 
             // Value + matrix
             if(p_objA is double l_val4 && p_objA is Matrix2 l_mat4)
             {
-                l_reader.PushObject(new Matrix2((float)l_val4 + l_mat4.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2((float)l_val4 + l_mat4.m_matrix), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is long l_val5 && p_objA is Matrix2 l_mat5)
             {
-                l_reader.PushObject(new Matrix2(l_val5 + l_mat5.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_val5 + l_mat5.m_matrix), ms_Matrix2Type);
                 return 1;
             }
 
-            l_reader.PushBoolean(false);
+            l_argReader.PushBoolean(false);
             return 1;
         }
 
         static int Subtract(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadValue(out object p_objA) || !l_reader.ReadValue(out object l_objB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadValue(out object p_objA) || !l_argReader.ReadValue(out object l_objB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             // Matrix2 - value
             if(p_objA is Matrix2 l_mat0 && l_objB is double l_val0)
             {
-                l_reader.PushObject(new Matrix2(l_mat0.m_matrix - (float)l_val0), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat0.m_matrix - (float)l_val0), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is Matrix2 l_mat1 && l_objB is long l_val1)
             {
-                l_reader.PushObject(new Matrix2(l_mat1.m_matrix - l_val1), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat1.m_matrix - l_val1), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is Matrix2 l_mat2 && l_objB is Matrix2 l_val2)
             {
-                l_reader.PushObject(new Matrix2(l_mat2.m_matrix - l_val2.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat2.m_matrix - l_val2.m_matrix), ms_Matrix2Type);
                 return 1;
             }
 
             // Value - matrix
             if(p_objA is double l_val4 && p_objA is Matrix2 l_mat4)
             {
-                l_reader.PushObject(new Matrix2((float)l_val4 - l_mat4.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2((float)l_val4 - l_mat4.m_matrix), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is long l_val5 && p_objA is Matrix2 l_mat5)
             {
-                l_reader.PushObject(new Matrix2(l_val5 - l_mat5.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_val5 - l_mat5.m_matrix), ms_Matrix2Type);
                 return 1;
             }
 
-            l_reader.PushBoolean(false);
+            l_argReader.PushBoolean(false);
             return 1;
         }
 
 
         static int Multiply(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadValue(out object p_objA) || !l_reader.ReadValue(out object l_objB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadValue(out object p_objA) || !l_argReader.ReadValue(out object l_objB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             // Matrix2 * value
             if(p_objA is Matrix2 l_mat0 && l_objB is double l_val0)
             {
-                l_reader.PushObject(new Matrix2(l_mat0.m_matrix * (float)l_val0), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat0.m_matrix * (float)l_val0), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is Matrix2 l_mat1 && l_objB is long l_val1)
             {
-                l_reader.PushObject(new Matrix2(l_mat1.m_matrix * l_val1), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat1.m_matrix * l_val1), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is Matrix2 l_mat2 && l_objB is Matrix2 l_val2)
             {
-                l_reader.PushObject(new Matrix2(l_mat2.m_matrix * l_val2.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat2.m_matrix * l_val2.m_matrix), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is Matrix2 l_mat3 && l_objB is Vector2 l_val3)
             {
-                l_reader.PushObject(new Vector2(l_mat3.m_matrix * l_val3.m_vector), ms_Vector2Type);
+                l_argReader.PushObject(new Vector2(l_mat3.m_matrix * l_val3.m_vector), ms_Vector2Type);
                 return 1;
             }
 
             // Value * matrix
             if(p_objA is double l_val4 && p_objA is Matrix2 l_mat4)
             {
-                l_reader.PushObject(new Matrix2((float)l_val4 * l_mat4.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2((float)l_val4 * l_mat4.m_matrix), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is long l_val5 && p_objA is Matrix2 l_mat5)
             {
-                l_reader.PushObject(new Matrix2(l_val5 * l_mat5.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_val5 * l_mat5.m_matrix), ms_Matrix2Type);
                 return 1;
             }
 
-            l_reader.PushBoolean(false);
+            l_argReader.PushBoolean(false);
             return 1;
         }
 
         static int Divide(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadValue(out object p_objA) || !l_reader.ReadValue(out object l_objB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadValue(out object p_objA) || !l_argReader.ReadValue(out object l_objB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             // Matrix2 / value
             if(p_objA is Matrix2 l_mat0 && l_objB is double l_val0)
             {
-                l_reader.PushObject(new Matrix2(l_mat0.m_matrix / (float)l_val0), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat0.m_matrix / (float)l_val0), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is Matrix2 l_mat1 && l_objB is long l_val1)
             {
-                l_reader.PushObject(new Matrix2(l_mat1.m_matrix / l_val1), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat1.m_matrix / l_val1), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is Matrix2 l_mat2 && l_objB is Matrix2 l_val2)
             {
-                l_reader.PushObject(new Matrix2(l_mat2.m_matrix / l_val2.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_mat2.m_matrix / l_val2.m_matrix), ms_Matrix2Type);
                 return 1;
             }
 
             // Value * matrix
             if(p_objA is double l_val4 && p_objA is Matrix2 l_mat4)
             {
-                l_reader.PushObject(new Matrix2((float)l_val4 / l_mat4.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2((float)l_val4 / l_mat4.m_matrix), ms_Matrix2Type);
                 return 1;
             }
             if(p_objA is long l_val5 && p_objA is Matrix2 l_mat5)
             {
-                l_reader.PushObject(new Matrix2(l_val5 / l_mat5.m_matrix), ms_Matrix2Type);
+                l_argReader.PushObject(new Matrix2(l_val5 / l_mat5.m_matrix), ms_Matrix2Type);
                 return 1;
             }
 
-            l_reader.PushBoolean(false);
+            l_argReader.PushBoolean(false);
             return 1;
         }
 
         static int GetDeterminant(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_mat.m_matrix.Determinant);
+            l_argReader.PushNumber(l_mat.m_matrix.Determinant);
             return 1;
         }
 
         // Properties
         static int Inverse(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Matrix2(l_mat.m_matrix.Inverse), ms_Matrix2Type);
+            l_argReader.PushObject(new Matrix2(l_mat.m_matrix.Inverse), ms_Matrix2Type);
             return 1;
         }
 
         static int Adjugate(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Matrix2(l_mat.m_matrix.Adjugate), ms_Matrix2Type);
+            l_argReader.PushObject(new Matrix2(l_mat.m_matrix.Adjugate), ms_Matrix2Type);
             return 1;
         }
 
         static int Transpose(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Matrix2(l_mat.m_matrix.Transposed), ms_Matrix2Type);
+            l_argReader.PushObject(new Matrix2(l_mat.m_matrix.Transposed), ms_Matrix2Type);
             return 1;
         }
 
         static int GetColumn0(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector2(l_mat.m_matrix.Column0), ms_Vector2Type);
+            l_argReader.PushObject(new Vector2(l_mat.m_matrix.Column0), ms_Vector2Type);
             return 1;
         }
         static int SetColumn0(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat) || !l_reader.ReadObject(out Vector2 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat) || !l_argReader.ReadObject(out Vector2 l_vec))
                 return 0;
 
             l_mat.m_matrix.Column0 = l_vec.m_vector;
@@ -335,20 +335,20 @@ namespace ROC.Module.Defs
 
         static int GetColumn1(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector2(l_mat.m_matrix.Column1), ms_Vector2Type);
+            l_argReader.PushObject(new Vector2(l_mat.m_matrix.Column1), ms_Vector2Type);
             return 1;
         }
         static int SetColumn1(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat) || !l_reader.ReadObject(out Vector2 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat) || !l_argReader.ReadObject(out Vector2 l_vec))
                 return 0;
 
             l_mat.m_matrix.Column1 = l_vec.m_vector;
@@ -357,20 +357,20 @@ namespace ROC.Module.Defs
 
         static int GetRow0(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector2(l_mat.m_matrix.Row0), ms_Vector2Type);
+            l_argReader.PushObject(new Vector2(l_mat.m_matrix.Row0), ms_Vector2Type);
             return 1;
         }
         static int SetRow0(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat) || !l_reader.ReadObject(out Vector2 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat) || !l_argReader.ReadObject(out Vector2 l_vec))
                 return 0;
 
             l_mat.m_matrix.Row0 = l_vec.m_vector;
@@ -379,20 +379,20 @@ namespace ROC.Module.Defs
 
         static int GetRow1(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector2(l_mat.m_matrix.Row1), ms_Vector2Type);
+            l_argReader.PushObject(new Vector2(l_mat.m_matrix.Row1), ms_Vector2Type);
             return 1;
         }
         static int SetRow1(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat) || !l_reader.ReadObject(out Vector2 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat) || !l_argReader.ReadObject(out Vector2 l_vec))
                 return 0;
 
             l_mat.m_matrix.Row1 = l_vec.m_vector;
@@ -401,20 +401,20 @@ namespace ROC.Module.Defs
 
         static int GetM00(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_mat.m_matrix.m00);
+            l_argReader.PushNumber(l_mat.m_matrix.m00);
             return 1;
         }
         static int SetM00(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_mat.m_matrix.m00 = l_val;
@@ -423,20 +423,20 @@ namespace ROC.Module.Defs
 
         static int GetM01(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_mat.m_matrix.m01);
+            l_argReader.PushNumber(l_mat.m_matrix.m01);
             return 1;
         }
         static int SetM01(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_mat.m_matrix.m01 = l_val;
@@ -445,20 +445,20 @@ namespace ROC.Module.Defs
 
         static int GetM10(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_mat.m_matrix.m10);
+            l_argReader.PushNumber(l_mat.m_matrix.m10);
             return 1;
         }
         static int SetM10(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_mat.m_matrix.m10 = l_val;
@@ -467,20 +467,20 @@ namespace ROC.Module.Defs
 
         static int GetM11(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_mat.m_matrix.m11);
+            l_argReader.PushNumber(l_mat.m_matrix.m11);
             return 1;
         }
         static int SetM11(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Matrix2 l_mat) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Matrix2 l_mat) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_mat.m_matrix.m11 = l_val;

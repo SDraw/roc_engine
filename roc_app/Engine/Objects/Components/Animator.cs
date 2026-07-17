@@ -43,7 +43,7 @@ namespace ROC.Engine.Objects.Components
             MeshRenderer = null;
         }
 
-        internal override void Destroy()
+        protected override void DestroyInternal()
         {
             m_loopTime = 0U;
 
@@ -51,13 +51,13 @@ namespace ROC.Engine.Objects.Components
             MeshRenderer = null;
             Speed = 1f;
 
-            base.Destroy();
+            base.DestroyInternal();
         }
 
         // GameObject events
         internal override void OnShadowPass(Shader p_shader, Frustum p_frustum)
         {
-            if(!Enabled || m_lastFrame == DeltaTick.FrameIndex || m_animation == null || !m_animation.IsLoaded || MeshRenderer == null || !MeshRenderer.IsValid || MeshRenderer.Bones.Count == 0)
+            if(!Enabled || m_lastFrame == DeltaTick.FrameIndex || m_animation == null || !m_animation.IsValid || MeshRenderer == null || !MeshRenderer.IsValid || MeshRenderer.Bones.Count == 0)
                 return;
 
             m_lastFrame = DeltaTick.FrameIndex;
@@ -66,7 +66,7 @@ namespace ROC.Engine.Objects.Components
 
         internal override void OnRenderPass(Shader p_shader, Camera p_camera)
         {
-            if(!Enabled || m_lastFrame == DeltaTick.FrameIndex || m_animation == null || !m_animation.IsLoaded || MeshRenderer == null || !MeshRenderer.IsValid || MeshRenderer.Bones.Count == 0)
+            if(!Enabled || m_lastFrame == DeltaTick.FrameIndex || m_animation == null || !m_animation.IsValid || MeshRenderer == null || !MeshRenderer.IsValid || MeshRenderer.Bones.Count == 0)
                 return;
 
             m_lastFrame = DeltaTick.FrameIndex;

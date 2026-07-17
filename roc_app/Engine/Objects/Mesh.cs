@@ -16,7 +16,7 @@ namespace ROC.Engine.Objects
 
         int m_trianglesCount = 0;
 
-        public bool IsGenerated => m_generated;
+        public override bool IsValid => m_generated;
 
         internal Mesh()
         {
@@ -77,28 +77,30 @@ namespace ROC.Engine.Objects
             m_generated = true;
         }
 
-        public void Destroy()
+        protected override void DestroyInternal()
         {
-            if(!m_generated)
-                return;
+            if(m_generated)
+            {
+                m_vertexBuffer.Destroy();
+                m_vertexBuffer = null;
 
-            m_vertexBuffer.Destroy();
-            m_vertexBuffer = null;
+                m_normalBuffer.Destroy();
+                m_normalBuffer = null;
 
-            m_normalBuffer.Destroy();
-            m_normalBuffer = null;
+                m_uvBuffer.Destroy();
+                m_uvBuffer = null;
 
-            m_uvBuffer.Destroy();
-            m_uvBuffer = null;
+                m_weightBuffer?.Destroy();
+                m_weightBuffer = null;
 
-            m_weightBuffer?.Destroy();
-            m_weightBuffer = null;
+                m_indexBuffer?.Destroy();
+                m_indexBuffer = null;
 
-            m_indexBuffer?.Destroy();
-            m_indexBuffer = null;
+                m_trianglesCount = 0;
+                m_generated = false;
+            }
 
-            m_trianglesCount = 0;
-            m_generated = false;
+            base.DestroyInternal();
         }
 
         internal void Draw()

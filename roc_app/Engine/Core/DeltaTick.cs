@@ -1,26 +1,26 @@
 ﻿namespace ROC.Engine.Core
 {
-    static public class DeltaTick
+    public static class DeltaTick
     {
         static ulong ms_lastTick = 0UL;
         static float ms_engineDelta = 0f;
         static ulong ms_frameIndex = 0UL;
 
-        static internal void Start()
+        internal static void Start()
         {
             ms_lastTick = Utils.GetTickCount64();
             ms_engineDelta = 0f;
             ms_frameIndex = 0UL;
         }
 
-        static internal void Stop()
+        internal static void Stop()
         {
             ms_lastTick = 0UL;
             ms_engineDelta = 0f;
             ms_frameIndex = 0UL;
         }
 
-        static internal void Update()
+        internal static void Update()
         {
             ulong l_tick = Utils.GetTickCount64();
             ms_engineDelta = (l_tick - ms_lastTick) * 0.001f;

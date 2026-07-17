@@ -6,7 +6,7 @@ namespace ROC.Module.Defs
 {
     internal static class AudioListenerDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
 
         static AudioListenerDefs()
         {
@@ -15,17 +15,12 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
+                ("isValid", ObjectDefs.IsValid, null),
 
-                ("isValid", ComponentDefs.IsValid, null),
                 ("type", ComponentDefs.GetComponentType, null),
                 ("priority", ComponentDefs.GetPriority, null),
                 ("enabled", ComponentDefs.GetEnabled, ComponentDefs.SetEnabled),
                 ("gameObject", ComponentDefs.GetGameObject, null)
-            };
-
-            Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
-            {
-                ("Destroy", ComponentDefs.Destroy)
             };
         }
     }

@@ -113,18 +113,20 @@ namespace ROC.Engine.Objects.Resources
             }
         }
 
-        public override void Unload()
+        protected override void DestroyInternal()
         {
-            if(!m_loaded)
-                return;
+            if(m_loaded)
+            {
+                m_boneAnimationData = null;
+                m_bonesCount = 0;
+                m_framesCount = 0U;
+                m_duration = 0U;
+                m_fps = 0U;
 
-            m_boneAnimationData = null;
-            m_bonesCount = 0;
-            m_framesCount = 0U;
-            m_duration = 0U;
-            m_fps = 0U;
+                m_loaded = false;
+            }
 
-            m_loaded = false;
+            base.DestroyInternal();
         }
 
         // Animation

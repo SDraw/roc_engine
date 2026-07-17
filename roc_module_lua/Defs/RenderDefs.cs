@@ -7,7 +7,7 @@ namespace ROC.Module.Defs
 {
     internal static class RenderDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
 
         static RenderDefs()
         {
@@ -21,14 +21,14 @@ namespace ROC.Module.Defs
 
         static int GetRenderMode(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushString(Engine.Core.Core.Instance.RenderManager.Mode.ToString());
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushString(Engine.Core.Core.Instance.RenderManager.Mode.ToString());
             return 1;
         }
         static int SetRenderMode(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadEnum(out RenderManager.RenderMode l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadEnum(out RenderManager.RenderMode l_val))
                 return 0;
 
             Engine.Core.Core.Instance.RenderManager.Mode = l_val;

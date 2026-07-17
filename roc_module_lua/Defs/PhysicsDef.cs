@@ -8,8 +8,8 @@ namespace ROC.Module.Defs
 {
     internal static class PhysicsDef
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
-        static Type ms_vector3Type = typeof(Vector3);
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        static readonly Type ms_vector3Type = typeof(Vector3);
 
         static PhysicsDef()
         {
@@ -30,14 +30,14 @@ namespace ROC.Module.Defs
 
         static int GetEnabled(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushBoolean(Engine.Core.Core.Instance.PhysicsManager.PhysicsEnabled);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushBoolean(Engine.Core.Core.Instance.PhysicsManager.PhysicsEnabled);
             return 1;
         }
         static int SetEnabled(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadBoolean(out bool l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadBoolean(out bool l_val))
                 return 0;
 
             Engine.Core.Core.Instance.PhysicsManager.PhysicsEnabled = l_val;
@@ -46,14 +46,14 @@ namespace ROC.Module.Defs
 
         static int GetFloor(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushBoolean(Engine.Core.Core.Instance.PhysicsManager.FloorState);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushBoolean(Engine.Core.Core.Instance.PhysicsManager.FloorState);
             return 1;
         }
         static int SetFloor(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadBoolean(out bool l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadBoolean(out bool l_val))
                 return 0;
 
             Engine.Core.Core.Instance.PhysicsManager.FloorState = l_val;
@@ -62,14 +62,14 @@ namespace ROC.Module.Defs
 
         static int GetGravity(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Vector3(Engine.Core.Core.Instance.PhysicsManager.Gravity), ms_vector3Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Vector3(Engine.Core.Core.Instance.PhysicsManager.Gravity), ms_vector3Type);
             return 1;
         }
         static int SetGravity(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_val))
                 return 0;
 
             Engine.Core.Core.Instance.PhysicsManager.Gravity = l_val.m_vector;
@@ -78,26 +78,26 @@ namespace ROC.Module.Defs
 
         static int Raycast(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_start) || !l_reader.ReadObject(out Vector3 l_end))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_start) || !l_argReader.ReadObject(out Vector3 l_end))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             if(!Engine.Core.Core.Instance.PhysicsManager.RayCast(l_start.m_vector, l_end.m_vector, out vec3 l_hit, out vec3 l_normal, out object l_obj))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushBoolean(true);
-            l_reader.PushObject(new Vector3(l_hit), ms_vector3Type);
-            l_reader.PushObject(new Vector3(l_normal), ms_vector3Type);
+            l_argReader.PushBoolean(true);
+            l_argReader.PushObject(new Vector3(l_hit), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(l_normal), ms_vector3Type);
             if(l_obj != null)
-                l_reader.PushObject(l_obj);
+                l_argReader.PushObject(l_obj);
             else
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
             return 4;
         }
     }

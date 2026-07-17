@@ -16,10 +16,9 @@ namespace ROC.Engine.Objects
         quat m_localRotation = quat.Identity;
         vec3 m_localScale = vec3.Ones;
 
-        public bool IsValid
-        {
-            get; private set;
-        }
+        bool m_valid;
+
+        public override bool IsValid => m_valid;
 
         public string Name
         {
@@ -33,7 +32,7 @@ namespace ROC.Engine.Objects
             m_components = new List<Component>();
             m_children = new List<GameObject>();
             m_parent = null;
-            IsValid = true;
+            m_valid = true;
         }
 
         // Hierarchy
@@ -48,14 +47,24 @@ namespace ROC.Engine.Objects
                 if(value != null && !value.IsValid)
                     return;
 
+                vec3 l_pos = Position;
+                quat l_rot = Rotation;
+                vec3 l_scl = Scale;
+
                 if(m_parent != null)
                     m_parent.RemoveChild(this);
 
                 m_parent = value;
                 if(m_parent != null)
                     m_parent.AddChild(this);
+
+                Position = l_pos;
+                Rotation = l_rot;
+                Scale = l_scl;
             }
         }
+
+        public List<GameObject> Children => new List<GameObject>(m_children);
 
         internal void AddChild(GameObject p_go)
         {
@@ -64,8 +73,6 @@ namespace ROC.Engine.Objects
         }
 
         internal void RemoveChild(GameObject p_go) => m_children.Remove(p_go);
-
-        public List<GameObject> Children => new List<GameObject>(m_children);
 
         public GameObject FindChild(string p_name)
         {
@@ -127,17 +134,17 @@ namespace ROC.Engine.Objects
                 {
                     m_localPosition = (m_parent.Rotation.Inverse * (value - m_parent.Position));
 
-                    if(m_parent.LocalScale.x != 0f)
+                    if(!m_parent.LocalScale.x.IsEpsilonEqual(0f))
                         m_localPosition.x /= m_parent.LocalScale.x;
                     else
                         m_localPosition.x = 0f;
 
-                    if(m_parent.LocalScale.y != 0f)
+                    if(!m_parent.LocalScale.y.IsEpsilonEqual(0f))
                         m_localPosition.y /= m_parent.LocalScale.y;
                     else
                         m_localPosition.y = 0f;
 
-                    if(m_parent.LocalScale.z != 0f)
+                    if(!m_parent.LocalScale.z.IsEpsilonEqual(0f))
                         m_localPosition.z /= m_parent.LocalScale.z;
                     else
                         m_localPosition.z = 0f;
@@ -194,17 +201,17 @@ namespace ROC.Engine.Objects
                 {
                     vec3 l_parentScl = m_parent.Scale;
 
-                    if(l_parentScl.x != 0f)
+                    if(!l_parentScl.x.IsEpsilonEqual(0f))
                         m_localScale.x = value.z / l_parentScl.x;
                     else
                         m_localScale.x = 0f;
 
-                    if(l_parentScl.y != 0f)
+                    if(!l_parentScl.y.IsEpsilonEqual(0f))
                         m_localScale.y = value.y / l_parentScl.y;
                     else
                         m_localScale.y = 0f;
 
-                    if(l_parentScl.z != 0f)
+                    if(!l_parentScl.z.IsEpsilonEqual(0f))
                         m_localScale.z = value.z / l_parentScl.z;
                     else
                         m_localScale.z = 0f;
@@ -335,23 +342,25 @@ namespace ROC.Engine.Objects
         }
 
         // Destruction
-        internal void Destroy()
+        protected override void DestroyInternal()
         {
-            if(!IsValid)
-                return;
+            if(m_valid)
+            {
+                foreach(var l_component in m_components.ToArray()) // Copy to bypass collection change
+                    Object.Destroy(l_component);
+                m_components.Clear();
 
-            foreach(var l_component in m_components)
-                l_component.Destroy();
-            m_components.Clear();
+                m_parent?.RemoveChild(this);
+                m_parent = null;
 
-            if(m_parent != null)
-                m_parent.RemoveChild(this);
-            m_parent = null;
+                foreach(var l_child in m_children.ToArray()) // Copy to bypass collection change
+                    l_child.Parent = null;
+                m_children.Clear();
 
-            foreach(var l_child in m_children)
-                l_child.Parent = null;
+                m_valid = false;
+            }
 
-            IsValid = false;
+            base.DestroyInternal();
         }
 
         // Events
@@ -377,11 +386,6 @@ namespace ROC.Engine.Objects
         public static GameObject Create(string p_name)
         {
             return new GameObject(p_name ?? "");
-        }
-
-        public static void Destroy(GameObject p_go)
-        {
-            p_go.Destroy();
         }
 
         // Utils

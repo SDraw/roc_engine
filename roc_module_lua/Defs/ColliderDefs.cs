@@ -8,7 +8,7 @@ namespace ROC.Module.Defs
 {
     internal static class ColliderDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
         static readonly Type ms_vector3Type = typeof(Vector3);
 
         static ColliderDefs()
@@ -18,8 +18,8 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
+                ("isValid", ObjectDefs.IsValid, null),
 
-                ("isValid", ComponentDefs.IsValid, null),
                 ("type", ComponentDefs.GetComponentType, null),
                 ("priority", ComponentDefs.GetPriority, null),
                 ("enabled", ComponentDefs.GetEnabled, ComponentDefs.SetEnabled),
@@ -38,8 +38,6 @@ namespace ROC.Module.Defs
 
             Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
             {
-                ("Destroy", ComponentDefs.Destroy),
-
                 ("ApplyCentralForce", ApplyCentralForce),
                 ("ApplyCentralImpulse", ApplyCentralImpulse),
                 ("ApplyForce", ApplyForce),
@@ -51,20 +49,20 @@ namespace ROC.Module.Defs
 
         internal static int GetAngularFactor(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(l_col.AngularFactor), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(l_col.AngularFactor), ms_vector3Type);
             return 1;
         }
         internal static int SetAngularFactor(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_val))
                 return 0;
 
             l_col.AngularFactor = l_val.m_vector;
@@ -73,20 +71,20 @@ namespace ROC.Module.Defs
 
         internal static int GetAngularVelocity(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(l_col.AngularVelocity), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(l_col.AngularVelocity), ms_vector3Type);
             return 1;
         }
         internal static int SetAngularVelocity(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_val))
                 return 0;
 
             l_col.AngularVelocity = l_val.m_vector;
@@ -95,20 +93,20 @@ namespace ROC.Module.Defs
 
         internal static int GetFriction(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_col.Friction);
+            l_argReader.PushNumber(l_col.Friction);
             return 1;
         }
         internal static int SetFriction(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_col.Friction = l_val;
@@ -117,20 +115,20 @@ namespace ROC.Module.Defs
 
         internal static int GetLinearFactor(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(l_col.LinearFactor), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(l_col.LinearFactor), ms_vector3Type);
             return 1;
         }
         internal static int SetLinearFactor(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_val))
                 return 0;
 
             l_col.LinearFactor = l_val.m_vector;
@@ -139,20 +137,20 @@ namespace ROC.Module.Defs
 
         internal static int GetMass(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_col.Mass);
+            l_argReader.PushNumber(l_col.Mass);
             return 1;
         }
         internal static int SetMass(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_col.Mass = l_val;
@@ -161,20 +159,20 @@ namespace ROC.Module.Defs
 
         internal static int GetRestitution(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_col.Restitution);
+            l_argReader.PushNumber(l_col.Restitution);
             return 1;
         }
         internal static int SetRestitution(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_col.Restitution = l_val;
@@ -183,20 +181,20 @@ namespace ROC.Module.Defs
 
         internal static int GetMotionType(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushString(l_col.TypeOfMotion.ToString());
+            l_argReader.PushString(l_col.TypeOfMotion.ToString());
             return 1;
         }
         internal static int SetMotionType(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadEnum(out Collider.MotionType l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadEnum(out Collider.MotionType l_val))
                 return 0;
 
             l_col.TypeOfMotion = l_val;
@@ -205,20 +203,20 @@ namespace ROC.Module.Defs
 
         internal static int GetVelocity(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(l_col.Velocity), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(l_col.Velocity), ms_vector3Type);
             return 1;
         }
         internal static int SetVelocity(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_val))
                 return 0;
 
             l_col.Velocity = l_val.m_vector;
@@ -227,98 +225,98 @@ namespace ROC.Module.Defs
 
         internal static int IsActive(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushBoolean(l_col.IsActive);
+            l_argReader.PushBoolean(l_col.IsActive);
             return 1;
         }
 
         internal static int ApplyCentralForce(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_val))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             l_col.ApplyCentralForce(l_val.m_vector);
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
 
         internal static int ApplyCentralImpulse(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_val))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             l_col.ApplyCentralImpulse(l_val.m_vector);
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
 
         internal static int ApplyForce(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_valA) || !l_reader.ReadObject(out Vector3 l_valB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_valA) || !l_argReader.ReadObject(out Vector3 l_valB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             l_col.ApplyForce(l_valA.m_vector, l_valB.m_vector);
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
 
         internal static int ApplyImpulse(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_valA) || !l_reader.ReadObject(out Vector3 l_valB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_valA) || !l_argReader.ReadObject(out Vector3 l_valB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             l_col.ApplyImpulse(l_valA.m_vector, l_valB.m_vector);
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
 
         internal static int ApplyTorque(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_val))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             l_col.ApplyTorque(l_val.m_vector);
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
 
         internal static int ApplyTorqueImpulse(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Collider l_col) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col) || !l_argReader.ReadObject(out Vector3 l_val))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             l_col.ApplyTorqueImpulse(l_val.m_vector);
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
     }

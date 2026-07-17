@@ -28,5 +28,7 @@ namespace ROC.Engine
 
         [DllImport("user32.dll")]
         public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+
+        public static bool IsEpsilonEqual(this float a, float b) => (Math.Abs(a - b) < float.Epsilon);
     }
 }

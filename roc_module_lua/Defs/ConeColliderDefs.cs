@@ -7,7 +7,7 @@ namespace ROC.Module.Defs
 {
     internal static class ConeColliderDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
 
         static ConeColliderDefs()
         {
@@ -16,8 +16,8 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
+                ("isValid", ObjectDefs.IsValid, null),
 
-                ("isValid", ComponentDefs.IsValid, null),
                 ("type", ComponentDefs.GetComponentType, null),
                 ("priority", ComponentDefs.GetPriority, null),
                 ("enabled", ComponentDefs.GetEnabled, ComponentDefs.SetEnabled),
@@ -39,8 +39,6 @@ namespace ROC.Module.Defs
 
             Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
             {
-                ("Destroy", ComponentDefs.Destroy),
-
                 ("ApplyCentralForce", ColliderDefs.ApplyCentralForce),
                 ("ApplyCentralImpulse", ColliderDefs.ApplyCentralImpulse),
                 ("ApplyForce", ColliderDefs.ApplyForce),
@@ -52,20 +50,20 @@ namespace ROC.Module.Defs
 
         static int GetRadius(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out ConeCollider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out ConeCollider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_col.Radius);
+            l_argReader.PushNumber(l_col.Radius);
             return 1;
         }
         static int SetRadius(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out ConeCollider l_col) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out ConeCollider l_col) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_col.Radius = l_val;
@@ -74,20 +72,20 @@ namespace ROC.Module.Defs
 
         static int GetHeight(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out ConeCollider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out ConeCollider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_col.Height);
+            l_argReader.PushNumber(l_col.Height);
             return 1;
         }
         static int SetHeight(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out ConeCollider l_col) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out ConeCollider l_col) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_col.Height = l_val;

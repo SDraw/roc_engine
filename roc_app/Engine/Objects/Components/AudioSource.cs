@@ -30,7 +30,7 @@ namespace ROC.Engine.Objects.Components
                 }
 
                 m_clip = value;
-                if((m_clip != null) && m_clip.IsLoaded)
+                if((m_clip != null) && m_clip.IsValid)
                 {
                     m_clip.OnDestroy += this.AudioClipCleanup;
                     m_sound.SoundBuffer = m_clip.Buffer;

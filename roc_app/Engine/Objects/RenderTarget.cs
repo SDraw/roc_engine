@@ -26,6 +26,8 @@ namespace ROC.Engine.Objects
         GLTexture2D m_glTexture = null;
         GLRenderBuffer m_glRenderBuffer = null;
 
+        public override bool IsValid => (m_type != RenderTargetType.Invalid);
+
         public RenderTarget()
         {
         }
@@ -93,22 +95,24 @@ namespace ROC.Engine.Objects
             GLFrameBuffer.Reset();
         }
 
-        public void Destroy()
+        protected override void DestroyInternal()
         {
-            if(m_type == RenderTargetType.Invalid)
-                return;
+            if(m_type != RenderTargetType.Invalid)
+            {
+                m_glTexture?.Destroy();
+                m_glTexture = null;
 
-            m_glTexture?.Destroy();
-            m_glTexture = null;
+                m_glRenderBuffer?.Destroy();
+                m_glRenderBuffer = null;
 
-            m_glRenderBuffer?.Destroy();
-            m_glRenderBuffer = null;
+                m_glFrameBuffer?.Destroy();
+                m_glFrameBuffer = null;
 
-            m_glFrameBuffer?.Destroy();
-            m_glFrameBuffer = null;
+                m_type = RenderTargetType.Invalid;
+                m_size = ivec2.Zero;
+            }
 
-            m_type = RenderTargetType.Invalid;
-            m_size = ivec2.Zero;
+            base.DestroyInternal();
         }
 
         public void Bind(bool p_clear = true)

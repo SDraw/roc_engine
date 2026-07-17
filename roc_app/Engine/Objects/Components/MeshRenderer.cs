@@ -41,6 +41,8 @@ namespace ROC.Engine.Objects.Components
             set;
         }
 
+        public int MaterialsCount => m_materials.Count;
+
         internal MeshRenderer()
         {
             m_componentType = ComponentType.MeshRenderer;
@@ -100,7 +102,7 @@ namespace ROC.Engine.Objects.Components
             m_ready = true;
         }
 
-        internal override void Destroy()
+        protected override void DestroyInternal()
         {
             if(m_ready)
             {
@@ -113,7 +115,7 @@ namespace ROC.Engine.Objects.Components
                 m_ready = false;
             }
 
-            base.Destroy();
+            base.DestroyInternal();
         }
 
         // GameObject events
@@ -147,6 +149,9 @@ namespace ROC.Engine.Objects.Components
 
             for(int i = 0, j = Math.Min(m_materials.Count, m_meshes.Count); i < j; i++)
             {
+                if(m_materials[i] == null || !m_materials[i].IsValid || m_meshes[i] == null || !m_meshes[i].IsValid)
+                    continue;
+
                 if(m_materials[i].DepthWrite)
                 {
                     GLSettings.Set(EnableCap.CullFace, !m_materials[i].DoubleSided);
@@ -182,9 +187,13 @@ namespace ROC.Engine.Objects.Components
 
             for(int i = 0, j = Math.Min(m_materials.Count, m_meshes.Count); i < j; i++)
             {
+                if(m_materials[i] == null || !m_materials[i].IsValid || m_meshes[i] == null || !m_meshes[i].IsValid)
+                    continue;
+
                 p_shader.SetMaterial(
                     new bvec4(m_materials[i].Unlit, RecieveShadows, false, false),
-                    m_materials[i].Params
+                    m_materials[i].Params,
+                    m_materials[i].Color
                 );
 
                 GLSettings.Set(EnableCap.Blend, m_materials[i].Transparency);
@@ -202,6 +211,23 @@ namespace ROC.Engine.Objects.Components
             mat4 l_goMatInv = GameObject.Matrix.Inverse;
             for(int i = 0, j = m_poseMatrices.Length; i < j; i++)
                 m_poseMatrices[i] = (l_goMatInv * m_bones[i].Matrix) * m_bonesMatricesBinds[i];
+        }
+
+        // Public
+        public Material GetMaterial(int p_index)
+        {
+            if(p_index < 0 || p_index >= m_materials.Count)
+                return null;
+
+            return m_materials[p_index];
+        }
+
+        public void SetMaterial(int p_index, Material p_material)
+        {
+            if(p_index < 0 || p_index >= m_materials.Count || (p_material != null && !p_material.IsValid))
+                return;
+
+            m_materials[p_index] = p_material;
         }
     }
 }

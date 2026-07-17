@@ -30,16 +30,18 @@ namespace ROC.Engine.Objects.Resources
             }
         }
 
-        public override void Unload()
+        protected override void DestroyInternal()
         {
-            if(!m_loaded)
-                return;
+            if(m_loaded)
+            {
+                OnDestroy?.Invoke();
 
-            OnDestroy?.Invoke();
+                m_buffer.Dispose();
+                m_buffer = null;
+                m_loaded = false;
+            }
 
-            m_buffer.Dispose();
-            m_buffer = null;
-            m_loaded = false;
+            base.DestroyInternal();
         }
 
         internal SoundBuffer Buffer => m_buffer;

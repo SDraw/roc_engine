@@ -7,8 +7,8 @@ namespace ROC.Module.Defs
 {
     internal static class WindowDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
-        static Type ms_vector2Type = typeof(Vector2);
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        static readonly Type ms_vector2Type = typeof(Vector2);
 
         static WindowDefs()
         {
@@ -36,14 +36,14 @@ namespace ROC.Module.Defs
 
         static int GetPosition(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Vector2(Engine.Core.Core.Instance.WindowManager.WindowPosition), ms_vector2Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Vector2(Engine.Core.Core.Instance.WindowManager.WindowPosition), ms_vector2Type);
             return 1;
         }
         static int SetPosition(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector2 p_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector2 p_val))
                 return 0;
 
             Engine.Core.Core.Instance.WindowManager.WindowPosition = (GlmSharp.ivec2)p_val.m_vector;
@@ -52,14 +52,14 @@ namespace ROC.Module.Defs
 
         static int GetSize(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Vector2(Engine.Core.Core.Instance.WindowManager.WindowSize), ms_vector2Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Vector2(Engine.Core.Core.Instance.WindowManager.WindowSize), ms_vector2Type);
             return 1;
         }
         static int SetSize(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector2 p_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector2 p_val))
                 return 0;
 
             Engine.Core.Core.Instance.WindowManager.WindowSize = (GlmSharp.uvec2)p_val.m_vector;
@@ -68,8 +68,8 @@ namespace ROC.Module.Defs
 
         static int SetVSync(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadBoolean(out bool p_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadBoolean(out bool p_val))
                 return 0;
 
             Engine.Core.Core.Instance.WindowManager.SetVSync(p_val);
@@ -78,8 +78,8 @@ namespace ROC.Module.Defs
 
         static int SetFrameLimit(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadInteger(out int p_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadInteger(out int p_val))
                 return 0;
 
             Engine.Core.Core.Instance.WindowManager.SetFrameLmit((uint)p_val);
@@ -88,8 +88,8 @@ namespace ROC.Module.Defs
 
         static int SetTitle(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadString(out string p_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadString(out string p_val))
                 return 0;
 
             Engine.Core.Core.Instance.WindowManager.SetTitle(p_val);
@@ -98,8 +98,8 @@ namespace ROC.Module.Defs
 
         static int SetIcon(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadString(out string p_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadString(out string p_val))
                 return 0;
 
             Engine.Core.Core.Instance.WindowManager.SetIcon(p_val);
@@ -108,23 +108,23 @@ namespace ROC.Module.Defs
 
         static int GetFocus(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushBoolean(Engine.Core.Core.Instance.WindowManager.Focus);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushBoolean(Engine.Core.Core.Instance.WindowManager.Focus);
             return 1;
         }
 
         static int RequestFocus(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
+            var l_argReader = new ArgReader(p_state);
             Engine.Core.Core.Instance.WindowManager.RequestFocus();
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
 
         static int SetCursorGrab(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadBoolean(out bool p_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadBoolean(out bool p_val))
                 return 0;
 
             Engine.Core.Core.Instance.WindowManager.SetCursorGrabbed(p_val);
@@ -133,8 +133,8 @@ namespace ROC.Module.Defs
 
         static int SetCursorVisible(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadBoolean(out bool p_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadBoolean(out bool p_val))
                 return 0;
 
             Engine.Core.Core.Instance.WindowManager.SetCursorVisible(p_val);

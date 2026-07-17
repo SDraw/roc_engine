@@ -1,18 +1,20 @@
 ﻿using LuaSharp.Lua;
 using ROC.Engine.Objects.Resources;
+using ROC.Module.Wrappers;
 using System;
 using System.Collections.Generic;
 
 namespace ROC.Module.Defs
 {
-    internal static class ModelDefs
+    internal static class TextureDefs
     {
         public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
-        static readonly Type ms_modelType = typeof(Model);
+        static readonly Type ms_textureType = typeof(Texture);
+        static readonly Type ms_vector2Type = typeof(Vector2);
 
-        static ModelDefs()
+        static TextureDefs()
         {
-            Definition.m_name = nameof(Model);
+            Definition.m_name = nameof(Texture);
             Definition.m_constructor = Create;
 
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
@@ -22,8 +24,7 @@ namespace ROC.Module.Defs
 
                 ("log", ResourceDefs.Log, null),
 
-                ("boundsRadius", GetBoundsRadius, null),
-                ("type", GetTypeOfMode, null)
+                ("size", GetSize, null),
             };
         }
 
@@ -32,39 +33,28 @@ namespace ROC.Module.Defs
             var l_argReader = new ArgReader(p_state);
             l_argReader.Skip();
 
-            if(!l_argReader.ReadString(out string l_path))
+            if(!l_argReader.ReadString(out string l_path) || !l_argReader.ReadBoolean(out bool l_alpha) || !l_argReader.ReadBoolean(out bool l_compress) || !l_argReader.ReadEnum(out Texture.TextureFiltering l_filter))
             {
                 l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_argReader.PushObject(Model.Import(l_path), ms_modelType);
+            l_argReader.PushObject(Texture.Import(l_path, l_alpha, l_compress, l_filter), ms_textureType);
             return 1;
         }
 
-        static int GetBoundsRadius(IntPtr p_state)
+        static int GetSize(IntPtr p_state)
         {
             var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Model l_model))
+            l_argReader.Skip();
+
+            if(!l_argReader.ReadObject(out Texture l_tex))
             {
                 l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_argReader.PushNumber(l_model.BoundsRadius);
-            return 1;
-        }
-
-        static int GetTypeOfMode(IntPtr p_state)
-        {
-            var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Model l_model))
-            {
-                l_argReader.PushBoolean(false);
-                return 1;
-            }
-
-            l_argReader.PushString(l_model.TypeOfModel.ToString());
+            l_argReader.PushObject(new Vector2(l_tex.Size), ms_vector2Type);
             return 1;
         }
     }

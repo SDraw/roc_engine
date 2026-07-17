@@ -90,12 +90,14 @@ namespace ROC.Module
             m_vm.RegisterClass(ObjectDefs.Definition);
             m_vm.RegisterClass(SceneDefs.Definition);
             m_vm.RegisterClass(GameObjectDefs.Definition);
+            m_vm.RegisterClass(MaterialDefs.Definition);
 
             m_vm.RegisterClass(ResourceDefs.Definition);
             m_vm.RegisterClass(ModelDefs.Definition);
             m_vm.RegisterClass(AnimationDefs.Definition);
             m_vm.RegisterClass(ShaderDefs.Definition);
             m_vm.RegisterClass(AudioClipDefs.Definition);
+            m_vm.RegisterClass(TextureDefs.Definition);
 
             m_vm.RegisterClass(ComponentDefs.Definition);
             m_vm.RegisterClass(CameraDefs.Definition);

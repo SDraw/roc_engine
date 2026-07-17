@@ -7,7 +7,7 @@ namespace ROC.Module.Defs
 {
     internal static class ResourceDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
 
         static ResourceDefs()
         {
@@ -16,54 +16,22 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
+                ("isValid", ObjectDefs.IsValid, null),
 
-                ("isLoaded", IsLoaded, null),
                 ("log", Log, null)
             };
-
-            Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
-            {
-                ("Unload", Unload)
-            };
-        }
-
-        internal static int IsLoaded(IntPtr p_state)
-        {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Resource l_resource))
-            {
-                l_reader.PushBoolean(false);
-                return 1;
-            }
-
-            l_reader.PushBoolean(l_resource.IsLoaded);
-            return 1;
         }
 
         internal static int Log(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Resource l_resource))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Resource l_resource))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushString(l_resource.Log);
-            return 1;
-        }
-
-        internal static int Unload(IntPtr p_state)
-        {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Resource l_resource))
-            {
-                l_reader.PushBoolean(false);
-                return 1;
-            }
-
-            l_resource.Unload();
-            l_reader.PushBoolean(true);
+            l_argReader.PushString(l_resource.Log);
             return 1;
         }
     }

@@ -20,13 +20,13 @@ namespace ROC.Engine.Objects.Components
             AudioSource
         }
 
-        virtual public int ComponentPriority => 0;
+        public virtual int ComponentPriority => 0;
 
         GameObject m_gameObject = null;
         protected ComponentType m_componentType = ComponentType.Invalid;
 
         public ComponentType TypeOfComponent => m_componentType;
-        public bool IsValid => (m_componentType != ComponentType.Invalid);
+        public override bool IsValid => (m_componentType != ComponentType.Invalid);
         bool m_enabled;
 
         public GameObject GameObject
@@ -57,13 +57,17 @@ namespace ROC.Engine.Objects.Components
             m_enabled = true;
         }
 
-        internal virtual void Destroy()
+        protected override void DestroyInternal()
         {
-            if(!IsValid)
+            if(m_componentType == ComponentType.Invalid)
                 return;
 
+            m_gameObject?.RemoveComponent(this);
             m_gameObject = null;
+
             m_componentType = ComponentType.Invalid;
+
+            base.DestroyInternal();
         }
 
 
@@ -86,16 +90,6 @@ namespace ROC.Engine.Objects.Components
 
         internal virtual void OnDisable()
         {
-        }
-
-        // API
-        public static void Destroy(Component p_component)
-        {
-            if(p_component == null || !p_component.IsValid)
-                return;
-
-            p_component.GameObject.RemoveComponent(p_component);
-            p_component.Destroy();
         }
     }
 }

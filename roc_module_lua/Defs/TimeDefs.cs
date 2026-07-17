@@ -6,7 +6,7 @@ namespace ROC.Module.Defs
 {
     internal static class TimeDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
 
         static TimeDefs()
         {
@@ -21,15 +21,15 @@ namespace ROC.Module.Defs
 
         static int GetTime(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushNumber(Engine.Core.Core.Instance.WindowManager.Time);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushNumber(Engine.Core.Core.Instance.WindowManager.Time);
             return 1;
         }
 
         static int GetDeltaTime(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushNumber(Engine.Core.DeltaTick.Delta);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushNumber(Engine.Core.DeltaTick.Delta);
             return 1;
         }
     }

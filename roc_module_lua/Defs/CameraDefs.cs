@@ -8,7 +8,7 @@ namespace ROC.Module.Defs
 {
     internal static class CameraDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
         static readonly Type ms_matrix4Type = typeof(Matrix4);
         static readonly Type ms_vector2Type = typeof(Vector2);
         static readonly Type ms_vector4Type = typeof(Vector4);
@@ -20,8 +20,8 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
+                ("isValid", ObjectDefs.IsValid, null),
 
-                ("isValid", ComponentDefs.IsValid, null),
                 ("type", ComponentDefs.GetComponentType, null),
                 ("priority", ComponentDefs.GetPriority, null),
                 ("enabled", ComponentDefs.GetEnabled, ComponentDefs.SetEnabled),
@@ -41,28 +41,26 @@ namespace ROC.Module.Defs
 
             Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
             {
-                ("Destroy", ComponentDefs.Destroy),
-
                 ("IsVisible", IsVisible)
             };
         }
 
         static int GetAspectRatio(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_camera.AspectRatio);
+            l_argReader.PushNumber(l_camera.AspectRatio);
             return 1;
         }
         static int SetAspectRatio(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_camera.AspectRatio = l_val;
@@ -71,20 +69,20 @@ namespace ROC.Module.Defs
 
         static int GetDepth(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector2(l_camera.Depth), ms_vector2Type);
+            l_argReader.PushObject(new Vector2(l_camera.Depth), ms_vector2Type);
             return 1;
         }
         static int SetDepth(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera) || !l_reader.ReadObject(out Vector2 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera) || !l_argReader.ReadObject(out Vector2 l_vec))
                 return 0;
 
             l_camera.Depth = l_vec.m_vector;
@@ -93,20 +91,20 @@ namespace ROC.Module.Defs
 
         static int GetFOV(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_camera.FOV);
+            l_argReader.PushNumber(l_camera.FOV);
             return 1;
         }
         static int SetFOV(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_camera.FOV = l_val;
@@ -115,20 +113,20 @@ namespace ROC.Module.Defs
 
         static int GetOrthoParams(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector4(l_camera.OrthogonalParams), ms_vector4Type);
+            l_argReader.PushObject(new Vector4(l_camera.OrthogonalParams), ms_vector4Type);
             return 1;
         }
         static int SetOrthoParams(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera) || !l_reader.ReadObject(out Vector4 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera) || !l_argReader.ReadObject(out Vector4 l_vec))
                 return 0;
 
             l_camera.OrthogonalParams = l_vec.m_vector;
@@ -137,20 +135,20 @@ namespace ROC.Module.Defs
 
         static int GetPriority(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushInteger(l_camera.Priority);
+            l_argReader.PushInteger(l_camera.Priority);
             return 1;
         }
         static int SetPriority(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera) || !l_reader.ReadInteger(out int l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera) || !l_argReader.ReadInteger(out int l_val))
                 return 0;
 
             l_camera.Priority = l_val;
@@ -159,20 +157,20 @@ namespace ROC.Module.Defs
 
         static int GetProjectionType(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushString(l_camera.Projection.ToString());
+            l_argReader.PushString(l_camera.Projection.ToString());
             return 1;
         }
         static int SetProjectionType(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera) || !l_reader.ReadEnum(out Camera.ProjectionType l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera) || !l_argReader.ReadEnum(out Camera.ProjectionType l_val))
                 return 0;
 
             l_camera.Projection = l_val;
@@ -181,20 +179,20 @@ namespace ROC.Module.Defs
 
         static int GetShadowsRadius(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_camera.ShadowsRadius);
+            l_argReader.PushNumber(l_camera.ShadowsRadius);
             return 1;
         }
         static int SetShadowsRadius(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_camera.ShadowsRadius = l_val;
@@ -203,53 +201,53 @@ namespace ROC.Module.Defs
 
         static int GetProjectionMatrix(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Matrix4(l_camera.ProjectionMatrix), ms_matrix4Type);
+            l_argReader.PushObject(new Matrix4(l_camera.ProjectionMatrix), ms_matrix4Type);
             return 1;
         }
 
         static int GetViewMatrix(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Matrix4(l_camera.ViewMatrix), ms_matrix4Type);
+            l_argReader.PushObject(new Matrix4(l_camera.ViewMatrix), ms_matrix4Type);
             return 1;
         }
 
         static int GetViewProjectionMatrix(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Matrix4(l_camera.ViewProjectionMatrix), ms_matrix4Type);
+            l_argReader.PushObject(new Matrix4(l_camera.ViewProjectionMatrix), ms_matrix4Type);
             return 1;
         }
 
         static int IsVisible(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Camera l_camera) || !l_reader.ReadObject(out Vector3 l_vec) || !l_reader.ReadNumber(out float l_rad))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Camera l_camera) || !l_argReader.ReadObject(out Vector3 l_vec) || !l_argReader.ReadNumber(out float l_rad))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushBoolean(l_camera.IsVisible(l_vec.m_vector, l_rad));
+            l_argReader.PushBoolean(l_camera.IsVisible(l_vec.m_vector, l_rad));
             return 1;
         }
     }

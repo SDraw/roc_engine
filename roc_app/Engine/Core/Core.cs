@@ -79,6 +79,8 @@ namespace ROC.Engine.Core
             m_active = false;
 
             DeltaTick.Stop();
+            Objects.Object.DestroyAll();
+
             m_moduleManager.Stop();
             m_renderManager.Stop();
             m_physicsManager.Stop();

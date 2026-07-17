@@ -10,15 +10,10 @@
             m_log = "";
         }
 
-        virtual public void Unload()
-        {
-            if(!m_loaded)
-                return;
+        public override bool IsValid => m_loaded;
 
-            m_loaded = false;
-        }
-
-        public bool IsLoaded => m_loaded;
         public string Log => m_log;
+
+        protected override void DestroyInternal() => base.DestroyInternal();
     }
 }

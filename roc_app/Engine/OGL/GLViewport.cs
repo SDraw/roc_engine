@@ -21,7 +21,7 @@ namespace ROC.Engine.OGL
         [ThreadStatic]
         static BlendingFactor ms_blendDestination = BlendingFactor.OneMinusSrcAlpha;
 
-        static public ivec2 Position
+        public static ivec2 Position
         {
             get => ms_position;
             set
@@ -31,7 +31,7 @@ namespace ROC.Engine.OGL
             }
         }
 
-        static public ivec2 Size
+        public static ivec2 Size
         {
             get => ms_size;
             set
@@ -41,14 +41,14 @@ namespace ROC.Engine.OGL
             }
         }
 
-        static public void SetArea(ivec2 p_pos, ivec2 p_size)
+        public static void SetArea(ivec2 p_pos, ivec2 p_size)
         {
             ms_position = p_pos;
             ms_size = p_size;
             Gl.Viewport(ms_position.x, ms_position.y, ms_size.x, ms_size.y);
         }
 
-        static public vec4 ClearColor
+        public static vec4 ClearColor
         {
             get => ms_clearColor;
             set
@@ -58,16 +58,16 @@ namespace ROC.Engine.OGL
             }
         }
 
-        static public void SetClearDepth(float p_value) => Gl.ClearDepth(p_value);
+        public static void SetClearDepth(float p_value) => Gl.ClearDepth(p_value);
 
-        static public void SetBlending(BlendingFactor p_source, BlendingFactor p_destination)
+        public static void SetBlending(BlendingFactor p_source, BlendingFactor p_destination)
         {
             ms_blendSource = p_source;
             ms_blendDestination = p_destination;
             Gl.BlendFunc(p_source, p_destination);
         }
 
-        static public void Clear(bool p_depth, bool p_color)
+        public static void Clear(bool p_depth, bool p_color)
         {
             ClearBufferMask l_mode = 0U;
 

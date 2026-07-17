@@ -11,7 +11,7 @@ namespace ROC.Engine.Objects
         const int c_maxLights = 4;
 
         static readonly List<Scene> ms_scenes = new List<Scene>();
-        static internal List<Scene> AllScenes => ms_scenes;
+        internal static List<Scene> AllScenes => ms_scenes;
 
         readonly List<GameObject> m_gameObjects = null;
 
@@ -20,13 +20,12 @@ namespace ROC.Engine.Objects
         readonly mat4[] m_renderLoopLightData = null;
         readonly Frustum m_shadowFrustum = null;
 
+        bool m_valid;
+
         static Shader ms_shadowShader = null;
         static RenderTarget ms_shadowRenderTarget = null;
 
-        public bool IsValid
-        {
-            get; private set;
-        }
+        public override bool IsValid => m_valid;
 
         public Shader Shader
         {
@@ -42,7 +41,7 @@ namespace ROC.Engine.Objects
             m_renderLoopLightData = new mat4[c_maxLights];
             m_shadowFrustum = new Frustum();
 
-            IsValid = true;
+            m_valid = true;
             ms_scenes.Add(this);
         }
         ~Scene()
@@ -69,17 +68,19 @@ namespace ROC.Engine.Objects
         }
 
         // Destruction
-        internal void Destroy()
+        protected override void DestroyInternal()
         {
-            if(!IsValid)
-                return;
+            if(m_valid)
+            {
+                Shader = null;
+                m_gameObjects.Clear();
+                m_renderLoopCameras.Clear();
+                m_renderLoopLights.Clear();
 
-            Shader = null;
-            m_gameObjects.Clear();
-            m_renderLoopCameras.Clear();
-            m_renderLoopLights.Clear();
+                m_valid = false;
+            }
 
-            IsValid = false;
+            base.DestroyInternal();
         }
 
         // Rendering
@@ -91,7 +92,7 @@ namespace ROC.Engine.Objects
             m_renderLoopCameras.Clear();
             m_renderLoopLights.Clear();
 
-            if(Shader == null || !Shader.IsLoaded)
+            if(Shader == null || !Shader.IsValid)
             {
                 Shader = null;
                 return;
@@ -214,14 +215,6 @@ namespace ROC.Engine.Objects
         public static Scene Create()
         {
             return new Scene();
-        }
-
-        public static void Destroy(Scene p_scene)
-        {
-            if(!p_scene.IsValid)
-                return;
-
-            p_scene.Destroy();
         }
     }
 }

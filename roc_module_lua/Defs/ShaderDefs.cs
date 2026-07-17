@@ -8,7 +8,7 @@ namespace ROC.Module.Defs
 {
     internal static class ShaderDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
         static readonly Type ms_shaderType = typeof(Shader);
 
         static ShaderDefs()
@@ -19,39 +19,38 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
-                ("isLoaded", ResourceDefs.IsLoaded, null),
+                ("isValid", ObjectDefs.IsValid, null),
+
                 ("log", ResourceDefs.Log, null)
             };
 
             Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
             {
-                ("Unload", ResourceDefs.Unload),
-
                 ("SetValue", SetValue)
             };
         }
 
         static int Create(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.Skip();
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.Skip();
 
-            if(!l_reader.ReadString(out string l_vert) || !l_reader.ReadString(out string l_frag))
+            if(!l_argReader.ReadString(out string l_vert) || !l_argReader.ReadString(out string l_frag))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(Shader.Import(l_vert, l_frag), ms_shaderType);
+            l_argReader.PushObject(Shader.Import(l_vert, l_frag), ms_shaderType);
             return 1;
         }
 
         static int SetValue(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Shader l_shader) || !l_reader.ReadString(out string l_uniform) || !l_reader.ReadValue(out object p_value))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Shader l_shader) || !l_argReader.ReadString(out string l_uniform) || !l_argReader.ReadValue(out object p_value))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
@@ -90,7 +89,7 @@ namespace ROC.Module.Defs
                     break;
             }
 
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
     }

@@ -8,7 +8,7 @@ namespace ROC.Module.Defs
 {
     internal static class SceneDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
         static readonly Type ms_sceneType = typeof(Scene);
         static readonly Type ms_shaderType = typeof(Shader);
 
@@ -20,8 +20,8 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
+                ("isValid", ObjectDefs.IsValid, null),
 
-                ("isValid", IsValid, null),
                 ("shader", GetShader, SetShader)
             };
 
@@ -36,70 +36,70 @@ namespace ROC.Module.Defs
         // Create
         static int Create(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(Scene.Create(), ms_sceneType);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(Scene.Create(), ms_sceneType);
             return 1;
         }
 
         // Destroy
         static int Destroy(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Scene l_scene))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Scene l_scene))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             Scene.Destroy(l_scene);
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
 
         // Validity
         static int IsValid(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Scene l_scene))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Scene l_scene))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushBoolean(l_scene.IsValid);
+            l_argReader.PushBoolean(l_scene.IsValid);
             return 1;
         }
 
         // Shader
         static int GetShader(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Scene l_scene))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Scene l_scene))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             if(l_scene.Shader != null)
-                l_reader.PushObject(l_scene.Shader, ms_shaderType);
+                l_argReader.PushObject(l_scene.Shader, ms_shaderType);
             else
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
             return 1;
         }
 
         static int SetShader(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Scene l_scene))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Scene l_scene))
                 return 0;
 
-            if(l_reader.IsNextNil())
+            if(l_argReader.IsNextNil())
             {
                 l_scene.Shader = null;
                 return 0;
             }
 
-            if(!l_reader.ReadObject(out Shader l_shader))
+            if(!l_argReader.ReadObject(out Shader l_shader))
                 return 0;
 
             l_scene.Shader = l_shader;
@@ -109,41 +109,41 @@ namespace ROC.Module.Defs
         // GameObjects
         static int AddGameObject(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Scene l_scene))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Scene l_scene))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            if(!l_reader.ReadObject(out GameObject l_go))
+            if(!l_argReader.ReadObject(out GameObject l_go))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             l_scene.AddGameObject(l_go);
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
 
         static int RemoveGameObject(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Scene l_scene))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Scene l_scene))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            if(!l_reader.ReadObject(out GameObject l_go))
+            if(!l_argReader.ReadObject(out GameObject l_go))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             l_scene.RemoveGameObject(l_go);
-            l_reader.PushBoolean(true);
+            l_argReader.PushBoolean(true);
             return 1;
         }
     }

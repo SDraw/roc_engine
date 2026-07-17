@@ -32,7 +32,7 @@ namespace ROC.Engine.Objects.Resources
             ("gMaterialType", Gl.BOOL_VEC4),
             ("gTexture0", Gl.SAMPLER_2D),
             ("gTextureShadow", Gl.SAMPLER_2D_SHADOW),
-            ("gColor", Gl.FLOAT_VEC4),
+            ("gMaterialColor", Gl.FLOAT_VEC4),
             ("gTime", Gl.FLOAT_VEC4)
         };
 
@@ -74,18 +74,20 @@ namespace ROC.Engine.Objects.Resources
         }
 
         // Resource
-        public override void Unload()
+        protected override void DestroyInternal()
         {
-            if(!m_loaded)
-                return;
+            if(m_loaded)
+            {
+                m_uniforms.Clear();
+                m_log = "";
 
-            m_uniforms.Clear();
-            m_log = "";
+                m_glShader.Destroy();
+                m_glShader = null;
 
-            m_glShader.Destroy();
-            m_glShader = null;
+                m_loaded = false;
+            }
 
-            m_loaded = false;
+            base.DestroyInternal();
         }
 
         // Init
@@ -222,7 +224,7 @@ namespace ROC.Engine.Objects.Resources
                 m_glShader.SetUniformValue(l_value.m_location, p_count);
         }
 
-        internal void SetMaterial(bvec4 p_type, vec4 p_params)
+        internal void SetMaterial(bvec4 p_type, vec4 p_params, vec4 p_color)
         {
             if(!m_loaded)
                 return;
@@ -232,14 +234,8 @@ namespace ROC.Engine.Objects.Resources
 
             if(m_uniforms.TryGetValue("gMaterialParam", out l_value) && l_value.m_internalType == Gl.FLOAT_VEC3)
                 m_glShader.SetUniformValue(l_value.m_location, p_params.x, p_params.y, p_params.z, p_params.w);
-        }
 
-        internal void SetColor(vec4 p_color)
-        {
-            if(!m_loaded)
-                return;
-
-            if(m_uniforms.TryGetValue("gColor", out var l_value) && l_value.m_internalType == Gl.FLOAT_VEC4)
+            if(m_uniforms.TryGetValue("gMaterialColor", out l_value) && l_value.m_internalType == Gl.FLOAT_VEC4)
                 m_glShader.SetUniformValue(l_value.m_location, p_color.r, p_color.g, p_color.b, p_color.a);
         }
 
@@ -375,7 +371,7 @@ namespace ROC.Engine.Objects.Resources
 
         internal void Activate()
         {
-            if(!IsLoaded)
+            if(!m_loaded)
                 return;
 
             m_glShader.Bind();

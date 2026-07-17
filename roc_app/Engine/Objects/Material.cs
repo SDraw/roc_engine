@@ -47,7 +47,7 @@ namespace ROC.Engine.Objects
             set;
         }
 
-        public Material()
+        internal Material()
         {
             Transparency = false;
             DepthWrite = true;
@@ -68,5 +68,8 @@ namespace ROC.Engine.Objects
             DiffuseTexture = p_source.DiffuseTexture;
             Params = p_source.Params;
         }
+
+        // API
+        public static Material Create() => new Material();
     }
 }

@@ -8,8 +8,8 @@ namespace ROC.Module.Defs
 {
     internal static class BoxColliderDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
-        static Type ms_vector3Type = typeof(Vector3);
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        static readonly Type ms_vector3Type = typeof(Vector3);
 
         static BoxColliderDefs()
         {
@@ -18,8 +18,8 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
+                ("isValid", ObjectDefs.IsValid, null),
 
-                ("isValid", ComponentDefs.IsValid, null),
                 ("type", ComponentDefs.GetComponentType, null),
                 ("priority", ComponentDefs.GetPriority, null),
                 ("enabled", ComponentDefs.GetEnabled, ComponentDefs.SetEnabled),
@@ -40,8 +40,6 @@ namespace ROC.Module.Defs
 
             Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
             {
-                ("Destroy", ComponentDefs.Destroy),
-
                 ("ApplyCentralForce", ColliderDefs.ApplyCentralForce),
                 ("ApplyCentralImpulse", ColliderDefs.ApplyCentralImpulse),
                 ("ApplyForce", ColliderDefs.ApplyForce),
@@ -53,21 +51,21 @@ namespace ROC.Module.Defs
 
         static int GetSize(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out BoxCollider l_col))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out BoxCollider l_col))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(l_col.Size), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(l_col.Size), ms_vector3Type);
             return 1;
         }
 
         static int SetSize(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out BoxCollider l_col) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out BoxCollider l_col) || !l_argReader.ReadObject(out Vector3 l_val))
                 return 0;
 
             l_col.Size = l_val.m_vector;

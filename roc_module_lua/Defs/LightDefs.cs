@@ -8,7 +8,7 @@ namespace ROC.Module.Defs
 {
     internal static class LightDefs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
         static readonly Type ms_vector2Type = typeof(Vector2);
         static readonly Type ms_vector3Type = typeof(Vector3);
         static readonly Type ms_vector4Type = typeof(Vector4);
@@ -20,8 +20,8 @@ namespace ROC.Module.Defs
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
             {
                 ("instanceID", ObjectDefs.GetInstanceID, null),
+                ("isValid", ObjectDefs.IsValid, null),
 
-                ("isValid", ComponentDefs.IsValid, null),
                 ("type", ComponentDefs.GetComponentType, null),
                 ("priority", ComponentDefs.GetPriority, null),
                 ("enabled", ComponentDefs.GetEnabled, ComponentDefs.SetEnabled),
@@ -34,29 +34,24 @@ namespace ROC.Module.Defs
                 ("shadows", GetShadows, SetShadows),
                 ("lightType", GetLightType, SetLightType),
             };
-
-            Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
-            {
-                ("Destroy", ComponentDefs.Destroy)
-            };
         }
 
         static int GetColor(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector4(l_light.Color), ms_vector4Type);
+            l_argReader.PushObject(new Vector4(l_light.Color), ms_vector4Type);
             return 1;
         }
         static int SetColor(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light) || !l_reader.ReadObject(out Vector4 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light) || !l_argReader.ReadObject(out Vector4 l_val))
                 return 0;
 
             l_light.Color = l_val.m_vector;
@@ -65,20 +60,20 @@ namespace ROC.Module.Defs
 
         static int GetCutoff(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector2(l_light.Cutoff), ms_vector2Type);
+            l_argReader.PushObject(new Vector2(l_light.Cutoff), ms_vector2Type);
             return 1;
         }
         static int SetCutoff(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light) || !l_reader.ReadObject(out Vector2 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light) || !l_argReader.ReadObject(out Vector2 l_val))
                 return 0;
 
             l_light.Cutoff = l_val.m_vector;
@@ -87,20 +82,20 @@ namespace ROC.Module.Defs
 
         static int GetFalloff(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(l_light.Falloff), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(l_light.Falloff), ms_vector3Type);
             return 1;
         }
         static int SetFalloff(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light) || !l_reader.ReadObject(out Vector3 l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light) || !l_argReader.ReadObject(out Vector3 l_val))
                 return 0;
 
             l_light.Falloff = l_val.m_vector;
@@ -109,20 +104,20 @@ namespace ROC.Module.Defs
 
         static int GetPriority(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushInteger(l_light.Priority);
+            l_argReader.PushInteger(l_light.Priority);
             return 1;
         }
         static int SetPriority(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light) || !l_reader.ReadInteger(out int l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light) || !l_argReader.ReadInteger(out int l_val))
                 return 0;
 
             l_light.Priority = l_val;
@@ -131,20 +126,20 @@ namespace ROC.Module.Defs
 
         static int GetShadows(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushBoolean(l_light.Shadows);
+            l_argReader.PushBoolean(l_light.Shadows);
             return 1;
         }
         static int SetShadows(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light) || !l_reader.ReadBoolean(out bool l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light) || !l_argReader.ReadBoolean(out bool l_val))
                 return 0;
 
             l_light.Shadows = l_val;
@@ -153,20 +148,20 @@ namespace ROC.Module.Defs
 
         static int GetLightType(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushString(l_light.TypeOfLight.ToString());
+            l_argReader.PushString(l_light.TypeOfLight.ToString());
             return 1;
         }
         static int SetLightType(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Light l_light) || !l_reader.ReadEnum(out Light.LightType l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Light l_light) || !l_argReader.ReadEnum(out Light.LightType l_val))
                 return 0;
 
             l_light.TypeOfLight = l_val;

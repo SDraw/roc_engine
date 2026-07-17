@@ -25,7 +25,7 @@ namespace ROC.Engine.Objects.Components
         {
         }
 
-        internal override void Destroy()
+        protected override void DestroyInternal()
         {
             if(m_rigidBody != null)
             {
@@ -35,7 +35,7 @@ namespace ROC.Engine.Objects.Components
                 m_rigidBody = null;
             }
 
-            base.Destroy();
+            base.DestroyInternal();
         }
 
         // Component events

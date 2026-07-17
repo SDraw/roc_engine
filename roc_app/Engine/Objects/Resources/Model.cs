@@ -1,5 +1,4 @@
 ﻿using GlmSharp;
-using OpenGL;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -220,26 +219,28 @@ namespace ROC.Engine.Objects.Resources
             }
         }
 
-        public override void Unload()
+        protected override void DestroyInternal()
         {
-            if(!m_loaded)
-                return;
+            if(m_loaded)
+            {
+                m_modelType = (byte)ModelType.Empty;
+                m_meshesData.Clear();
+                m_bonesData.Clear();
 
-            m_modelType = (byte)ModelType.Empty;
-            m_meshesData.Clear();
-            m_bonesData.Clear();
+                foreach(var l_mesh in m_meshes)
+                    Object.Destroy(l_mesh);
+                m_meshes.Clear();
 
-            foreach(var l_mesh in m_meshes)
-                l_mesh.Destroy();
-            m_meshes.Clear();
+                foreach(var l_texture in m_textures)
+                    Object.Destroy(l_texture);
+                m_textures.Clear();
 
-            foreach(var l_texture in m_textures)
-                l_texture.Unload();
-            m_textures.Clear();
+                m_materials.Clear();
 
-            m_materials.Clear();
+                m_loaded = false;
+            }
 
-            m_loaded = false;
+            base.DestroyInternal();
         }
 
         // Arbitrary
@@ -268,7 +269,7 @@ namespace ROC.Engine.Objects.Resources
                     l_meshData.m_texturePath,
                     (l_meshData.m_type & 4U) != 0U,
                     (l_meshData.m_type & 32U) != 0U,
-                    ((l_meshData.m_type & 16U) != 0U) ? Gl.NEAREST : Gl.LINEAR
+                    ((l_meshData.m_type & 16U) != 0U) ? Texture.TextureFiltering.Nearest : Texture.TextureFiltering.Linear
                 );
                 m_textures.Add(l_texture);
             }

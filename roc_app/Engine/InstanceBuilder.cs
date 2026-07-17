@@ -9,7 +9,7 @@ namespace ROC.Engine
     {
         public static GameObject Instantiate(string p_name, Model p_model)
         {
-            if(p_model == null || !p_model.IsLoaded)
+            if(p_model == null || !p_model.IsValid)
                 return null;
 
             GameObject l_go = new GameObject(p_name);
@@ -32,9 +32,7 @@ namespace ROC.Engine
                     for(int i = 0, j = p_model.Bones.Count; i < j; i++)
                     {
                         GameObject l_bone = new GameObject(p_model.Bones[i].m_name);
-                        l_bone.LocalPosition = p_model.Bones[i].m_position;
-                        l_bone.LocalRotation = p_model.Bones[i].m_rotation;
-                        l_bone.LocalScale = p_model.Bones[i].m_scale;
+
                         l_bones.Add(l_bone);
                     }
 
@@ -44,6 +42,10 @@ namespace ROC.Engine
                             l_bones[i].Parent = l_go;
                         else
                             l_bones[i].Parent = l_bones[p_model.Bones[i].m_parent];
+
+                        l_bones[i].LocalPosition = p_model.Bones[i].m_position;
+                        l_bones[i].LocalRotation = p_model.Bones[i].m_rotation;
+                        l_bones[i].LocalScale = p_model.Bones[i].m_scale;
                     }
 
                     l_renderer.Setup(p_model, l_bones);

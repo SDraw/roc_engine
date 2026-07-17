@@ -8,7 +8,7 @@ namespace ROC.Module.Defs
 {
     internal static class Vector3Defs
     {
-        static public readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
+        public static readonly LuaVM.LuaClassDefinition Definition = new LuaVM.LuaClassDefinition();
         static readonly Type ms_vector3Type = typeof(Vector3);
 
         static Vector3Defs()
@@ -58,333 +58,333 @@ namespace ROC.Module.Defs
         // Constructor
         static int Create(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.Skip();
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.Skip();
 
-            if(!l_reader.ReadNumber(out float l_x) || !l_reader.ReadNumber(out float l_y) || !l_reader.ReadNumber(out float l_z))
+            if(!l_argReader.ReadNumber(out float l_x) || !l_argReader.ReadNumber(out float l_y) || !l_argReader.ReadNumber(out float l_z))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(l_x, l_y, l_z), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(l_x, l_y, l_z), ms_vector3Type);
             return 1;
         }
 
         // Static properties
         static int CreateZero(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Vector3(vec3.Zero), ms_vector3Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Vector3(vec3.Zero), ms_vector3Type);
             return 1;
         }
 
         static int CreateOne(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Vector3(vec3.Ones), ms_vector3Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Vector3(vec3.Ones), ms_vector3Type);
             return 1;
         }
 
         static int CreateUnitX(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Vector3(vec3.UnitX), ms_vector3Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Vector3(vec3.UnitX), ms_vector3Type);
             return 1;
         }
 
         static int CreateUnitY(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Vector3(vec3.UnitY), ms_vector3Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Vector3(vec3.UnitY), ms_vector3Type);
             return 1;
         }
 
         static int CreateUnitZ(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            l_reader.PushObject(new Vector3(vec3.UnitZ), ms_vector3Type);
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Vector3(vec3.UnitZ), ms_vector3Type);
             return 1;
         }
 
         // Static methods
         static int Cross(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vecA) || !l_reader.ReadObject(out Vector3 l_vecB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vecA) || !l_argReader.ReadObject(out Vector3 l_vecB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(vec3.Cross(l_vecA.m_vector, l_vecB.m_vector)), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(vec3.Cross(l_vecA.m_vector, l_vecB.m_vector)), ms_vector3Type);
             return 1;
         }
 
         static int Distance(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vecA) || !l_reader.ReadObject(out Vector3 l_vecB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vecA) || !l_argReader.ReadObject(out Vector3 l_vecB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(vec3.Distance(l_vecA.m_vector, l_vecB.m_vector));
+            l_argReader.PushNumber(vec3.Distance(l_vecA.m_vector, l_vecB.m_vector));
             return 1;
         }
 
         static int Dot(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vecA) || !l_reader.ReadObject(out Vector3 l_vecB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vecA) || !l_argReader.ReadObject(out Vector3 l_vecB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(vec3.Dot(l_vecA.m_vector, l_vecB.m_vector));
+            l_argReader.PushNumber(vec3.Dot(l_vecA.m_vector, l_vecB.m_vector));
             return 1;
         }
 
         static int Lerp(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vecA) || !l_reader.ReadObject(out Vector3 l_vecB) || !l_reader.ReadNumber(out float l_alpha))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vecA) || !l_argReader.ReadObject(out Vector3 l_vecB) || !l_argReader.ReadNumber(out float l_alpha))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(vec3.Lerp(l_vecA.m_vector, l_vecB.m_vector, l_alpha)), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(vec3.Lerp(l_vecA.m_vector, l_vecB.m_vector, l_alpha)), ms_vector3Type);
             return 1;
         }
 
         static int Reflect(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vecA) || !l_reader.ReadObject(out Vector3 l_vecB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vecA) || !l_argReader.ReadObject(out Vector3 l_vecB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(vec3.Reflect(l_vecA.m_vector, l_vecB.m_vector)), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(vec3.Reflect(l_vecA.m_vector, l_vecB.m_vector)), ms_vector3Type);
             return 1;
         }
 
         // Metamethods
         static int Add(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadValue(out object l_valA) || !l_reader.ReadValue(out object l_valB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadValue(out object l_valA) || !l_argReader.ReadValue(out object l_valB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             // Vector + value
             if(l_valA is Vector3 l_vec0 && l_valB is double l_val0)
             {
-                l_reader.PushObject(new Vector3(l_vec0.m_vector + (float)l_val0), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec0.m_vector + (float)l_val0), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is Vector3 l_vec1 && l_valB is long l_val1)
             {
-                l_reader.PushObject(new Vector3(l_vec1.m_vector + l_val1), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec1.m_vector + l_val1), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is Vector3 l_vec2 && l_valB is Vector3 l_val2)
             {
-                l_reader.PushObject(new Vector3(l_vec2.m_vector + l_val2.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec2.m_vector + l_val2.m_vector), ms_vector3Type);
                 return 1;
             }
 
             // Value + vector
             if(l_valA is double l_val3 && l_valB is Vector3 l_vec3)
             {
-                l_reader.PushObject(new Vector3((float)l_val3 + l_vec3.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3((float)l_val3 + l_vec3.m_vector), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is long l_val4 && l_valB is Vector3 l_vec4)
             {
-                l_reader.PushObject(new Vector3(l_val4 + l_vec4.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_val4 + l_vec4.m_vector), ms_vector3Type);
                 return 1;
             }
 
-            l_reader.PushBoolean(false);
+            l_argReader.PushBoolean(false);
             return 1;
         }
 
         static int Subtract(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadValue(out object l_valA) || !l_reader.ReadValue(out object l_valB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadValue(out object l_valA) || !l_argReader.ReadValue(out object l_valB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             // Vector - value
             if(l_valA is Vector3 l_vec0 && l_valB is double l_val0)
             {
-                l_reader.PushObject(new Vector3(l_vec0.m_vector - (float)l_val0), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec0.m_vector - (float)l_val0), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is Vector3 l_vec1 && l_valB is long l_val1)
             {
-                l_reader.PushObject(new Vector3(l_vec1.m_vector - l_val1), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec1.m_vector - l_val1), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is Vector3 l_vec2 && l_valB is Vector3 l_val2)
             {
-                l_reader.PushObject(new Vector3(l_vec2.m_vector - l_val2.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec2.m_vector - l_val2.m_vector), ms_vector3Type);
                 return 1;
             }
 
             // Value - vector
             if(l_valA is double l_val3 && l_valB is Vector3 l_vec3)
             {
-                l_reader.PushObject(new Vector3((float)l_val3 - l_vec3.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3((float)l_val3 - l_vec3.m_vector), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is long l_val4 && l_valB is Vector3 l_vec4)
             {
-                l_reader.PushObject(new Vector3(l_val4 - l_vec4.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_val4 - l_vec4.m_vector), ms_vector3Type);
                 return 1;
             }
 
-            l_reader.PushBoolean(false);
+            l_argReader.PushBoolean(false);
             return 1;
         }
 
         static int Multiply(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadValue(out object l_valA) || !l_reader.ReadValue(out object l_valB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadValue(out object l_valA) || !l_argReader.ReadValue(out object l_valB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             // Vector * value
             if(l_valA is Vector3 l_vec0 && l_valB is double l_val0)
             {
-                l_reader.PushObject(new Vector3(l_vec0.m_vector * (float)l_val0), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec0.m_vector * (float)l_val0), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is Vector3 l_vec1 && l_valB is long l_val1)
             {
-                l_reader.PushObject(new Vector3(l_vec1.m_vector * l_val1), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec1.m_vector * l_val1), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is Vector3 l_vec2 && l_valB is Vector3 l_val2)
             {
-                l_reader.PushObject(new Vector3(l_vec2.m_vector * l_val2.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec2.m_vector * l_val2.m_vector), ms_vector3Type);
                 return 1;
             }
 
             // Value * vector
             if(l_valA is double l_val3 && l_valB is Vector3 l_vec3)
             {
-                l_reader.PushObject(new Vector3((float)l_val3 * l_vec3.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3((float)l_val3 * l_vec3.m_vector), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is long l_val4 && l_valB is Vector3 l_vec4)
             {
-                l_reader.PushObject(new Vector3(l_val4 * l_vec4.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_val4 * l_vec4.m_vector), ms_vector3Type);
                 return 1;
             }
 
-            l_reader.PushBoolean(false);
+            l_argReader.PushBoolean(false);
             return 1;
         }
 
         static int Divide(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadValue(out object l_valA) || !l_reader.ReadValue(out object l_valB))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadValue(out object l_valA) || !l_argReader.ReadValue(out object l_valB))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
             // Vector / value
             if(l_valA is Vector3 l_vec0 && l_valB is double l_val0)
             {
-                l_reader.PushObject(new Vector3(l_vec0.m_vector / (float)l_val0), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec0.m_vector / (float)l_val0), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is Vector3 l_vec1 && l_valB is long l_val1)
             {
-                l_reader.PushObject(new Vector3(l_vec1.m_vector / l_val1), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec1.m_vector / l_val1), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is Vector3 l_vec2 && l_valB is Vector3 l_val2)
             {
-                l_reader.PushObject(new Vector3(l_vec2.m_vector / l_val2.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_vec2.m_vector / l_val2.m_vector), ms_vector3Type);
                 return 1;
             }
 
             // value / vector
             if(l_valA is double l_val3 && l_valB is Vector3 l_vec3)
             {
-                l_reader.PushObject(new Vector3((float)l_val3 / l_vec3.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3((float)l_val3 / l_vec3.m_vector), ms_vector3Type);
                 return 1;
             }
 
             if(l_valA is long l_val4 && l_valB is Vector3 l_vec4)
             {
-                l_reader.PushObject(new Vector3(l_val4 / l_vec4.m_vector), ms_vector3Type);
+                l_argReader.PushObject(new Vector3(l_val4 / l_vec4.m_vector), ms_vector3Type);
                 return 1;
             }
 
-            l_reader.PushBoolean(false);
+            l_argReader.PushBoolean(false);
             return 1;
         }
 
         static int GetLength(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vec))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_vec.m_vector.Length);
+            l_argReader.PushNumber(l_vec.m_vector.Length);
             return 1;
         }
 
         // Instance properties
         static int GetX(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vec))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_vec.m_vector.x);
+            l_argReader.PushNumber(l_vec.m_vector.x);
             return 1;
         }
 
         static int SetX(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vec) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vec) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_vec.m_vector.x = l_val;
@@ -393,21 +393,21 @@ namespace ROC.Module.Defs
 
         static int GetY(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vec))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_vec.m_vector.y);
+            l_argReader.PushNumber(l_vec.m_vector.y);
             return 1;
         }
 
         static int SetY(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vec) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vec) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_vec.m_vector.y = l_val;
@@ -416,21 +416,21 @@ namespace ROC.Module.Defs
 
         static int GetZ(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vec))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushNumber(l_vec.m_vector.z);
+            l_argReader.PushNumber(l_vec.m_vector.z);
             return 1;
         }
 
         static int SetZ(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vec) || !l_reader.ReadNumber(out float l_val))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vec) || !l_argReader.ReadNumber(out float l_val))
                 return 0;
 
             l_vec.m_vector.z = l_val;
@@ -439,14 +439,14 @@ namespace ROC.Module.Defs
 
         static int Normalized(IntPtr p_state)
         {
-            ArgReader l_reader = new ArgReader(p_state);
-            if(!l_reader.ReadObject(out Vector3 l_vec))
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vec))
             {
-                l_reader.PushBoolean(false);
+                l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_reader.PushObject(new Vector3(l_vec.m_vector.Normalized), ms_vector3Type);
+            l_argReader.PushObject(new Vector3(l_vec.m_vector.Normalized), ms_vector3Type);
             return 1;
         }
     }
