@@ -1,47 +1,46 @@
 ﻿using GlmSharp;
+using glTFLoader;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace ROC.Engine.Objects.Resources
 {
     public sealed class Animation : Resource
     {
-        internal struct KeyframeData
+        public enum AnimationFileType : int
         {
-            public vec3 m_position;
-            public quat m_rotation;
-            public vec3 m_scale;
-            public uint m_frameIndex;
-            public uint m_time;
+            RAF = 0,
+            glTF
         }
 
         internal struct BoneAnimation
         {
-            public uint m_boneIndex;
-            public KeyframeData[] m_keyframes;
+            public Timeline<vec3> m_positionsTimeline;
+            public Timeline<quat> m_rotationsTimeline;
+            public Timeline<vec3> m_scalesTimeline;
         }
 
         internal struct AnimationFrame
         {
-            public KeyframeData m_keyframe;
-            public bool m_available;
+            public vec3 m_position;
+            public quat m_rotation;
+            public vec3 m_scale;
+            public bool m_hasPosition;
+            public bool m_hasRotation;
+            public bool m_hasScale;
         }
 
-        uint m_fps = 0U;
-        uint m_framesCount = 0U;
-        int m_bonesCount = 0;
+        static AnimationFrame[] ms_emptyAnimationFrame = new AnimationFrame[0];
 
-        uint m_frameDelta = 0U;
+        int m_bonesCount = 0;
         uint m_duration = 0U;
 
         BoneAnimation[] m_boneAnimationData = null;
-        AnimationFrame[] m_animationData = null;
+        AnimationFrame[] m_outputAnimationData = null;
 
-        public uint FPS => m_fps;
-        public uint FrameDelta => m_frameDelta;
         public uint Duration => m_duration;
         public int BonesCount => m_bonesCount;
-        public uint FramesCount => m_framesCount;
 
         internal Animation()
         {
@@ -57,45 +56,35 @@ namespace ROC.Engine.Objects.Resources
                 FileStream l_file = new FileStream(p_path, FileMode.Open, FileAccess.Read);
                 BinaryReader l_reader = new BinaryReader(l_file);
 
-                m_fps = l_reader.ReadUInt32();
-                m_framesCount = l_reader.ReadUInt32();
+                uint l_fps = l_reader.ReadUInt32();
+                uint l_framesCount = l_reader.ReadUInt32();
                 m_bonesCount = (int)l_reader.ReadUInt32();
 
-                m_frameDelta = 1000U / m_fps;
-                m_duration = m_framesCount * m_frameDelta;
+                uint l_frameDelta = 1000U / l_fps;
+                m_duration = l_framesCount * l_frameDelta;
 
                 m_boneAnimationData = new BoneAnimation[m_bonesCount];
-                m_animationData = new AnimationFrame[m_bonesCount];
+                m_outputAnimationData = new AnimationFrame[m_bonesCount];
                 for(uint i = 0; i < m_bonesCount; i++)
                 {
                     m_boneAnimationData[i] = new BoneAnimation();
-                    m_boneAnimationData[i].m_boneIndex = i;
-
-                    m_animationData[i] = new AnimationFrame();
+                    m_boneAnimationData[i].m_positionsTimeline = new Timeline<vec3>();
+                    m_boneAnimationData[i].m_rotationsTimeline = new Timeline<quat>();
+                    m_boneAnimationData[i].m_scalesTimeline = new Timeline<vec3>();
 
                     uint l_keyframesCount = l_reader.ReadUInt32();
-                    m_boneAnimationData[i].m_keyframes = new KeyframeData[l_keyframesCount];
-
                     for(uint j = 0; j < l_keyframesCount; j++)
                     {
-                        m_boneAnimationData[i].m_keyframes[j] = new KeyframeData();
-                        m_boneAnimationData[i].m_keyframes[j].m_position.x = l_reader.ReadSingle();
-                        m_boneAnimationData[i].m_keyframes[j].m_position.y = l_reader.ReadSingle();
-                        m_boneAnimationData[i].m_keyframes[j].m_position.z = l_reader.ReadSingle();
+                        vec3 l_pos = new vec3(l_reader.ReadSingle(), l_reader.ReadSingle(), l_reader.ReadSingle());
+                        quat l_rot = new quat(l_reader.ReadSingle(), l_reader.ReadSingle(), l_reader.ReadSingle(), l_reader.ReadSingle());
+                        vec3 l_scl = new vec3(l_reader.ReadSingle(), l_reader.ReadSingle(), l_reader.ReadSingle());
+                        uint l_frameIndex = l_reader.ReadUInt32();
+                        uint l_frameTime = l_frameIndex * l_frameDelta;
+                        m_duration = Math.Max(m_duration, l_frameTime);
 
-                        m_boneAnimationData[i].m_keyframes[j].m_rotation.x = l_reader.ReadSingle();
-                        m_boneAnimationData[i].m_keyframes[j].m_rotation.y = l_reader.ReadSingle();
-                        m_boneAnimationData[i].m_keyframes[j].m_rotation.z = l_reader.ReadSingle();
-                        m_boneAnimationData[i].m_keyframes[j].m_rotation.w = l_reader.ReadSingle();
-
-                        m_boneAnimationData[i].m_keyframes[j].m_rotation = m_boneAnimationData[i].m_keyframes[j].m_rotation.NormalizedSafe;
-
-                        m_boneAnimationData[i].m_keyframes[j].m_scale.x = l_reader.ReadSingle();
-                        m_boneAnimationData[i].m_keyframes[j].m_scale.y = l_reader.ReadSingle();
-                        m_boneAnimationData[i].m_keyframes[j].m_scale.z = l_reader.ReadSingle();
-                        m_boneAnimationData[i].m_keyframes[j].m_frameIndex = l_reader.ReadUInt32();
-
-                        m_boneAnimationData[i].m_keyframes[j].m_time = m_boneAnimationData[i].m_keyframes[j].m_frameIndex * m_frameDelta;
+                        m_boneAnimationData[i].m_positionsTimeline.Add(l_frameTime, l_pos);
+                        m_boneAnimationData[i].m_rotationsTimeline.Add(l_frameTime, l_rot.NormalizedSafe);
+                        m_boneAnimationData[i].m_scalesTimeline.Add(l_frameTime, l_scl);
                     }
                 }
 
@@ -107,10 +96,80 @@ namespace ROC.Engine.Objects.Resources
 
                 m_boneAnimationData = null;
                 m_bonesCount = 0;
-                m_framesCount = 0U;
                 m_duration = 0U;
-                m_fps = 0U;
             }
+        }
+
+        internal void Load(glTFLoader.Schema.Gltf p_model, int p_index, List<byte[]> p_buffers)
+        {
+            if(m_loaded)
+                return;
+
+            // Get list of nodes as bones
+            List<glTFLoader.Schema.Node> l_bonesNodes = new List<glTFLoader.Schema.Node>();
+            foreach(var l_joint in p_model.Skins[0].Joints)
+                l_bonesNodes.Add(p_model.Nodes[l_joint]);
+
+            m_bonesCount = l_bonesNodes.Count;
+            m_boneAnimationData = new BoneAnimation[m_bonesCount];
+            for(int i = 0; i < m_bonesCount; i++)
+            {
+                m_boneAnimationData[i].m_positionsTimeline = new Timeline<vec3>();
+                m_boneAnimationData[i].m_rotationsTimeline = new Timeline<quat>();
+                m_boneAnimationData[i].m_scalesTimeline = new Timeline<vec3>();
+            }
+
+            var l_anim = p_model.Animations[p_index];
+            foreach(var l_channel in l_anim.Channels)
+            {
+                if(!l_channel.Target.Node.HasValue)
+                    continue;
+
+                int l_boneIndex = l_bonesNodes.IndexOf(p_model.Nodes[l_channel.Target.Node.Value]);
+                if(l_boneIndex == -1)
+                    continue;
+
+                var l_times = Utils.GetAccessorData<float>(p_model, p_model.Accessors[l_anim.Samplers[l_channel.Sampler].Input], p_buffers); // N * 2 floats as time in seconds, where N is frames
+                var l_values = Utils.GetAccessorData<float>(p_model, p_model.Accessors[l_anim.Samplers[l_channel.Sampler].Output], p_buffers); // 6 * N * 2 floats for position and scale, 8 * N * 2 floats for rotation
+                int l_frames = l_times.Length / 2;
+                switch(l_channel.Target.Path)
+                {
+                    case glTFLoader.Schema.AnimationChannelTarget.PathEnum.translation:
+                    {
+                        for(int i = 0; i < l_frames; i++)
+                        {
+                            m_boneAnimationData[l_boneIndex].m_positionsTimeline.Add((uint)(l_times[i * 2] * 1000f), new vec3(l_values[i * 6], l_values[i * 6 + 1], l_values[i * 6 + 2]));
+                            m_boneAnimationData[l_boneIndex].m_positionsTimeline.Add((uint)(l_times[i * 2 + 1] * 1000f), new vec3(l_values[i * 6 + 3], l_values[i * 6 + 4], l_values[i * 6 + 5]));
+                        }
+                    }
+                    break;
+
+                    case glTFLoader.Schema.AnimationChannelTarget.PathEnum.rotation:
+                    {
+                        for(int i = 0; i < l_frames; i++)
+                        {
+                            m_boneAnimationData[l_boneIndex].m_rotationsTimeline.Add((uint)(l_times[i * 2] * 1000f), new quat(l_values[i * 8], l_values[i * 8 + 1], l_values[i * 8 + 2], l_values[i * 8 + 3]));
+                            m_boneAnimationData[l_boneIndex].m_rotationsTimeline.Add((uint)(l_times[i * 2 + 1] * 1000f), new quat(l_values[i * 8 + 4], l_values[i * 8 + 5], l_values[i * 8 + 6], l_values[i * 8 + 7]).NormalizedSafe);
+                        }
+                    }
+                    break;
+
+                    case glTFLoader.Schema.AnimationChannelTarget.PathEnum.scale:
+                    {
+                        for(int i = 0; i < l_frames; i++)
+                        {
+                            m_boneAnimationData[l_boneIndex].m_scalesTimeline.Add((uint)(l_times[i * 2] * 1000f), new vec3(l_values[i * 6], l_values[i * 6 + 1], l_values[i * 6 + 2]));
+                            m_boneAnimationData[l_boneIndex].m_scalesTimeline.Add((uint)(l_times[i * 2 + 1] * 1000f), new vec3(l_values[i * 6 + 3], l_values[i * 6 + 4], l_values[i * 6 + 5]));
+                        }
+                    }
+                    break;
+                }
+
+                m_duration = Math.Max(m_duration, (uint)(p_model.Accessors[l_anim.Samplers[l_channel.Sampler].Input].Max[0] * 1000f));
+            }
+
+            m_outputAnimationData = new AnimationFrame[m_bonesCount];
+            m_loaded = true;
         }
 
         protected override void DestroyInternal()
@@ -119,9 +178,7 @@ namespace ROC.Engine.Objects.Resources
             {
                 m_boneAnimationData = null;
                 m_bonesCount = 0;
-                m_framesCount = 0U;
                 m_duration = 0U;
-                m_fps = 0U;
 
                 m_loaded = false;
             }
@@ -130,73 +187,85 @@ namespace ROC.Engine.Objects.Resources
         }
 
         // Animation
-        // Just simple loop for searching frame, no search optimizations
-        internal AnimationFrame[] GetFrameData(uint p_time)
+        internal ref AnimationFrame[] GetFrameData(uint p_time)
         {
             if(!m_loaded)
-                return new AnimationFrame[0];
+                return ref ms_emptyAnimationFrame;
 
             p_time %= m_duration;
 
             for(int i = 0; i < m_bonesCount; i++)
             {
-                m_animationData[i].m_available = false;
-                for(int j1 = 0, k = m_boneAnimationData[i].m_keyframes.Length; j1 < k; j1++)
+                m_outputAnimationData[i].m_hasPosition = false;
+                m_outputAnimationData[i].m_hasRotation = false;
+                m_outputAnimationData[i].m_hasScale = false;
+
+                if(m_boneAnimationData[i].m_positionsTimeline.Get(p_time, out vec3 l_posA, out vec3 l_posB, out float l_blendA))
                 {
-                    if(p_time < m_boneAnimationData[i].m_keyframes[j1].m_time)
-                    {
-                        // Found our frame
-                        m_animationData[i].m_available = true;
+                    m_outputAnimationData[i].m_hasPosition = true;
+                    m_outputAnimationData[i].m_position = vec3.Lerp(l_posA, l_posB, l_blendA);
+                }
 
-                        int j0 = j1 - 1;
-                        if(j0 > -1)
-                        {
-                            // Interpolate
-                            float l_blend = EaseInOut(InverseLerp(m_boneAnimationData[i].m_keyframes[j0].m_time, m_boneAnimationData[i].m_keyframes[j1].m_time, p_time));
-                            m_animationData[i].m_keyframe.m_position = vec3.Lerp(m_boneAnimationData[i].m_keyframes[j0].m_position, m_boneAnimationData[i].m_keyframes[j1].m_position, l_blend);
-                            m_animationData[i].m_keyframe.m_rotation = SLerpSafe(m_boneAnimationData[i].m_keyframes[j0].m_rotation, m_boneAnimationData[i].m_keyframes[j1].m_rotation, l_blend);
-                            m_animationData[i].m_keyframe.m_scale = vec3.Lerp(m_boneAnimationData[i].m_keyframes[j0].m_scale, m_boneAnimationData[i].m_keyframes[j1].m_scale, l_blend);
-                        }
-                        else
-                        {
-                            // Single keyframe
-                            m_animationData[i].m_keyframe.m_position = m_boneAnimationData[i].m_keyframes[j1].m_position;
-                            m_animationData[i].m_keyframe.m_rotation = m_boneAnimationData[i].m_keyframes[j1].m_rotation;
-                            m_animationData[i].m_keyframe.m_scale = m_boneAnimationData[i].m_keyframes[j1].m_scale;
-                        }
+                if(m_boneAnimationData[i].m_rotationsTimeline.Get(p_time, out quat l_quatA, out quat l_quatB, out float l_blendB))
+                {
+                    m_outputAnimationData[i].m_hasRotation = true;
+                    m_outputAnimationData[i].m_rotation = Utils.SLerpSafe(l_quatA, l_quatB, l_blendB);
+                }
 
-                        break;
-                    }
+                if(m_boneAnimationData[i].m_scalesTimeline.Get(p_time, out vec3 l_sclA, out vec3 l_sclB, out float l_blendC))
+                {
+                    m_outputAnimationData[i].m_hasScale = true;
+                    m_outputAnimationData[i].m_scale = vec3.Lerp(l_sclA, l_sclB, l_blendC);
                 }
             }
 
-            return m_animationData;
+            return ref m_outputAnimationData;
         }
-
-        // Utils
-        static float InverseLerp(uint a, uint b, uint t)
-        {
-            float l_up = t - a;
-            float l_down = b - a;
-            return l_up / l_down;
-        }
-
-        static quat SLerpSafe(quat a, quat b, float blend)
-        {
-            if(a == b)
-                return a;
-
-            return quat.SLerp(a, b, blend);
-        }
-
-        static float EaseInOut(float p_value) => -0.5f * ((float)Math.Cos(Math.PI * p_value) - 1f);
 
         // API
-        public static Animation Import(string p_path)
+        public static Animation ImportRAF(string p_path)
         {
             Animation l_anim = new Animation();
             l_anim.Load(p_path);
             return l_anim;
+        }
+
+        public static Dictionary<string, Animation> ImportGLTF(string p_path)
+        {
+            var l_dict = new Dictionary<string, Animation>();
+
+            try
+            {
+                var l_gltfModel = Interface.LoadModel(p_path);
+
+                List<byte[]> l_binaryBuffers = new List<byte[]>();
+                foreach(var l_buffer in l_gltfModel.Buffers)
+                {
+                    if(l_buffer.Uri != null)
+                        l_binaryBuffers.Add(Convert.FromBase64String(l_buffer.Uri.Split(',')[1]));
+                    else
+                        l_binaryBuffers.Add(Interface.LoadBinaryBuffer(l_gltfModel, l_binaryBuffers.Count, p_path));
+                }
+
+                if(l_gltfModel.Skins == null || l_gltfModel.Skins.Length == 0 || l_gltfModel.Skins[0].Joints == null || l_gltfModel.Skins[0].Joints.Length == 0)
+                    throw new Exception(string.Format("'{0}' has no skin or joints data", p_path));
+
+                if(l_gltfModel.Animations == null || l_gltfModel.Animations.Length == 0)
+                    throw new Exception(string.Format("'{0}' has no animation data", p_path));
+
+                for(int i = 0, j = l_gltfModel.Animations.Length; i < j; i++)
+                {
+                    Animation l_anim = new Animation();
+                    l_anim.Load(l_gltfModel, i, l_binaryBuffers);
+                    l_dict.Add(l_gltfModel.Animations[i].Name ?? string.Format("Animation{0}", i), l_anim);
+                }
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
+            return l_dict;
         }
     }
 }

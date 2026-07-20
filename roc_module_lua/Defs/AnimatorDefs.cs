@@ -26,7 +26,8 @@ namespace ROC.Module.Defs
                 ("gameObject", ComponentDefs.GetGameObject, null),
 
                 ("animation", GetAnimation, SetAnimation),
-                ("speed", GetSpeed, SetSpeed)
+                ("speed", GetSpeed, SetSpeed),
+                ("loop", GetLoop, SetLoop)
             };
         }
 
@@ -90,6 +91,29 @@ namespace ROC.Module.Defs
                 return 0;
 
             l_animator.Speed = l_val;
+            return 0;
+        }
+
+        static int GetLoop(IntPtr p_state)
+        {
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Animator l_animator))
+            {
+                l_argReader.PushBoolean(false);
+                return 1;
+            }
+
+            l_argReader.PushBoolean(l_animator.Loop);
+            return 1;
+        }
+
+        static int SetLoop(IntPtr p_state)
+        {
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Animator l_animator) || !l_argReader.ReadBoolean(out bool l_val))
+                return 0;
+
+            l_animator.Loop = l_val;
             return 0;
         }
     }

@@ -346,7 +346,7 @@ namespace LuaSharp.Lua
             m_return++;
         }
 
-        public void PushTable(Dictionary<string, object> p_table)
+        public void PushTable<T>(Dictionary<string, T> p_table)
         {
             m_luaVM.PushTable(p_table);
             m_return++;

@@ -49,7 +49,7 @@ namespace ROC.Module.Defs
                 ("w", GetW,SetW),
                 ("roll", GetRoll, null),
                 ("pitch", GetPitch, null),
-                ("yawn", GetYaw, null),
+                ("yaw", GetYaw, null),
                 ("normalized", Normalized, null),
                 ("inversed", Inversed, null),
                 ("conjugated", Conjugated, null),

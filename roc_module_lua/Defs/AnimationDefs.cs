@@ -22,10 +22,7 @@ namespace ROC.Module.Defs
                 ("log", ResourceDefs.Log, null),
 
                 ("bonesCount", GetBonesCount, null),
-                ("duration", GetDuration, null),
-                ("fps", GetFPS, null),
-                ("frameDelta", GetFrameDelta, null),
-                ("framesCount", GetFramesCount, null)
+                ("duration", GetDuration, null)
             };
         }
 
@@ -34,13 +31,22 @@ namespace ROC.Module.Defs
             var l_argReader = new ArgReader(p_state);
             l_argReader.Skip();
 
-            if(!l_argReader.ReadString(out string l_path))
+            if(!l_argReader.ReadString(out string l_path) || !l_argReader.ReadEnum(out Animation.AnimationFileType l_type))
             {
                 l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_argReader.PushObject(Animation.Import(l_path), ms_animationType);
+            switch(l_type)
+            {
+                case Animation.AnimationFileType.RAF:
+                    l_argReader.PushObject(Animation.ImportRAF(l_path), ms_animationType);
+                    break;
+                case Animation.AnimationFileType.glTF:
+                    l_argReader.PushTable(Animation.ImportGLTF(l_path));
+                    break;
+            }
+
             return 1;
         }
 
@@ -67,45 +73,6 @@ namespace ROC.Module.Defs
             }
 
             l_argReader.PushInteger(l_animation.Duration);
-            return 1;
-        }
-
-        static int GetFPS(IntPtr p_state)
-        {
-            var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Animation l_animation))
-            {
-                l_argReader.PushBoolean(false);
-                return 1;
-            }
-
-            l_argReader.PushInteger(l_animation.FPS);
-            return 1;
-        }
-
-        static int GetFrameDelta(IntPtr p_state)
-        {
-            var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Animation l_animation))
-            {
-                l_argReader.PushBoolean(false);
-                return 1;
-            }
-
-            l_argReader.PushInteger(l_animation.FrameDelta);
-            return 1;
-        }
-
-        static int GetFramesCount(IntPtr p_state)
-        {
-            var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Animation l_animation))
-            {
-                l_argReader.PushBoolean(false);
-                return 1;
-            }
-
-            l_argReader.PushInteger(l_animation.FramesCount);
             return 1;
         }
     }

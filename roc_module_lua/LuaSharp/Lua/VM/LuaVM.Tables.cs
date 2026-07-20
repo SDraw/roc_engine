@@ -29,7 +29,7 @@ namespace LuaSharp.Lua
             }
         }
 
-        public void PushTable(Dictionary<string, object> p_list)
+        public void PushTable<T>(Dictionary<string, T> p_list)
         {
             LuaInterop.lua_newtable(m_state);
             foreach(var l_pair in p_list)

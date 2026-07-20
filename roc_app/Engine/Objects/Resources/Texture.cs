@@ -56,6 +56,32 @@ namespace ROC.Engine.Objects.Resources
             }
         }
 
+        internal void Load(byte[] p_data, bool p_transparent, bool p_compressed, TextureFiltering p_filter)
+        {
+            if(m_loaded)
+                return;
+
+            m_glTexture = new GLTexture2D();
+
+            try
+            {
+                SFML.Graphics.Image l_image = new SFML.Graphics.Image(p_data);
+
+                m_glTexture.Create(
+                    (int)l_image.Size.X, (int)l_image.Size.Y,
+                    p_transparent ? (p_compressed ? InternalFormat.CompressedRgba : InternalFormat.Rgba8) : (p_compressed ? InternalFormat.CompressedRgb : InternalFormat.Rgb8),
+                    PixelFormat.Rgba,
+                    l_image.Pixels,
+                    Gl.NEAREST + (int)p_filter
+                );
+                m_loaded = true;
+            }
+            catch(Exception)
+            {
+                m_glTexture.Create(2, 2, InternalFormat.CompressedRgb, PixelFormat.Rgba, ms_dummyTextureData, Gl.NEAREST);
+            }
+        }
+
         protected override void DestroyInternal()
         {
             if(m_loaded)

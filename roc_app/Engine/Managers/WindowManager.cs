@@ -282,5 +282,22 @@ namespace ROC.Engine.Managers
         public void SetCursorVisible(bool p_state) => m_window?.SetMouseCursorVisible(p_state);
 
         public void CloseWindow() => m_active = false;
+
+        public ivec2 GetMousePosition()
+        {
+            if(m_window == null)
+                return ivec2.Zero;
+
+            var l_pos = Mouse.GetPosition(m_window);
+            return new ivec2(l_pos.X, l_pos.Y);
+        }
+
+        public void SetMousePosition(ivec2 p_pos)
+        {
+            if(m_window == null)
+                return;
+
+            Mouse.SetPosition(new Vector2i(p_pos.x, p_pos.y), m_window);
+        }
     }
 }

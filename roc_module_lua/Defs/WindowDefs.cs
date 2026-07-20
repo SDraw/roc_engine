@@ -1,4 +1,5 @@
-﻿using LuaSharp.Lua;
+﻿using GlmSharp;
+using LuaSharp.Lua;
 using ROC.Module.Wrappers;
 using System;
 using System.Collections.Generic;
@@ -24,7 +25,8 @@ namespace ROC.Module.Defs
                 ("icon", null, SetIcon),
                 ("focus", GetFocus, null),
                 ("cursorGrabbed", null, SetCursorGrab),
-                ("cursorVisible", null, SetCursorVisible)
+                ("cursorVisible", null, SetCursorVisible),
+                ("mousePosition", GetMousePosition, SetMousePosition)
             };
 
             Definition.m_staticMethods = new List<(string, LuaInterop.lua_CFunction)>()
@@ -144,6 +146,22 @@ namespace ROC.Module.Defs
         static int Close(IntPtr p_state)
         {
             Engine.Core.Core.Instance.WindowManager.CloseWindow();
+            return 0;
+        }
+
+        static int GetMousePosition(IntPtr p_state)
+        {
+            var l_argReader = new ArgReader(p_state);
+            l_argReader.PushObject(new Vector2(Engine.Core.Core.Instance.WindowManager.GetMousePosition()), ms_vector2Type);
+            return 1;
+        }
+        static int SetMousePosition(IntPtr p_state)
+        {
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector2 l_pos))
+                return 0;
+
+            Engine.Core.Core.Instance.WindowManager.SetMousePosition((ivec2)l_pos.m_vector);
             return 0;
         }
     }

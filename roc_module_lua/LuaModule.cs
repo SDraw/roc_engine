@@ -119,6 +119,8 @@ namespace ROC.Module
             m_vm.RegisterClass(WindowDefs.Definition);
             m_vm.RegisterClass(InputDefs.Definition);
             m_vm.RegisterClass(RenderDefs.Definition);
+
+            m_vm.RegisterClass(UtilitiesDefs.Definition);
         }
 
         void LoadScripts()

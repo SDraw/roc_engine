@@ -119,7 +119,7 @@ namespace ROC.Engine.Objects.Components
         // Properties
         public float Mass
         {
-            get => ((m_rigidBody == null) || (m_rigidBody.InvMass == 0f)) ? 0f : (1f / m_rigidBody.InvMass);
+            get => ((m_rigidBody == null) || m_rigidBody.InvMass.IsEpsilonEqual(0f)) ? 0f : (1f / m_rigidBody.InvMass);
             set
             {
                 if(m_rigidBody == null)
