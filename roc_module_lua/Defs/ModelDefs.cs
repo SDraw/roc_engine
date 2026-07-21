@@ -32,13 +32,13 @@ namespace ROC.Module.Defs
             var l_argReader = new ArgReader(p_state);
             l_argReader.Skip();
 
-            if(!l_argReader.ReadString(out string l_path) || !l_argReader.ReadEnum(out Model.ModelFileType l_type))
+            if(!l_argReader.ReadString(out string l_path))
             {
                 l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_argReader.PushObject(Model.Import(l_path, l_type), ms_modelType);
+            l_argReader.PushObject(Model.Import(l_path), ms_modelType);
             return 1;
         }
 

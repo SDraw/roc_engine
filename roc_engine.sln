@@ -3,19 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.36631.11
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "animConverter", "animConverter\animConverter.vcxproj", "{0426804A-534B-45F6-B86C-9E69DF9D1A16}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "modelConverter", "modelConverter\modelConverter.vcxproj", "{392E64B3-202B-40FB-8EDB-7EED5FC831B6}"
-EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "collisionConverter", "collisionConverter\collisionConverter.vcxproj", "{13820A71-B5FE-4D79-A386-F777E05BB96F}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CPP", "CPP", "{58419E72-2960-45CD-86CE-F63389D381E8}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "CSharp", "CSharp", "{62AB5C86-6931-4DED-A9CC-C84329B48976}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "roc_app", "roc_app\roc_app.csproj", "{2B7CE788-FCD4-4D10-8C97-C166C2E3D2E2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "roc_module_lua", "roc_module_lua\roc_module_lua.csproj", "{D783D69D-0A71-4DD1-9DDD-A505A3C60EC2}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "roc_converter", "roc_converter\roc_converter.csproj", "{8CDC9C62-0EFE-427C-A13D-849A1BD5B916}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -23,18 +15,6 @@ Global
 		Release|x64 = Release|x64
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{0426804A-534B-45F6-B86C-9E69DF9D1A16}.Debug|x64.ActiveCfg = Debug|x64
-		{0426804A-534B-45F6-B86C-9E69DF9D1A16}.Debug|x64.Build.0 = Debug|x64
-		{0426804A-534B-45F6-B86C-9E69DF9D1A16}.Release|x64.ActiveCfg = Release|x64
-		{0426804A-534B-45F6-B86C-9E69DF9D1A16}.Release|x64.Build.0 = Release|x64
-		{392E64B3-202B-40FB-8EDB-7EED5FC831B6}.Debug|x64.ActiveCfg = Debug|x64
-		{392E64B3-202B-40FB-8EDB-7EED5FC831B6}.Debug|x64.Build.0 = Debug|x64
-		{392E64B3-202B-40FB-8EDB-7EED5FC831B6}.Release|x64.ActiveCfg = Release|x64
-		{392E64B3-202B-40FB-8EDB-7EED5FC831B6}.Release|x64.Build.0 = Release|x64
-		{13820A71-B5FE-4D79-A386-F777E05BB96F}.Debug|x64.ActiveCfg = Debug|x64
-		{13820A71-B5FE-4D79-A386-F777E05BB96F}.Debug|x64.Build.0 = Debug|x64
-		{13820A71-B5FE-4D79-A386-F777E05BB96F}.Release|x64.ActiveCfg = Release|x64
-		{13820A71-B5FE-4D79-A386-F777E05BB96F}.Release|x64.Build.0 = Release|x64
 		{2B7CE788-FCD4-4D10-8C97-C166C2E3D2E2}.Debug|x64.ActiveCfg = Debug|x64
 		{2B7CE788-FCD4-4D10-8C97-C166C2E3D2E2}.Debug|x64.Build.0 = Debug|x64
 		{2B7CE788-FCD4-4D10-8C97-C166C2E3D2E2}.Release|x64.ActiveCfg = Release|x64
@@ -43,16 +23,13 @@ Global
 		{D783D69D-0A71-4DD1-9DDD-A505A3C60EC2}.Debug|x64.Build.0 = Debug|x64
 		{D783D69D-0A71-4DD1-9DDD-A505A3C60EC2}.Release|x64.ActiveCfg = Release|x64
 		{D783D69D-0A71-4DD1-9DDD-A505A3C60EC2}.Release|x64.Build.0 = Release|x64
+		{8CDC9C62-0EFE-427C-A13D-849A1BD5B916}.Debug|x64.ActiveCfg = Debug|x64
+		{8CDC9C62-0EFE-427C-A13D-849A1BD5B916}.Debug|x64.Build.0 = Debug|x64
+		{8CDC9C62-0EFE-427C-A13D-849A1BD5B916}.Release|x64.ActiveCfg = Release|x64
+		{8CDC9C62-0EFE-427C-A13D-849A1BD5B916}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
-	EndGlobalSection
-	GlobalSection(NestedProjects) = preSolution
-		{0426804A-534B-45F6-B86C-9E69DF9D1A16} = {58419E72-2960-45CD-86CE-F63389D381E8}
-		{392E64B3-202B-40FB-8EDB-7EED5FC831B6} = {58419E72-2960-45CD-86CE-F63389D381E8}
-		{13820A71-B5FE-4D79-A386-F777E05BB96F} = {58419E72-2960-45CD-86CE-F63389D381E8}
-		{2B7CE788-FCD4-4D10-8C97-C166C2E3D2E2} = {62AB5C86-6931-4DED-A9CC-C84329B48976}
-		{D783D69D-0A71-4DD1-9DDD-A505A3C60EC2} = {62AB5C86-6931-4DED-A9CC-C84329B48976}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DDA44FAB-2386-4E86-85DE-0FCDCCEC3598}

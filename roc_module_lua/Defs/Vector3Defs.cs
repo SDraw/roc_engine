@@ -40,7 +40,8 @@ namespace ROC.Module.Defs
                 ("__sub", Subtract),
                 ("__div", Divide),
                 ("__mul", Multiply),
-                ("__len", GetLength)
+                ("__len", GetLength),
+                ("__unm", Inverse)
             };
 
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
@@ -364,6 +365,19 @@ namespace ROC.Module.Defs
             }
 
             l_argReader.PushNumber(l_vec.m_vector.Length);
+            return 1;
+        }
+
+        static int Inverse(IntPtr p_state)
+        {
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Vector3 l_vec))
+            {
+                l_argReader.PushBoolean(false);
+                return 1;
+            }
+
+            l_argReader.PushObject(new Vector3(-l_vec.m_vector), ms_vector3Type);
             return 1;
         }
 

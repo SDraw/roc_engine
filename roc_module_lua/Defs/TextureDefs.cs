@@ -33,21 +33,19 @@ namespace ROC.Module.Defs
             var l_argReader = new ArgReader(p_state);
             l_argReader.Skip();
 
-            if(!l_argReader.ReadString(out string l_path) || !l_argReader.ReadBoolean(out bool l_alpha) || !l_argReader.ReadBoolean(out bool l_compress) || !l_argReader.ReadEnum(out Texture.TextureFiltering l_filter))
+            if(!l_argReader.ReadString(out string l_path) || !l_argReader.ReadBoolean(out bool l_alpha) || !l_argReader.ReadEnum(out Texture.TextureFiltering l_filter))
             {
                 l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            l_argReader.PushObject(Texture.Import(l_path, l_alpha, l_compress, l_filter), ms_textureType);
+            l_argReader.PushObject(Texture.Import(l_path, l_alpha, l_filter), ms_textureType);
             return 1;
         }
 
         static int GetSize(IntPtr p_state)
         {
             var l_argReader = new ArgReader(p_state);
-            l_argReader.Skip();
-
             if(!l_argReader.ReadObject(out Texture l_tex))
             {
                 l_argReader.PushBoolean(false);

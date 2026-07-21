@@ -31,22 +31,13 @@ namespace ROC.Module.Defs
             var l_argReader = new ArgReader(p_state);
             l_argReader.Skip();
 
-            if(!l_argReader.ReadString(out string l_path) || !l_argReader.ReadEnum(out Animation.AnimationFileType l_type))
+            if(!l_argReader.ReadString(out string l_path))
             {
                 l_argReader.PushBoolean(false);
                 return 1;
             }
 
-            switch(l_type)
-            {
-                case Animation.AnimationFileType.RAF:
-                    l_argReader.PushObject(Animation.ImportRAF(l_path), ms_animationType);
-                    break;
-                case Animation.AnimationFileType.glTF:
-                    l_argReader.PushTable(Animation.ImportGLTF(l_path));
-                    break;
-            }
-
+            l_argReader.PushObject(Animation.Import(l_path), ms_animationType);
             return 1;
         }
 

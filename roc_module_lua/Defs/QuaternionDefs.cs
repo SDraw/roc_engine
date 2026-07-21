@@ -38,7 +38,8 @@ namespace ROC.Module.Defs
                 ("__mul", Multiply),
                 ("__add", Add),
                 ("__sub", Subtract),
-                ("__div", Divide)
+                ("__div", Divide),
+                ("__unm", Inverse)
             };
 
             Definition.m_instanceProperties = new List<(string, LuaInterop.lua_CFunction, LuaInterop.lua_CFunction)>()
@@ -342,6 +343,18 @@ namespace ROC.Module.Defs
             }
 
             l_argReader.PushBoolean(false);
+            return 1;
+        }
+
+        static int Inverse(IntPtr p_state)
+        {
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Quaternion l_quat))
+            {
+                l_argReader.PushBoolean(false);
+                return 1;
+            }
+            l_argReader.PushObject(new Quaternion(-l_quat.m_quat), ms_quaternionType);
             return 1;
         }
 

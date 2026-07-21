@@ -30,7 +30,7 @@ namespace ROC.Engine.Objects.Resources
         {
         }
 
-        internal void Load(string p_path, bool p_transparent, bool p_compressed, TextureFiltering p_filter)
+        internal void Load(string p_path, bool p_transparent, TextureFiltering p_filter)
         {
             if(m_loaded)
                 return;
@@ -43,7 +43,7 @@ namespace ROC.Engine.Objects.Resources
 
                 m_glTexture.Create(
                     (int)l_image.Size.X, (int)l_image.Size.Y,
-                    p_transparent ? (p_compressed ? InternalFormat.CompressedRgba : InternalFormat.Rgba8) : (p_compressed ? InternalFormat.CompressedRgb : InternalFormat.Rgb8),
+                    p_transparent ? InternalFormat.Rgba8 : InternalFormat.Rgb8,
                     PixelFormat.Rgba,
                     l_image.Pixels,
                     Gl.NEAREST + (int)p_filter
@@ -69,7 +69,7 @@ namespace ROC.Engine.Objects.Resources
 
                 m_glTexture.Create(
                     (int)l_image.Size.X, (int)l_image.Size.Y,
-                    p_transparent ? (p_compressed ? InternalFormat.CompressedRgba : InternalFormat.Rgba8) : (p_compressed ? InternalFormat.CompressedRgb : InternalFormat.Rgb8),
+                    p_transparent ? InternalFormat.Rgba8 : InternalFormat.Rgb8,
                     PixelFormat.Rgba,
                     l_image.Pixels,
                     Gl.NEAREST + (int)p_filter
@@ -105,10 +105,10 @@ namespace ROC.Engine.Objects.Resources
         }
 
         // API
-        public static Texture Import(string p_path, bool p_alpha = true, bool p_compress = false, TextureFiltering p_filter = TextureFiltering.Nearest)
+        public static Texture Import(string p_path, bool p_alpha = true, TextureFiltering p_filter = TextureFiltering.Nearest)
         {
             Texture l_texture = new Texture();
-            l_texture.Load(p_path, p_alpha, p_compress, p_filter);
+            l_texture.Load(p_path, p_alpha, p_filter);
             return l_texture;
         }
     }
