@@ -321,7 +321,7 @@ namespace ROC.Converter
             }
             catch(Exception e)
             {
-                Console.WriteLine("Model load exception: {0}", e.Message);
+                Console.WriteLine("Model load exception: {0} at {1}", e.Message, e.StackTrace);
             }
         }
 
@@ -340,8 +340,8 @@ namespace ROC.Converter
                 BinaryWriter l_writer = new BinaryWriter(l_file);
 
                 l_writer.Write((byte)'R'); // Header
-                l_writer.Write((byte)'M'); //
-                l_writer.Write((byte)'F'); //
+                l_writer.Write((byte)'M');
+                l_writer.Write((byte)'F');
 
                 if(m_bones.Count > 0)
                     l_writer.Write((byte)2); // Rigged
@@ -355,15 +355,15 @@ namespace ROC.Converter
                 {
                     byte l_materialType = 0b0;
                     if(!l_submesh.m_unlit)
-                        l_materialType |= c_unlitBit;
+                        l_materialType |= c_unlitBit; // Shaded
                     if(l_submesh.m_depthWrite)
-                        l_materialType |= c_depthWriteBit;
+                        l_materialType |= c_depthWriteBit; // Depth write
                     if(l_submesh.m_transparent)
-                        l_materialType |= c_transparencyBit;
+                        l_materialType |= c_transparencyBit; // Transparent
                     if(l_submesh.m_doubleSided)
-                        l_materialType |= c_doubleSidedBit;
+                        l_materialType |= c_doubleSidedBit; // Doublesided
                     if(!l_submesh.m_nearestFilter)
-                        l_materialType |= c_filteringBit;
+                        l_materialType |= c_filteringBit; // 0 - nearest filtering, 1 - linear
 
                     l_writer.Write(l_materialType); // Material type
 
@@ -372,10 +372,10 @@ namespace ROC.Converter
                     l_writer.Write(l_submesh.m_color.Z); // Material color B
                     l_writer.Write(l_submesh.m_color.W); // Material color A
 
-                    l_writer.Write(l_submesh.m_params.X); // Material param X
-                    l_writer.Write(l_submesh.m_params.Y); // Material param Y
-                    l_writer.Write(l_submesh.m_params.Z); // Material param Z
-                    l_writer.Write(l_submesh.m_params.W); // Material param W
+                    l_writer.Write(l_submesh.m_params.X); // Material param 0
+                    l_writer.Write(l_submesh.m_params.Y); // Material param 1
+                    l_writer.Write(l_submesh.m_params.Z); // Material param 2
+                    l_writer.Write(l_submesh.m_params.W); // Material param 3
 
                     string l_path = "textures/" + l_submesh.m_textureName;
                     if(l_submesh.m_textureData != null)
@@ -389,38 +389,38 @@ namespace ROC.Converter
                         Console.WriteLine("Saved texture '{0}", Path.Combine(l_textureDir, l_submesh.m_textureName));
                     }
                     byte[] l_pathData = Encoding.UTF8.GetBytes(l_path);
-                    l_writer.Write((byte)l_pathData.Length);
-                    l_writer.Write(l_pathData);
+                    l_writer.Write((byte)l_pathData.Length); // Texture path length
+                    l_writer.Write(l_pathData); // Texture path
 
-                    l_writer.Write(l_submesh.m_vertexData.Length * sizeof(float));
-                    l_writer.Write(l_submesh.m_vertexData.AsBytes());
+                    l_writer.Write(l_submesh.m_vertexData.Length * sizeof(float)); // Vertex data length
+                    l_writer.Write(l_submesh.m_vertexData.AsBytes());  // Vertex data
 
-                    l_writer.Write(l_submesh.m_normalData.Length * sizeof(float));
-                    l_writer.Write(l_submesh.m_normalData.AsBytes());
+                    l_writer.Write(l_submesh.m_normalData.Length * sizeof(float)); // Normal data length
+                    l_writer.Write(l_submesh.m_normalData.AsBytes());// Normal data
 
-                    l_writer.Write(l_submesh.m_uvData.Length * sizeof(float));
-                    l_writer.Write(l_submesh.m_uvData.AsBytes());
+                    l_writer.Write(l_submesh.m_uvData.Length * sizeof(float)); // UV data length
+                    l_writer.Write(l_submesh.m_uvData.AsBytes());// UV data
 
                     if(m_bones.Count > 0)
                     {
-                        l_writer.Write(l_submesh.m_weightsData.Length * sizeof(float));
-                        l_writer.Write(l_submesh.m_weightsData.AsBytes());
+                        l_writer.Write(l_submesh.m_weightsData.Length * sizeof(float)); // Weights data length
+                        l_writer.Write(l_submesh.m_weightsData.AsBytes()); // Weights data
 
-                        l_writer.Write(l_submesh.m_weightIndiciesData.Length * sizeof(float));
-                        l_writer.Write(l_submesh.m_weightIndiciesData.AsBytes());
+                        l_writer.Write(l_submesh.m_weightIndiciesData.Length * sizeof(int)); // Weights index data length
+                        l_writer.Write(l_submesh.m_weightIndiciesData.AsBytes()); // Weights index data
                     }
                 }
 
                 if(m_bones.Count > 0)
                 {
-                    l_writer.Write(m_bones.Count);
+                    l_writer.Write(m_bones.Count); // Bones count
 
                     foreach(var l_bone in m_bones)
                     {
                         byte[] l_nameData = Encoding.UTF8.GetBytes(l_bone.m_name);
-                        l_writer.Write((byte)l_nameData.Length);
-                        l_writer.Write(l_nameData);
-                        l_writer.Write(l_bone.m_parent);
+                        l_writer.Write((byte)l_nameData.Length); // Bone name length
+                        l_writer.Write(l_nameData); // Bone name
+                        l_writer.Write(l_bone.m_parent); // Parent index
                         l_writer.Write(l_bone.m_localPosition.X);
                         l_writer.Write(l_bone.m_localPosition.Y);
                         l_writer.Write(l_bone.m_localPosition.Z);
@@ -445,7 +445,7 @@ namespace ROC.Converter
             }
             catch(Exception e)
             {
-                Console.WriteLine("Model save exception: {0}", e.Message);
+                Console.WriteLine("Model save exception: {0} at {1}", e.Message, e.StackTrace);
             }
 
             foreach(var l_anim in m_animations)

@@ -33,7 +33,7 @@ namespace ROC.Engine.Objects.Components
             set;
         }
 
-        public MeshRenderer MeshRenderer
+        internal MeshRenderer MeshRenderer
         {
             get;
             set;

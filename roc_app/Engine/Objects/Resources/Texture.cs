@@ -7,7 +7,7 @@ namespace ROC.Engine.Objects.Resources
 {
     public sealed class Texture : Resource
     {
-        public enum TextureFiltering : int
+        public enum TextureFiltering
         {
             Nearest = 0,
             Linear

@@ -3,7 +3,7 @@ using System.IO;
 
 namespace ROC.Converter
 {
-    static public class App
+    public static class App
     {
         static int Main(string[] args)
         {

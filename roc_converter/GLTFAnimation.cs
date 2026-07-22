@@ -95,7 +95,7 @@ namespace ROC.Converter
             }
             catch(Exception e)
             {
-                Console.WriteLine("Error parsing animation with index {0}: {1}", p_index, e.Message);
+                Console.WriteLine("Error parsing animation with index {0}: {1} at {2}", p_index, e.Message, e.StackTrace);
             }
         }
 
@@ -116,8 +116,9 @@ namespace ROC.Converter
                 l_writer.Write((byte)'R');
                 l_writer.Write((byte)'A');
                 l_writer.Write((byte)'F');
-                l_writer.Write((byte)m_bonesCount);
+
                 l_writer.Write(m_duration);
+                l_writer.Write((byte)m_bonesCount);
 
                 for(int i = 0; i < m_bonesCount; i++)
                 {
@@ -164,7 +165,7 @@ namespace ROC.Converter
             }
             catch(Exception e)
             {
-                Console.WriteLine("Error saving animation '{0}': {1}", m_name, e.Message);
+                Console.WriteLine("Error saving animation '{0}': {1} at {2}", m_name, e.Message, e.StackTrace);
             }
         }
     }

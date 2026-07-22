@@ -8,7 +8,7 @@ namespace ROC.Engine.Objects.Components
 {
     public class Collider : Component
     {
-        public enum MotionType : int
+        public enum MotionType
         {
             Default = 0,
             Static,
@@ -47,24 +47,11 @@ namespace ROC.Engine.Objects.Components
             vec3 l_pos = GameObject.Position;
             quat l_rot = GameObject.Rotation;
 
-            var l_matrix =
-                BulletSharp.Math.Matrix.Translation(
-                    new BulletSharp.Math.Vector3(l_pos.Values)
-                ) * BulletSharp.Math.Matrix.RotationQuaternion(
-                    new BulletSharp.Math.Quaternion(l_rot.Values)
-            );
-
-            switch(m_motionType)
-            {
-                case MotionType.Default:
-                case MotionType.Static:
-                    m_rigidBody.CenterOfMassTransform = l_matrix;
-                    break;
-
-                case MotionType.Kinematic:
-                    m_rigidBody.MotionState.WorldTransform = l_matrix;
-                    break;
-            }
+            m_rigidBody.WorldTransform =
+                BulletSharp.Math.Matrix.RotationQuaternion(
+                    new BulletSharp.Math.Quaternion(l_rot.x, l_rot.y, l_rot.z, l_rot.w)
+                ) * BulletSharp.Math.Matrix.Translation(l_pos.x, l_pos.y, l_pos.z);
+            m_rigidBody.Activate(true);
         }
 
         internal override void OnShadowPass(Shader p_shader, Frustum p_frustum)
@@ -90,9 +77,9 @@ namespace ROC.Engine.Objects.Components
         {
             m_internalUpdate = true;
 
-            m_rigidBody.CenterOfMassTransform.Decompose(out _, out var l_rot, out var l_pos);
+            m_rigidBody.WorldTransform.Decompose(out _, out var l_rot, out var l_pos);
             GameObject.Position = new vec3(l_pos.ToArray());
-            GameObject.Rotation = new quat(l_rot.X, l_rot.Y, l_rot.Z, l_rot.W);
+            GameObject.Rotation = new quat(l_rot.X, l_rot.Y, l_rot.Z, l_rot.W).NormalizedSafe;
 
             m_internalUpdate = false;
         }
@@ -133,6 +120,7 @@ namespace ROC.Engine.Objects.Components
 
                 m_rigidBody.SetMassProps(value, l_inertia);
                 m_rigidBody.UpdateInertiaTensor();
+                m_rigidBody.Activate(true);
 
                 PhysicsManager.AddRigidBody(m_rigidBody);
             }
@@ -186,6 +174,7 @@ namespace ROC.Engine.Objects.Components
                     return;
 
                 m_rigidBody.LinearFactor = new BulletSharp.Math.Vector3(value.Values);
+                m_rigidBody.Activate(true);
             }
         }
 
@@ -198,6 +187,7 @@ namespace ROC.Engine.Objects.Components
                     return;
 
                 m_rigidBody.AngularFactor = new BulletSharp.Math.Vector3(value.Values);
+                m_rigidBody.Activate(true);
             }
         }
 
@@ -210,6 +200,7 @@ namespace ROC.Engine.Objects.Components
                     return;
 
                 m_rigidBody.Friction = value;
+                m_rigidBody.Activate(true);
             }
         }
 
@@ -222,6 +213,7 @@ namespace ROC.Engine.Objects.Components
                     return;
 
                 m_rigidBody.Restitution = value;
+                m_rigidBody.Activate(true);
             }
         }
 
@@ -234,6 +226,7 @@ namespace ROC.Engine.Objects.Components
                 return;
 
             m_rigidBody.ApplyForce(new BulletSharp.Math.Vector3(p_force.Values), new BulletSharp.Math.Vector3(p_point.Values));
+            m_rigidBody.Activate(true);
         }
 
         public void ApplyCentralForce(vec3 p_force)
@@ -242,6 +235,7 @@ namespace ROC.Engine.Objects.Components
                 return;
 
             m_rigidBody.ApplyCentralForce(new BulletSharp.Math.Vector3(p_force.Values));
+            m_rigidBody.Activate(true);
         }
 
         public void ApplyImpulse(vec3 p_impulse, vec3 p_point)
@@ -250,6 +244,7 @@ namespace ROC.Engine.Objects.Components
                 return;
 
             m_rigidBody.ApplyImpulse(new BulletSharp.Math.Vector3(p_impulse.Values), new BulletSharp.Math.Vector3(p_point.Values));
+            m_rigidBody.Activate(true);
         }
 
         public void ApplyCentralImpulse(vec3 p_impulse)
@@ -258,6 +253,7 @@ namespace ROC.Engine.Objects.Components
                 return;
 
             m_rigidBody.ApplyCentralImpulse(new BulletSharp.Math.Vector3(p_impulse.Values));
+            m_rigidBody.Activate(true);
         }
 
         public void ApplyTorque(vec3 p_torque)
@@ -266,6 +262,7 @@ namespace ROC.Engine.Objects.Components
                 return;
 
             m_rigidBody.ApplyTorque(new BulletSharp.Math.Vector3(p_torque.Values));
+            m_rigidBody.Activate(true);
         }
 
         public void ApplyTorqueImpulse(vec3 p_torque)
@@ -274,7 +271,10 @@ namespace ROC.Engine.Objects.Components
                 return;
 
             m_rigidBody.ApplyTorqueImpulse(new BulletSharp.Math.Vector3(p_torque.Values));
+            m_rigidBody.Activate(true);
         }
+
+        public void Activate(bool p_forced) => m_rigidBody?.Activate(p_forced);
 
         // Internal
         void UpdateMotionType()

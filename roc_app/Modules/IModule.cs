@@ -1,6 +1,6 @@
 ﻿namespace ROC.Modules
 {
-    public enum ModuleEvent : int
+    public enum ModuleEvent
     {
         OnEngineStart = 0,
         OnEngineStop,

@@ -152,12 +152,11 @@ namespace ROC.Engine.Objects.Components
                 if(m_materials[i] == null || !m_materials[i].IsValid || m_meshes[i] == null || !m_meshes[i].IsValid)
                     continue;
 
-                if(m_materials[i].DepthWrite)
-                {
-                    GLSettings.Set(EnableCap.CullFace, !m_materials[i].DoubleSided);
+                if(!m_materials[i].DepthWrite)
+                    continue;
 
-                    m_meshes[i].Draw();
-                }
+                GLSettings.Set(EnableCap.CullFace, !m_materials[i].DoubleSided);
+                m_meshes[i].Draw();
             }
         }
 

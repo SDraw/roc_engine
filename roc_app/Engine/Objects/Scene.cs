@@ -12,6 +12,7 @@ namespace ROC.Engine.Objects
 
         static readonly List<Scene> ms_scenes = new List<Scene>();
         internal static List<Scene> AllScenes => ms_scenes;
+        static readonly Predicate<GameObject> InvalidGameObjectPredicate = (p_go) => !p_go.IsValid;
 
         readonly List<GameObject> m_gameObjects = null;
 
@@ -54,8 +55,10 @@ namespace ROC.Engine.Objects
             if(!IsValid || p_go == null || !p_go.IsValid)
                 return;
 
-            if(!m_gameObjects.Contains(p_go))
-                m_gameObjects.Add(p_go);
+            if(m_gameObjects.Contains(p_go))
+                return;
+
+            m_gameObjects.Add(p_go);
         }
 
         public void RemoveGameObject(GameObject p_go)
@@ -63,8 +66,7 @@ namespace ROC.Engine.Objects
             if(!IsValid || p_go == null || !p_go.IsValid)
                 return;
 
-            if(m_gameObjects.Contains(p_go))
-                m_gameObjects.Remove(p_go);
+            m_gameObjects.Remove(p_go);
         }
 
         // Destruction
@@ -89,6 +91,7 @@ namespace ROC.Engine.Objects
             if(!IsValid)
                 return;
 
+            m_gameObjects.RemoveAll(InvalidGameObjectPredicate);
             m_renderLoopCameras.Clear();
             m_renderLoopLights.Clear();
 
@@ -124,7 +127,7 @@ namespace ROC.Engine.Objects
             Light l_shadowLight = null;
             foreach(var l_light in m_renderLoopLights)
             {
-                if(l_light.Enabled && (l_light.TypeOfLight == Light.LightType.Directional && l_light.Shadows))
+                if(l_light.Enabled && (l_light.TypeOfLight == Light.LightType.Directional) && l_light.Shadows)
                 {
                     l_shadowLight = l_light;
                     break;
@@ -209,6 +212,16 @@ namespace ROC.Engine.Objects
                 ms_shadowRenderTarget = new RenderTarget();
                 ms_shadowRenderTarget.Create(RenderTarget.RenderTargetType.Shadow, new ivec2(Core.Core.Instance.ConfigManager.ShadowsSize));
             }
+        }
+        internal static void ClearResources()
+        {
+            if(ms_shadowShader != null)
+                Object.Destroy(ms_shadowShader);
+            ms_shadowShader = null;
+
+            if(ms_shadowRenderTarget != null)
+                Object.Destroy(ms_shadowRenderTarget);
+            ms_shadowRenderTarget = null;
         }
 
         // API

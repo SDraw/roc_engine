@@ -4,7 +4,7 @@ namespace ROC.Engine.Objects.Components
 {
     public class Component : Object
     {
-        public enum ComponentType : int
+        public enum ComponentType
         {
             Invalid = -1,
             Camera = 0,

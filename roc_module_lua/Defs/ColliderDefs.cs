@@ -43,7 +43,8 @@ namespace ROC.Module.Defs
                 ("ApplyForce", ApplyForce),
                 ("ApplyImpulse", ApplyImpulse),
                 ("ApplyTorque", ApplyTorque),
-                ("ApplyTorqueImpulse", ApplyTorqueImpulse)
+                ("ApplyTorqueImpulse", ApplyTorqueImpulse),
+                ("Activate", Activate)
             };
         }
 
@@ -316,6 +317,24 @@ namespace ROC.Module.Defs
             }
 
             l_col.ApplyTorqueImpulse(l_val.m_vector);
+            l_argReader.PushBoolean(true);
+            return 1;
+        }
+
+        internal static int Activate(IntPtr p_state)
+        {
+            var l_argReader = new ArgReader(p_state);
+            if(!l_argReader.ReadObject(out Collider l_col))
+            {
+                l_argReader.PushBoolean(false);
+                return 1;
+            }
+
+            bool l_force = false;
+            if(l_argReader.IsNextBoolean())
+                l_argReader.ReadBoolean(out l_force);
+
+            l_col.Activate(l_force);
             l_argReader.PushBoolean(true);
             return 1;
         }

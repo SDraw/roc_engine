@@ -4,7 +4,7 @@ namespace ROC.Engine.Objects.Components
 {
     public sealed class Camera : Component
     {
-        public enum ProjectionType : int
+        public enum ProjectionType
         {
             Orthogonal = 0,
             Perspective,

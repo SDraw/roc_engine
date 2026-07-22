@@ -36,7 +36,7 @@ namespace ROC.Engine.Objects.Resources
             public vec3 m_scale;
         }
 
-        public enum ModelType : int
+        public enum ModelType
         {
             Empty = 0,
             Static = 1,

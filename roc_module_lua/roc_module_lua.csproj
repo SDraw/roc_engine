@@ -23,7 +23,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="lua" Version="5.4.6" />
+    <PackageReference Include="lua" Version="5.5.0" />
   </ItemGroup>
 
   <ItemGroup>

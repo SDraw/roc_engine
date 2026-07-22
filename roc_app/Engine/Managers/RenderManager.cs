@@ -2,12 +2,13 @@
 using OpenGL;
 using ROC.Engine.Objects;
 using ROC.Engine.OGL;
+using System;
 
 namespace ROC.Engine.Managers
 {
     public sealed class RenderManager : Manager
     {
-        public enum RenderMode : int
+        public enum RenderMode
         {
             Triangles = 0,
             Lines,
@@ -17,6 +18,8 @@ namespace ROC.Engine.Managers
         bool m_renderStage = false;
         static ivec2 ms_renderWindow = ivec2.Ones;
         RenderMode m_renderMode = RenderMode.Triangles;
+
+        static readonly Predicate<Scene> InvalidScenePredicate = (p_go) => !p_go.IsValid;
 
         internal override void Start()
         {
@@ -44,6 +47,7 @@ namespace ROC.Engine.Managers
             if(!m_active)
                 return;
 
+            Scene.ClearResources();
             m_active = false;
         }
 
@@ -60,6 +64,8 @@ namespace ROC.Engine.Managers
             GLViewport.Clear(true, true);
 
             // Iterate over all scenes and draw everything
+            Scene.AllScenes.RemoveAll(InvalidScenePredicate);
+
             float l_time = Core.Core.Instance.WindowManager.Time;
             foreach(var l_scene in Scene.AllScenes)
                 l_scene.OnFramePass(l_time);

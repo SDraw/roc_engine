@@ -43,7 +43,8 @@ namespace ROC.Module.Defs
                 ("ApplyForce", ColliderDefs.ApplyForce),
                 ("ApplyImpulse", ColliderDefs.ApplyImpulse),
                 ("ApplyTorque", ColliderDefs.ApplyTorque),
-                ("ApplyTorqueImpulse", ColliderDefs.ApplyTorqueImpulse)
+                ("ApplyTorqueImpulse", ColliderDefs.ApplyTorqueImpulse),
+                ("Activate", ColliderDefs.Activate)
             };
         }
 

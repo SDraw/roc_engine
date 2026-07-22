@@ -32,7 +32,7 @@ namespace ROC.Engine.Objects
         public virtual bool IsValid => true;
 
         // API
-        public static void Destroy(Object p_obj) => p_obj.DestroyInternal();
+        public static void Destroy(Object p_obj) => p_obj?.DestroyInternal();
 
         // Cleanup
         internal static void DestroyAll()

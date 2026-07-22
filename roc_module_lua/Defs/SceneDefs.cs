@@ -27,7 +27,6 @@ namespace ROC.Module.Defs
 
             Definition.m_instanceMethods = new List<(string, LuaInterop.lua_CFunction)>()
             {
-                ("Destroy", Destroy),
                 ("Add", AddGameObject),
                 ("Remove", RemoveGameObject)
             };
@@ -38,35 +37,6 @@ namespace ROC.Module.Defs
         {
             var l_argReader = new ArgReader(p_state);
             l_argReader.PushObject(Scene.Create(), ms_sceneType);
-            return 1;
-        }
-
-        // Destroy
-        static int Destroy(IntPtr p_state)
-        {
-            var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Scene l_scene))
-            {
-                l_argReader.PushBoolean(false);
-                return 1;
-            }
-
-            Scene.Destroy(l_scene);
-            l_argReader.PushBoolean(true);
-            return 1;
-        }
-
-        // Validity
-        static int IsValid(IntPtr p_state)
-        {
-            var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Scene l_scene))
-            {
-                l_argReader.PushBoolean(false);
-                return 1;
-            }
-
-            l_argReader.PushBoolean(l_scene.IsValid);
             return 1;
         }
 
@@ -110,13 +80,7 @@ namespace ROC.Module.Defs
         static int AddGameObject(IntPtr p_state)
         {
             var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Scene l_scene))
-            {
-                l_argReader.PushBoolean(false);
-                return 1;
-            }
-
-            if(!l_argReader.ReadObject(out GameObject l_go))
+            if(!l_argReader.ReadObject(out Scene l_scene) || !l_argReader.ReadObject(out GameObject l_go))
             {
                 l_argReader.PushBoolean(false);
                 return 1;
@@ -130,13 +94,7 @@ namespace ROC.Module.Defs
         static int RemoveGameObject(IntPtr p_state)
         {
             var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Scene l_scene))
-            {
-                l_argReader.PushBoolean(false);
-                return 1;
-            }
-
-            if(!l_argReader.ReadObject(out GameObject l_go))
+            if(!l_argReader.ReadObject(out Scene l_scene) || !l_argReader.ReadObject(out GameObject l_go))
             {
                 l_argReader.PushBoolean(false);
                 return 1;

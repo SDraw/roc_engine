@@ -4,7 +4,7 @@ namespace ROC.Engine.Objects.Components
 {
     public sealed class Light : Component
     {
-        public enum LightType : int
+        public enum LightType
         {
             Directional = 0,
             Point,

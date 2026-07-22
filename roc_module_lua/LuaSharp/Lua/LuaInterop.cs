@@ -5,10 +5,10 @@ namespace LuaSharp.Lua
 {
     public static class LuaInterop
     {
-        const string ms_binaryName = "lua54.dll";
+        const string ms_binaryName = "lua.dll";
 
-        public const int LUAI_MAXSTACK = 1000000; // for x64
-        public const int LUA_REGISTRYINDEX = (-LUAI_MAXSTACK - 1000);
+        public const int INT_MAX = 2147483647;
+        public const int LUA_REGISTRYINDEX = (-(INT_MAX / 2 + 1000));
         public const int LUA_MULTRET = -1;
 
         public const int LUA_OK = 0;
@@ -17,6 +17,8 @@ namespace LuaSharp.Lua
         public const int LUA_ERRSYNTAX = 3;
         public const int LUA_ERRMEM = 4;
         public const int LUA_ERRERR = 5;
+
+        public const int LUA_TNONE = -1;
 
         public const int LUA_TNIL = 0;
         public const int LUA_TBOOLEAN = 1;
@@ -27,6 +29,8 @@ namespace LuaSharp.Lua
         public const int LUA_TFUNCTION = 6;
         public const int LUA_TUSERDATA = 7;
         public const int LUA_TTHREAD = 8;
+
+        public const int LUA_NUMTYPES = 9;
 
         public const int LUA_GCSTOP = 0;
         public const int LUA_GCRESTART = 1;

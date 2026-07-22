@@ -52,8 +52,8 @@ namespace ROC.Engine.Objects.Resources
                 if(l_header != "RAF")
                     throw new Exception("Not ROC animation file");
 
-                m_bonesCount = l_reader.ReadByte();
                 m_duration = l_reader.ReadUInt32();
+                m_bonesCount = l_reader.ReadByte();
 
                 m_boneAnimationData = new BoneAnimation[m_bonesCount];
                 for(uint i = 0; i < m_bonesCount; i++)
