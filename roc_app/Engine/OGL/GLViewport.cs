@@ -53,8 +53,11 @@ namespace ROC.Engine.OGL
             get => ms_clearColor;
             set
             {
-                ms_clearColor = value;
-                Gl.ClearColor(ms_clearColor.r, ms_clearColor.g, ms_clearColor.b, ms_clearColor.a);
+                if(ms_clearColor != value)
+                {
+                    ms_clearColor = value;
+                    Gl.ClearColor(ms_clearColor.r, ms_clearColor.g, ms_clearColor.b, ms_clearColor.a);
+                }
             }
         }
 
@@ -62,9 +65,12 @@ namespace ROC.Engine.OGL
 
         public static void SetBlending(BlendingFactor p_source, BlendingFactor p_destination)
         {
-            ms_blendSource = p_source;
-            ms_blendDestination = p_destination;
-            Gl.BlendFunc(p_source, p_destination);
+            if(ms_blendSource != p_source || ms_blendDestination != p_destination)
+            {
+                ms_blendSource = p_source;
+                ms_blendDestination = p_destination;
+                Gl.BlendFunc(p_source, p_destination);
+            }
         }
 
         public static void Clear(bool p_depth, bool p_color)

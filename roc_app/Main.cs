@@ -8,8 +8,7 @@ namespace ROC.App
         {
             Core l_core = new Core();
             l_core.Start();
-            while(l_core.DoPulse())
-                ;
+            while(l_core.DoPulse());
             l_core.Stop();
             return 0;
         }

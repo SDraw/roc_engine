@@ -49,7 +49,7 @@ namespace ROC.Engine.Objects
             {
                 case RenderTargetType.Shadow:
                 {
-                    m_glTexture.Create(m_size.x, m_size.y, InternalFormat.DepthComponent32, PixelFormat.DepthComponent, null, p_filter);
+                    m_glTexture.Create(m_size.x, m_size.y, InternalFormat.DepthComponent16, PixelFormat.DepthComponent, null, p_filter);
                     m_glTexture.SetCompareFunction(Gl.LEQUAL);
                     m_glTexture.SetCompareMode(Gl.COMPARE_REF_DEPTH_TO_TEXTURE_EXT);
                     m_glTexture.SetWrap(Gl.CLAMP_TO_EDGE);

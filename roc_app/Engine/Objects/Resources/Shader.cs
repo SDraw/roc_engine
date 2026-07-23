@@ -15,25 +15,43 @@ namespace ROC.Engine.Objects.Resources
             public int m_internalType;
         }
 
+        const string c_projectionMatrix = "gProjectionMatrix";
+        const string c_viewMatrix = "gViewMatrix";
+        const string c_viewProjectionMatrix = "gViewProjectionMatrix";
+        const string c_modelMatrix = "gModelMatrix";
+        const string c_animated = "gAnimated";
+        const string c_boneMatrix = "gBoneMatrix";
+        const string c_cameraPosition = "gCameraPosition";
+        const string c_cameraDirection = "gCameraDirection";
+        const string c_shadowViewProjection = "gShadowViewProjectionMatrix";
+        const string c_lightLightsCount = "gLightsCount";
+        const string c_lightData = "gLightData";
+        const string c_materialType = "gMaterialType";
+        const string c_materialColor = "gMaterialColor";
+        const string c_materialParams = "gMaterialParams";
+        const string c_textureDiffuse = "gTexture0";
+        const string c_textureShadow = "gTextureShadow";
+        const string c_time = "gTime";
+
         static readonly (string, int)[] ms_defaultUniforms = new (string, int)[]
         {
-            ("gProjectionMatrix", Gl.FLOAT_MAT4),
-            ("gViewMatrix", Gl.FLOAT_MAT4),
-            ("gViewProjectionMatrix", Gl.FLOAT_MAT4),
-            ("gModelMatrix", Gl.FLOAT_MAT4),
-            ("gAnimated", Gl.BOOL),
-            ("gBoneMatrix", Gl.FLOAT_MAT4),
-            ("gCameraPosition", Gl.FLOAT_VEC3),
-            ("gCameraDirection", Gl.FLOAT_VEC3),
-            ("gShadowViewProjectionMatrix", Gl.FLOAT_MAT4),
-            ("gLightData", Gl.FLOAT_MAT4),
-            ("gLightsCount", Gl.INT),
-            ("gMaterialParam", Gl.FLOAT_VEC4),
-            ("gMaterialType", Gl.BOOL_VEC4),
-            ("gTexture0", Gl.SAMPLER_2D),
-            ("gTextureShadow", Gl.SAMPLER_2D_SHADOW),
-            ("gMaterialColor", Gl.FLOAT_VEC4),
-            ("gTime", Gl.FLOAT_VEC4)
+            (c_projectionMatrix, Gl.FLOAT_MAT4),
+            (c_viewMatrix, Gl.FLOAT_MAT4),
+            (c_viewProjectionMatrix, Gl.FLOAT_MAT4),
+            (c_modelMatrix, Gl.FLOAT_MAT4),
+            (c_animated, Gl.BOOL),
+            (c_boneMatrix, Gl.FLOAT_MAT4),
+            (c_cameraPosition, Gl.FLOAT_VEC3),
+            (c_cameraDirection, Gl.FLOAT_VEC3),
+            (c_shadowViewProjection, Gl.FLOAT_MAT4),
+            (c_lightLightsCount, Gl.INT),
+            (c_lightData, Gl.FLOAT_MAT4),
+            (c_materialType, Gl.UNSIGNED_INT_VEC4),
+            (c_materialColor, Gl.FLOAT_VEC4),
+            (c_materialParams, Gl.FLOAT_VEC4),
+            (c_textureDiffuse, Gl.SAMPLER_2D),
+            (c_textureShadow, Gl.SAMPLER_2D_SHADOW),
+            (c_time, Gl.FLOAT)
         };
 
         GLShader m_glShader = null;
@@ -129,10 +147,10 @@ namespace ROC.Engine.Objects.Resources
             m_glShader.SetAttribute(3, "gVertexWeight");
             m_glShader.SetAttribute(4, "gVertexIndex");
 
-            if(m_uniforms.TryGetValue("gTexture0", out var l_value) && l_value.m_internalType == Gl.SAMPLER_2D)
+            if(m_uniforms.TryGetValue(c_textureDiffuse, out var l_value) && l_value.m_internalType == Gl.SAMPLER_2D)
                 m_glShader.SetUniformValue(l_value.m_location, 0); // TextureUnit 0
 
-            if(m_uniforms.TryGetValue("gTextureShadow", out l_value) && l_value.m_internalType == Gl.SAMPLER_2D_SHADOW)
+            if(m_uniforms.TryGetValue(c_textureShadow, out l_value) && l_value.m_internalType == Gl.SAMPLER_2D_SHADOW)
                 m_glShader.SetUniformValue(l_value.m_location, 1); // TextureUnit 1
         }
 
@@ -142,7 +160,7 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gProjectionMatrix", out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
+            if(m_uniforms.TryGetValue(c_projectionMatrix, out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
                 m_glShader.SetUniformValue(l_value.m_location, p_mat);
         }
 
@@ -151,7 +169,7 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gViewMatrix", out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
+            if(m_uniforms.TryGetValue(c_viewMatrix, out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
                 m_glShader.SetUniformValue(l_value.m_location, p_mat);
         }
 
@@ -160,7 +178,7 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gViewProjectionMatrix", out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
+            if(m_uniforms.TryGetValue(c_viewProjectionMatrix, out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
                 m_glShader.SetUniformValue(l_value.m_location, p_mat);
         }
 
@@ -169,7 +187,7 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gShadowViewProjectionMatrix", out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
+            if(m_uniforms.TryGetValue(c_shadowViewProjection, out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
                 m_glShader.SetUniformValue(l_value.m_location, p_mat);
         }
 
@@ -178,7 +196,7 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gModelMatrix", out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
+            if(m_uniforms.TryGetValue(c_modelMatrix, out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
                 m_glShader.SetUniformValue(l_value.m_location, p_mat);
         }
 
@@ -187,7 +205,7 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gAnimated", out var l_value) && l_value.m_internalType == Gl.BOOL)
+            if(m_uniforms.TryGetValue(c_animated, out var l_value) && l_value.m_internalType == Gl.BOOL)
                 m_glShader.SetUniformValue(l_value.m_location, p_state ? 1 : 0);
         }
 
@@ -196,7 +214,7 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gBoneMatrix", out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
+            if(m_uniforms.TryGetValue(c_boneMatrix, out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
                 m_glShader.SetUniformValue(l_value.m_location, p_mat);
         }
 
@@ -205,10 +223,10 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gCameraPosition", out var l_value) && l_value.m_internalType == Gl.FLOAT_VEC3)
+            if(m_uniforms.TryGetValue(c_cameraPosition, out var l_value) && l_value.m_internalType == Gl.FLOAT_VEC3)
                 m_glShader.SetUniformValue(l_value.m_location, p_pos.x, p_pos.y, p_pos.z);
 
-            if(m_uniforms.TryGetValue("gCameraDirection", out l_value) && l_value.m_internalType == Gl.FLOAT_VEC3)
+            if(m_uniforms.TryGetValue(c_cameraDirection, out l_value) && l_value.m_internalType == Gl.FLOAT_VEC3)
                 m_glShader.SetUniformValue(l_value.m_location, p_dir.x, p_dir.y, p_dir.z);
         }
 
@@ -217,26 +235,26 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gLightData", out var l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
-                m_glShader.SetUniformValue(l_value.m_location, p_mat);
-
-            if(m_uniforms.TryGetValue("gLightsCount", out l_value) && l_value.m_internalType == Gl.INT)
+            if(m_uniforms.TryGetValue(c_lightLightsCount, out var l_value) && l_value.m_internalType == Gl.INT)
                 m_glShader.SetUniformValue(l_value.m_location, p_count);
+
+            if(m_uniforms.TryGetValue(c_lightData, out l_value) && l_value.m_internalType == Gl.FLOAT_MAT4)
+                m_glShader.SetUniformValue(l_value.m_location, p_mat);
         }
 
-        internal void SetMaterial(bvec4 p_type, vec4 p_params, vec4 p_color)
+        internal void SetMaterial(uvec4 p_type, vec4 p_color, vec4 p_params)
         {
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gMaterialType", out var l_value) && l_value.m_internalType == Gl.BOOL_VEC4)
-                m_glShader.SetUniformValue(l_value.m_location, p_type.x ? 1 : 0, p_type.y ? 1 : 0, p_type.z ? 1 : 0, p_type.w ? 1 : 0);
+            if(m_uniforms.TryGetValue(c_materialType, out var l_value) && l_value.m_internalType == Gl.UNSIGNED_INT_VEC4)
+                m_glShader.SetUniformValue(l_value.m_location, p_type.x, p_type.y, p_type.z, p_type.w);
 
-            if(m_uniforms.TryGetValue("gMaterialParam", out l_value) && l_value.m_internalType == Gl.FLOAT_VEC3)
-                m_glShader.SetUniformValue(l_value.m_location, p_params.x, p_params.y, p_params.z, p_params.w);
-
-            if(m_uniforms.TryGetValue("gMaterialColor", out l_value) && l_value.m_internalType == Gl.FLOAT_VEC4)
+            if(m_uniforms.TryGetValue(c_materialColor, out l_value) && l_value.m_internalType == Gl.FLOAT_VEC4)
                 m_glShader.SetUniformValue(l_value.m_location, p_color.r, p_color.g, p_color.b, p_color.a);
+
+            if(m_uniforms.TryGetValue(c_materialParams, out l_value) && l_value.m_internalType == Gl.FLOAT_VEC4)
+                m_glShader.SetUniformValue(l_value.m_location, p_params.x, p_params.y, p_params.z, p_params.w);
         }
 
         internal void SetTime(float p_time)
@@ -244,7 +262,7 @@ namespace ROC.Engine.Objects.Resources
             if(!m_loaded)
                 return;
 
-            if(m_uniforms.TryGetValue("gTime", out var l_value) && l_value.m_internalType == Gl.FLOAT)
+            if(m_uniforms.TryGetValue(c_time, out var l_value) && l_value.m_internalType == Gl.FLOAT)
                 m_glShader.SetUniformValue(l_value.m_location, p_time);
         }
 

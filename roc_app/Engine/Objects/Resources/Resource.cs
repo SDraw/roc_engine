@@ -13,7 +13,5 @@
         public override bool IsValid => m_loaded;
 
         public string Log => m_log;
-
-        protected override void DestroyInternal() => base.DestroyInternal();
     }
 }

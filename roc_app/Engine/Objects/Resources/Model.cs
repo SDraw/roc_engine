@@ -43,7 +43,7 @@ namespace ROC.Engine.Objects.Resources
             Rigged = 2,
         }
 
-        int m_modelType = (int)ModelType.Empty;
+        ModelType m_modelType = ModelType.Empty;
         float m_boundsRadius = 0f;
 
         // Parsed
@@ -56,7 +56,7 @@ namespace ROC.Engine.Objects.Resources
         readonly List<Material> m_materials = null;
 
         // Properties
-        public ModelType TypeOfModel => (ModelType)m_modelType;
+        public ModelType TypeOfModel => m_modelType;
         public float BoundsRadius => m_boundsRadius;
 
         internal List<BoneData> Bones => m_bonesData;
@@ -90,14 +90,14 @@ namespace ROC.Engine.Objects.Resources
 
                 string l_header = new string(l_reader.ReadChars(3));
                 if(l_header != "RMF")
-                    throw new Exception("Not ROC model file");
+                    throw new EngineException("Not ROC model file");
 
-                m_modelType = l_reader.ReadByte();
+                m_modelType = (ModelType)l_reader.ReadByte();
                 m_boundsRadius = l_reader.ReadSingle();
 
                 int l_materialsCount = l_reader.ReadInt32();
                 if(l_materialsCount == 0U)
-                    throw new Exception("Model contains no materials");
+                    throw new EngineException("Model contains no materials");
 
                 for(uint i = 0; i < l_materialsCount; i++)
                 {
@@ -141,7 +141,7 @@ namespace ROC.Engine.Objects.Resources
                         Buffer.BlockCopy(l_data, 0, l_subMesh.m_uvData, 0, l_dataSize);
                     }
 
-                    if(m_modelType == (byte)ModelType.Rigged)
+                    if(m_modelType == ModelType.Rigged)
                     {
                         // Weights
                         l_dataSize = l_reader.ReadInt32();
@@ -168,7 +168,7 @@ namespace ROC.Engine.Objects.Resources
                     m_meshesData.Add(l_subMesh);
                 }
 
-                if(m_modelType == (byte)ModelType.Rigged)
+                if(m_modelType == ModelType.Rigged)
                 {
                     int l_bonesCount = l_reader.ReadInt32();
 
@@ -243,7 +243,7 @@ namespace ROC.Engine.Objects.Resources
         // Arbitrary
         void SetupMeshes()
         {
-            bool l_isRigged = (m_modelType == (byte)ModelType.Rigged);
+            bool l_isRigged = (m_modelType == ModelType.Rigged);
 
             foreach(var l_meshData in m_meshesData)
             {
@@ -277,20 +277,34 @@ namespace ROC.Engine.Objects.Resources
             foreach(var l_meshData in m_meshesData)
             {
                 Material l_material = new Material();
-                l_material.Unlit = ((l_meshData.m_type & c_unlitBit) == 0);
-                l_material.DepthWrite = ((l_meshData.m_type & c_depthWriteBit) != 0);
-                l_material.Transparency = ((l_meshData.m_type & c_transparencyBit) != 0);
-                l_material.DoubleSided = ((l_meshData.m_type & c_doubleSidedBit) != 0);
+                l_material.Unlit = !l_meshData.m_type.IsBitSet(c_unlitBit);
+
+                if(l_meshData.m_type.IsBitSet(c_depthWriteBit))
+                    l_material.Mode = l_meshData.m_type.IsBitSet(c_transparencyBit) ? Material.RenderMode.Cutout : Material.RenderMode.Opaque;
+                else
+                    l_material.Mode = Material.RenderMode.Transparent;
+
+                l_material.DoubleSided = l_meshData.m_type.IsBitSet(c_doubleSidedBit);
                 l_material.Params = l_meshData.m_params;
                 l_material.Color = l_meshData.m_materialColor;
                 m_materials.Add(l_material);
             }
+            m_materials.Sort(SortMaterials); // Opaque first, transparent last
 
-            if(m_materials.Count == m_textures.Count)
+            if(m_materials.Count <= m_textures.Count)
             {
                 for(int i = 0, j = m_materials.Count; i < j; i++)
                     m_materials[i].DiffuseTexture = m_textures[i];
             }
+        }
+
+        // Utility
+        static int SortMaterials(Material p_matA, Material p_matB)
+        {
+            if(p_matA.Mode == p_matB.Mode)
+                return 0;
+
+            return (p_matA.Mode > p_matB.Mode) ? 1 : -1;
         }
 
         // API

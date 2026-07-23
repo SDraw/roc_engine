@@ -6,6 +6,21 @@ using System.Runtime.InteropServices;
 
 namespace ROC.Engine
 {
+    public class EngineException : Exception
+    {
+        public EngineException()
+        {
+        }
+
+        public EngineException(string message): base(message)
+        {
+        }
+
+        public EngineException(string message, Exception inner) : base(message, inner)
+        {
+        }
+    }
+
     internal static class Utils
     {
         public static string GetEmbeddedResource(string p_name)
@@ -48,5 +63,7 @@ namespace ROC.Engine
         }
 
         public static float EaseInOut(float p_value) => -0.5f * ((float)Math.Cos(Math.PI * p_value) - 1f);
+
+        public static bool IsBitSet(this byte p_value, byte p_bitMask) => ((p_value & p_bitMask) != 0b0);
     }
 }

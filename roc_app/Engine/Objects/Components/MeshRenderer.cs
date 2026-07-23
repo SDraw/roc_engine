@@ -152,7 +152,7 @@ namespace ROC.Engine.Objects.Components
                 if(m_materials[i] == null || !m_materials[i].IsValid || m_meshes[i] == null || !m_meshes[i].IsValid)
                     continue;
 
-                if(!m_materials[i].DepthWrite)
+                if(m_materials[i].Mode == Material.RenderMode.Transparent)
                     continue;
 
                 GLSettings.Set(EnableCap.CullFace, !m_materials[i].DoubleSided);
@@ -190,15 +190,29 @@ namespace ROC.Engine.Objects.Components
                     continue;
 
                 p_shader.SetMaterial(
-                    new bvec4(m_materials[i].Unlit, RecieveShadows, false, false),
+                    new uvec4((uint)m_materials[i].Mode, m_materials[i].DoubleSided ? 1U : 0U, m_materials[i].Unlit ? 1U : 0U, RecieveShadows ? 1U : 0U),
                     m_materials[i].Params,
                     m_materials[i].Color
                 );
 
-                GLSettings.Set(EnableCap.Blend, m_materials[i].Transparency);
-                GLSettings.Set(EnableCap.CullFace, !m_materials[i].DoubleSided);
-                GLSettings.SetDepthMask(m_materials[i].DepthWrite);
+                switch(m_materials[i].Mode)
+                {
+                    case Material.RenderMode.Opaque:
+                    case Material.RenderMode.Cutout:
+                    {
+                        GLSettings.Set(EnableCap.Blend, false);
+                        GLSettings.SetDepthMask(true);
+                    } break;
 
+                    case Material.RenderMode.Transparent:
+                    {
+                        GLSettings.Set(EnableCap.Blend, true);
+                        GLSettings.SetDepthMask(false);
+                    } break;
+                }
+
+                GLSettings.Set(EnableCap.CullFace, !m_materials[i].DoubleSided);
+                
                 m_materials[i].DiffuseTexture?.Activate(TextureUnit.Texture0);
                 m_meshes[i].Draw();
             }

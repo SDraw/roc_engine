@@ -39,7 +39,11 @@ namespace ROC.Module.Defs
                 return 1;
             }
 
-            l_argReader.PushObject(Texture.Import(l_path, l_alpha, l_filter), ms_textureType);
+            var l_texture = Texture.Import(l_path, l_alpha, l_filter);
+            if((l_texture.Log != null) && (l_texture.Log.Length > 0))
+                Engine.Core.Core.Instance.LogManager.Log(string.Format("Texture '{0}' import error: {1}, dummy texture loaded instead", l_path, l_texture.Log));
+
+            l_argReader.PushObject(l_texture, ms_textureType);
             return 1;
         }
 

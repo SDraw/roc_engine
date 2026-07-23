@@ -50,7 +50,7 @@ namespace ROC.Engine.Objects.Resources
 
                 string l_header = new string(l_reader.ReadChars(3));
                 if(l_header != "RAF")
-                    throw new Exception("Not ROC animation file");
+                    throw new EngineException("Not ROC animation file");
 
                 m_duration = l_reader.ReadUInt32();
                 m_bonesCount = l_reader.ReadByte();

@@ -48,12 +48,15 @@ namespace ROC.Engine.Objects.Resources
                     l_image.Pixels,
                     Gl.NEAREST + (int)p_filter
                 );
-                m_loaded = true;
             }
-            catch(Exception)
+            catch(Exception e)
             {
-                m_glTexture.Create(2, 2, InternalFormat.CompressedRgb, PixelFormat.Rgba, ms_dummyTextureData, Gl.NEAREST);
+                m_log = e.Message;
+                m_glTexture.Create(2, 2, InternalFormat.Rgb8, PixelFormat.Rgb, ms_dummyTextureData, Gl.NEAREST);
+
             }
+
+            m_loaded = true;
         }
 
         internal void Load(byte[] p_data, bool p_transparent, bool p_compressed, TextureFiltering p_filter)

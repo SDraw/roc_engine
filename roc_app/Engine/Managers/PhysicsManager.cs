@@ -28,6 +28,9 @@ namespace ROC.Engine.Managers
 
         internal override void Start()
         {
+            if(ms_dynamicWorld != null)
+                throw new EngineException("Only one active instance of PhysicsManager is allowed");
+
             if(m_active)
                 return;
 

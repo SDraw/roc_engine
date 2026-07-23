@@ -61,14 +61,14 @@ namespace LuaSharp.Lua
             public int currentline;
             public int linedefined;
             public int lastlinedefined;
-            public char nups;
-            public char nparams;
-            public char isvararg;
-            public char istailcall;
-            public short ftransfer;
-            public short ntransfer;
+            public byte nups;
+            public byte nparams;
+            public byte isvararg;
+            public byte istailcall;
+            public int ftransfer;
+            public int ntransfer;
             [MarshalAs(UnmanagedType.ByValArray, SizeConst = LUA_IDSIZE)]
-            public char[] short_src;
+            public byte[] short_src;
             public IntPtr i_ci;
         }
 

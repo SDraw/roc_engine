@@ -24,8 +24,7 @@ namespace ROC.Module.Defs
                 ("instanceID", ObjectDefs.GetInstanceID, null),
                 ("isValid", ObjectDefs.IsValid, null),
 
-                ("transparency", GetTransparency, SetTransparency),
-                ("depthWrite", GetDepthWrite, SetDepthWrite),
+                ("renderMode", GetRenderMode, SetRenderMode),
                 ("doubleSided", GetDoubleSided, SetDoubleSided),
                 ("unlit", GetUnlit, SetUnlit),
                 ("color", GetColor, SetColor),
@@ -41,7 +40,7 @@ namespace ROC.Module.Defs
             return 1;
         }
 
-        static int GetTransparency(IntPtr p_state)
+        static int GetRenderMode(IntPtr p_state)
         {
             var l_argReader = new ArgReader(p_state);
             if(!l_argReader.ReadObject(out Material l_mat))
@@ -50,38 +49,16 @@ namespace ROC.Module.Defs
                 return 1;
             }
 
-            l_argReader.PushBoolean(l_mat.Transparency);
+            l_argReader.PushString(l_mat.Mode.ToString());
             return 1;
         }
-        static int SetTransparency(IntPtr p_state)
+        static int SetRenderMode(IntPtr p_state)
         {
             var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Material l_mat) || !l_argReader.ReadBoolean(out bool l_val))
+            if(!l_argReader.ReadObject(out Material l_mat) || !l_argReader.ReadEnum(out Material.RenderMode l_val))
                 return 0;
 
-            l_mat.Transparency = l_val;
-            return 0;
-        }
-
-        static int GetDepthWrite(IntPtr p_state)
-        {
-            var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Material l_mat))
-            {
-                l_argReader.PushBoolean(false);
-                return 1;
-            }
-
-            l_argReader.PushBoolean(l_mat.DepthWrite);
-            return 1;
-        }
-        static int SetDepthWrite(IntPtr p_state)
-        {
-            var l_argReader = new ArgReader(p_state);
-            if(!l_argReader.ReadObject(out Material l_mat) || !l_argReader.ReadBoolean(out bool l_val))
-                return 0;
-
-            l_mat.DepthWrite = l_val;
+            l_mat.Mode = l_val;
             return 0;
         }
 

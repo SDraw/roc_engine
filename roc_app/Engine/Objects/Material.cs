@@ -5,13 +5,14 @@ namespace ROC.Engine.Objects
 {
     public sealed class Material : Object
     {
-        public bool Transparency
+        public enum RenderMode
         {
-            get;
-            set;
+            Opaque = 0,
+            Cutout,
+            Transparent
         }
 
-        public bool DepthWrite
+        public RenderMode Mode
         {
             get;
             set;
@@ -49,24 +50,22 @@ namespace ROC.Engine.Objects
 
         internal Material()
         {
-            Transparency = false;
-            DepthWrite = true;
+            Mode = RenderMode.Opaque;
             DoubleSided = false;
             Unlit = true;
             Color = vec4.Ones;
-            DiffuseTexture = null;
             Params = vec4.Zero;
+            DiffuseTexture = null;
         }
 
         public Material(Material p_source)
         {
-            Transparency = p_source.Transparency;
-            DepthWrite = p_source.DepthWrite;
+            Mode = p_source.Mode;
             DoubleSided = p_source.DoubleSided;
             Unlit = p_source.Unlit;
             Color = p_source.Color;
-            DiffuseTexture = p_source.DiffuseTexture;
             Params = p_source.Params;
+            DiffuseTexture = p_source.DiffuseTexture;
         }
 
         // API

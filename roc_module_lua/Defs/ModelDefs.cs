@@ -38,7 +38,11 @@ namespace ROC.Module.Defs
                 return 1;
             }
 
-            l_argReader.PushObject(Model.Import(l_path), ms_modelType);
+            var l_model = Model.Import(l_path);
+            if(!l_model.IsValid)
+                Engine.Core.Core.Instance.LogManager.Log(string.Format("Model '{0}' import error: {1}", l_path, l_model.Log));
+
+            l_argReader.PushObject(l_model, ms_modelType);
             return 1;
         }
 

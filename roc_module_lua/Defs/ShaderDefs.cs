@@ -41,7 +41,11 @@ namespace ROC.Module.Defs
                 return 1;
             }
 
-            l_argReader.PushObject(Shader.Import(l_vert, l_frag), ms_shaderType);
+            var l_shader = Shader.Import(l_vert, l_frag);
+            if(!l_shader.IsValid)
+                Engine.Core.Core.Instance.LogManager.Log(string.Format("Shader [{0}; {1}] import error: {2}", l_vert, l_frag, l_shader.Log));
+
+            l_argReader.PushObject(l_shader, ms_shaderType);
             return 1;
         }
 

@@ -24,7 +24,7 @@ namespace ROC.Engine.Core
         internal Core()
         {
             if(Instance != null)
-                throw new Exception("Only sinlge instance is allowed");
+                throw new EngineException("Only single Core instance is allowed");
             else
                 Instance = this;
 
